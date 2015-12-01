@@ -34,7 +34,7 @@ class AjaxSearchIndex extends Widget
         $bStr = $GLOBALS['TL_LANG']['MSC']['ajaxSearchIndex']['button'];
 
         // load active modules
-        $activeModules = deserialize(Config::get('modules'));
+        $activeModules = deserialize(Config::get('searchIndexModules'));
 
         // encode to json
         $json = json_encode($activeModules);
