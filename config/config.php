@@ -15,14 +15,10 @@
  * Back end modules
  */
 $GLOBALS['BE_MOD']['system']['prosearch_settings'] = array(
-    'tables' => array('tl_prosearch_settings')
+    'tables' => array('tl_prosearch_settings', 'tl_prosearch_data')
 );
 
 /**
  * Widgets
  */
 $GLOBALS['BE_FFL']['ajaxSearchIndex'] = 'AjaxSearchIndex';
-
-/**
- * hooks
- */
