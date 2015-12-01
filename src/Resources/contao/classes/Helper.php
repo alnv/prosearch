@@ -25,4 +25,37 @@ class Helper
         return TL_MODE;
     }
 
+    /**
+     * @param $str
+     * @return string
+     */
+    static public function parseStrForMeta($serializeStr)
+    {
+        $arr = deserialize($serializeStr);
+        $filterContent = array('h1','h2','h3','h4','h5','h6','h7');
+        $strContent = '';
+
+        if(is_array($arr))
+        {
+            foreach($arr as $val)
+            {
+                if(is_array($val))
+                {
+                    $val = self::parseStrForMeta(deserialize($val));
+                }
+
+                if(in_array($val, $filterContent))
+                {
+                    continue;
+                }
+
+                $strContent .= $val.' ';
+
+            }
+        }
+
+        return $strContent;
+
+    }
+
 }
