@@ -70,7 +70,7 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
 
         'docId' => array
         (
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+            'sql' => "varchar(255) NOT NULL default ''"
         ),
 
         'cmdEdit' => array
@@ -129,11 +129,6 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
         ),
 
         'type' => array
-        (
-            'sql' => "varchar(255) NOT NULL default ''"
-        ),
-
-        'path' => array
         (
             'sql' => "varchar(255) NOT NULL default ''"
         )
