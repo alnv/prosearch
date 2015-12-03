@@ -118,14 +118,19 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
             'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
 
-        'tags' => array
+        'icon' => array
         (
-            'sql' => "blob NULL"
+            'sql' => "varchar(255) NOT NULL default ''"
         ),
 
         'shortcut' => array
         (
             'sql' => "varchar(32) NOT NULL default ''"
+        ),
+
+        'dynCol' => array
+        (
+            'sql' => "varchar(255) NOT NULL default ''"
         ),
 
         'type' => array
