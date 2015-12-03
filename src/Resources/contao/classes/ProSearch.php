@@ -14,6 +14,7 @@
 
 use Contao\Backend;
 use Contao\Config;
+use Contao\Image;
 use Contao\Input;
 use Contao\Controller;
 
@@ -30,66 +31,87 @@ class ProSearch extends Backend
 
         'article' => array(
             'shortcut' => 'ar',
+            'icon' => 'article.gif',
             'tables' => array('tl_article')
         ),
 
         'page' => array(
             'shortcut' => 'pa',
+            'dynCol' => true,
+            'dynPath' => array(
+                'root' => 'root.gif',
+                'regular' => 'regular.gif'
+            ),
             'tables' => array('tl_page')
         ),
 
         'form' => array(
             'shortcut' => 'fo',
+            'icon' => 'form.gif',
             'tables' => array('tl_form')
         ),
 
         'member' => array(
             'shortcut' => 'me',
+            'icon' => 'member.gif',
             'tables' => array('tl_member')
         ),
 
         'user' => array(
             'shortcut' => 'us',
+            'icon' => 'user.gif',
             'tables' => array('tl_user')
         ),
 
         'news' => array(
             'shortcut' => 'ne',
+            'icon' => 'news.gif',
             'tables' => array('tl_news_archive', 'tl_news')
         ),
 
         'calendar' => array(
             'shortcut' => 'ev',
+            'icon' => 'system/modules/calendar/assets/icon.gif',
             'tables' => array('tl_calendar', 'tl_calendar_events')
         ),
 
         'files' => array(
             'shortcut' => 'fi',
+            'dynCol' => true,
+            'dynPath' => array(
+                'file' => 'files.gif',
+                'folder' => 'folderC.gif'
+            ),
             'tables' => array('tl_files')
         ),
 
         'comments' => array(
             'shortcut' => 'co',
+            'icon' => 'system/modules/comments/assets/icon.gif',
             'tables' => array('tl_comments')
         ),
 
         'newsletter' => array(
             'shortcut' => 'nl',
+            'icon' => 'system/modules/newsletter/assets/icon.gif',
             'tables' => array('tl_newsletter')
         ),
 
         'faq' => array(
             'shortcut' => 'fq',
+            'icon' => 'system/modules/faq/assets/icon.gif',
             'tables' => array('tl_faq_category', 'tl_faq')
         ),
 
         'content' => array(
             'shortcut' => 'ce',
+            'icon' => 'alias.gif',
             'tables' => array('tl_content')
         ),
 
         'module' => array(
             'shortcut' => 'fe',
+            'icon' => 'modules.gif',
             'tables' => array('tl_module')
         )
 
@@ -135,6 +157,9 @@ class ProSearch extends Backend
 
     }
 
+    /**
+     *
+     */
     public function setCoreModules()
     {
         foreach($this->modules as $module)
@@ -225,7 +250,6 @@ class ProSearch extends Backend
         //save data
         $this->saveSingleIndexIntoDB($newIndexData, $tablename);
 
-
     }
 
     /**
@@ -245,6 +269,34 @@ class ProSearch extends Backend
        }
 
        return '';
+    }
+
+    /**
+     * @param $doTable
+     * @return string
+     */
+    public function getIcon($doTable, $type)
+    {
+        $icon = '';
+
+        if( $this->modules[$doTable] && $this->modules[$doTable]['icon'] )
+        {
+            $icon = Image::getHtml($this->modules[$doTable]['icon']);
+        }
+
+        if( $this->modules[$doTable] && $this->modules[$doTable]['dynCol'] == true && is_array($this->modules[$doTable]['dynPath']) )
+        {
+            foreach($this->modules[$doTable]['dynPath'] as $key => $value)
+            {
+                if($type == $key)
+                {
+                    $parseImage = Image::getHtml($value);
+                    $icon = $parseImage ? $parseImage :$value;
+                }
+            }
+        }
+
+        return $icon;
     }
 
     /**
@@ -277,6 +329,15 @@ class ProSearch extends Backend
             'pid' => $db['pid'] ? $db['pid'] : '',
             'shortcut' => $this->modules[$doTable] ? $this->modules[$doTable]['shortcut'] : ''
         );
+
+        //add dyncol for icon
+        if( $db['dynCol'] || ( !$db['dynCol'] && $db['type'] ) )
+        {
+            $arr['dynCol'] = $db['dynCol'] ? $db['dynCol'] : $db['type'];
+        }
+
+        //add icon
+        $arr['icon'] = $this->getIcon($doTable, $arr['dynCol']);
 
         // exception for tl_content
         if( $table == 'tl_content' && $arr['ptable'] == '')
@@ -478,7 +539,6 @@ class ProSearch extends Backend
                 if( $searchDataDB->docId == $arr[$i]['docId'] && $searchDataDB->doTable == $arr[$i]['doTable'] )
                 {
                     $arr[$i]['id'] = $searchDataDB->id;
-                    $arr[$i]['tags'] = $searchDataDB->tags;
                     $arr[$i]['clicks'] = $searchDataDB->clicks;
                 }
 
@@ -639,6 +699,48 @@ class ProSearch extends Backend
         {
             $this->Database->prepare('DELETE FROM tl_prosearch_data WHERE id = ?')->execute($indexData['id']);
         }
+    }
+
+    /**
+     *
+     */
+    public function ajaxRequest()
+    {
+        if( Input::get('ajaxRequestForProSearch') && Input::get('ajaxRequestForProSearch') == 'getSearchIndex' )
+        {
+            // query
+            $q = Input::get('searchQuery');
+
+            // settings @todo
+
+            // header information
+            $header = array(
+                'q' => $q ? $q : ''
+            );
+
+            // send response
+            header('Content-type: application/json');
+            echo json_encode($this->getSearchDataFromIndex($header));
+            exit;
+        }
+    }
+
+    /**
+     * @param $header
+     * @return array
+     */
+    public function getSearchDataFromIndex($header)
+    {
+
+        $dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$header['q'].'*" IN BOOLEAN MODE) ORDER BY tstamp DESC;')->execute();
+        $return = array();
+
+        while($dataDB->next())
+        {
+            $return[] = $dataDB->row();
+        }
+
+        return $return;
     }
 
 }
