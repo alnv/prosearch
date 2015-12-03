@@ -14,25 +14,7 @@
     'use strict';
 
     var timeOut = null;
-
-    /**
-     * event
-     */
-    document.addEvent('keydown:keys(alt+m)', function(e){
-
-        e.preventDefault();
-
-        // load menu
-        if(!$$('body').hasClass('searchMenuActive')[0])
-        {
-            $$('body').set('class', 'searchMenuActive');
-            $$('body').appendHTML(menuView());
-            document.getElementById('id_searchProInputField').focus();
-            listenToInput();
-        }
-
-    });
-
+   
     /**
      *
      */
@@ -84,7 +66,7 @@
             var jsonData = JSON.parse(searchData);
 
             //render view
-            var SearchResultsView = $(document.getElementById('id_search-results'));
+            var SearchResultsView = $$('#id_search-results');
             SearchResultsView.set('html', ItemsView(jsonData));
 
         }}).get({
@@ -98,13 +80,13 @@
     function menuView()
     {
         var $template = '' +
-            '<div class="menu-overlay">' +
+            '<div class="menu-overlay" id="id_menu-overlay">' +
                 '<div class="menu-align">' +
                     '<div class="menu-wrapper">' +
                         '<div class="menu">'+
                             '<div class="menu-inside">' +
                                 '<div class="search-input">' +
-                                    '<input type="text" name="searchProInputField" id="id_searchProInputField" placeholder="Contao - ProSearch" tabIndex="1">'+
+                                    '<input type="text" name="searchProInputField" id="id_searchProInputField" placeholder="ProSearch" tabIndex="1">'+
                                 '</div>'+
                                 '<div class="view-panel">' +
                                     '<div class="search-results" id="id_search-results"></div>'+
@@ -179,8 +161,74 @@
 
     //debug
     window.addEvent('domready', function() {
-        //$$('body').set('class', 'searchMenuActive');
-        //$$('body').appendHTML(menuView());
+	    
+	    /**
+	     * event
+	     */
+	    document.addEvent('keydown:keys(alt+space)', function(e){
+	
+	        e.preventDefault();
+			
+			var body = $$('body');
+			body.toggleClass('searchMenuActive');
+			
+	        // load menu
+	        if(body.hasClass('searchMenuActive')[0])
+	        {
+	            body.appendHTML(menuView());
+	            document.getElementById('id_searchProInputField').focus();
+	            listenToInput();
+	        }
+	        
+	        // remove search
+	        if(!body.hasClass('searchMenuActive')[0])
+	        {
+		       
+		        var menu = document.getElementById("id_menu-overlay");
+	            $(menu).destroy();
+	        }
+	        
+	        var menu = $$("#id_menu-overlay");
+	        
+	        if(menu.length)
+	        {
+		    	menu.addEvent('click', function(e){
+				
+					e.stopPropagation()
+					
+					var el = $(e.target);
+					
+							
+					if(el.hasClass('menu-wrapper'))
+					{
+						menu.destroy();
+						body.toggleClass('searchMenuActive');
+					}
+				
+				});   
+	        }
+	
+	    });
+	    
+	    // remove menu by escape key
+	    document.addEvent('keydown:keys(esc)', function(e){
+	
+	        e.preventDefault();
+			
+			var body = $$('body');
+			body.toggleClass('searchMenuActive');
+			
+	        // remove search
+	        if(!body.hasClass('searchMenuActive')[0])
+	        {		       
+		        var menu = document.getElementById("id_menu-overlay");
+	            $(menu).destroy();
+	        }
+	        
+	
+	    });
+	    
+        
     });
 
 })();
