@@ -24,7 +24,8 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
         'dataContainer' => 'File',
         'onload_callback' => array
         (
-            array('tl_prosearch_settings', 'ajaxSearchIndex')
+            array('tl_prosearch_settings', 'ajaxSearchIndex'),
+            array('ProSearch', 'ajaxRequest')
         ),
         'onsubmit_callback' => array(
             array('ProSearch', 'deleteModulesFromIndex')
