@@ -425,7 +425,8 @@ class ProSearch extends Backend
         $strContent = Controller::replaceInsertTags($strContent);
         $strContent = strip_tags($strContent);
         $strContent = trim($strContent);
-
+        $strContent = mb_strtolower($strContent);
+        $strContent = preg_replace('/[.,_-]/', ' ', $strContent);
         return $strContent;
 
     }
@@ -732,7 +733,9 @@ class ProSearch extends Backend
     public function getSearchDataFromIndex($header)
     {
 
-        $dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$header['q'].'*" IN BOOLEAN MODE) ORDER BY tstamp DESC;')->execute();
+        $dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$header['q'].'*" IN BOOLEAN MODE) ORDER BY tstamp DESC LIMIT 15;')->execute();
+        //$dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE search_content LIKE "%' . $header['q'] . '%" ORDER BY tstamp DESC LIMIT 15;')->query();
+
         $return = array();
 
         while($dataDB->next())
