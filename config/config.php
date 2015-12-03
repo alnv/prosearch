@@ -30,12 +30,7 @@ $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('ProSearch', 'createOnSubmit
 
 if(TL_MODE == 'BE')
 {
+    $GLOBALS['TL_CSS'][] = 'system/modules/prosearch/assets/css/theme.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/vendor/underscore-min.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/vendor/zepto.min.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/vendor/backbone-min.js|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/ProSearch.js|static';
 }
-/**
- * Example for Search Engine
- * SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ('*ne*' IN BOOLEAN MODE) ORDER BY tstamp, clicks DESC;
- */
