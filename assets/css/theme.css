@@ -1,0 +1,106 @@
+.searchMenuActive .menu-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+}
+
+.searchMenuActive .menu-align{
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+
+.searchMenuActive .menu-wrapper{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.searchMenuActive .menu{
+    width: 90%;
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -25%;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(189,189,189,1);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(189,189,189,1);
+    box-shadow: 0px 0px 10px 1px rgba(189,189,189,1);
+    border: 10px solid rgba(119, 172, 69, .7);
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+
+.searchMenuActive .menu input{
+    width: 100%;
+    display: block;
+    line-height: 50px;
+    height: 50px;
+    font-size: 16px;
+    outline: none;
+    background: #fff;
+    border: 1px solid #bbb;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #444;
+}
+
+.searchMenuActive .menu input:focus{
+    border: 1px solid #77ac45;
+    background: #fafafa;
+}
+
+.searchMenuActive .menu .results{
+    margin-top: 10px;
+}
+
+.searchMenuActive .menu .result{
+    position: relative;
+    padding: 5px;
+    border-bottom: 1px solid #e9e9e9;
+}
+
+.searchMenuActive .menu .result .title a{
+    display: inline;
+    cursor: pointer;
+    padding-left: 25px;
+}
+
+.searchMenuActive .menu .result .title .icon{
+    position: absolute;
+    left: 5px;
+    bottom: 0;
+    width: 16px;
+
+}
+
+.searchMenuActive .menu .result .info{
+    color: #b3b3b3;
+}
+
+.searchMenuActive .menu .result.odd{
+    background: #fff;
+}
+
+.searchMenuActive .menu .result.even{
+    background: #fafafa;
+}
+
+.searchMenuActive .menu .no-results{
+    margin-top: 0;
+}
+
+.searchMenuActive .menu input::-webkit-input-placeholder { color:#bbb; font-weight: 300;}
+.searchMenuActive .menu input::-moz-placeholder { color:#bbb; font-weight: 300;} /* firefox 19+ */
+.searchMenuActive .menu input:-ms-input-placeholder { color:#bbb; font-weight: 300;} /* ie */
+.searchMenuActive .menu input input:-moz-placeholder { color:#bbb; font-weight: 300;}
