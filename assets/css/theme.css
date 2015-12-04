@@ -70,22 +70,32 @@
 
 .searchMenuActive .menu .result{
     position: relative;
-    padding: 5px;
     border-bottom: 1px solid #e9e9e9;
-}
-
-.searchMenuActive .menu .result .title a{
-    display: inline;
-    cursor: pointer;
-    padding-left: 22px;
+    padding-bottom: 6px;
+    padding-top: 6px;
+    overflow: hidden;
 }
 
 .searchMenuActive .menu .result .title .icon{
     position: absolute;
-    left: 5px;
-    bottom: 0;
-    width: 16px;
+    left: 4px;
+    bottom: 6px;
+}
 
+.searchMenuActive .menu .result .title a{
+    padding-left: 26px;
+}
+
+.searchMenuActive .menu .result .title {
+    float: left;
+}
+
+.searchMenuActive .menu .result .operations {
+   float: right;
+}
+
+.searchMenuActive .menu .result .operations a{
+   margin-right: 4px;
 }
 
 .searchMenuActive .menu .result .info{
