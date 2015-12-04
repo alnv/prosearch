@@ -12,7 +12,6 @@
  */
 
 
-use Contao\Backend;
 use Contao\Config;
 use Contao\Image;
 use Contao\Input;
@@ -22,7 +21,7 @@ use Contao\Controller;
 /**
  * Class ProSearch
  */
-class ProSearch extends Backend
+class ProSearch extends ProSearchDataContainer
 {
 
     public $coreModules = array();
@@ -109,7 +108,7 @@ class ProSearch extends Backend
             'tables' => array('tl_content')
         ),
 
-        'module' => array(
+        'themes' => array(
             'shortcut' => 'fe',
             'icon' => 'modules.gif',
             'tables' => array('tl_module')
@@ -153,6 +152,9 @@ class ProSearch extends Backend
     public function __construct()
     {
         parent::__construct();
+
+        //$this->Import('ButtonGenerator');
+
         $this->setCoreModules();
 
     }
@@ -233,7 +235,6 @@ class ProSearch extends Backend
             $dcaArr = $this->Database->prepare('SELECT * FROM '.$tablename.' WHERE id = ?')->execute($id)->row();
 
         }
-
         //
         $arr = array();
         $data = $this->prepareIndexData($dcaArr, $GLOBALS['TL_DCA'][$tablename], $tablename);
@@ -343,6 +344,8 @@ class ProSearch extends Backend
         if( $table == 'tl_content' && $arr['ptable'] == '')
         {
             $arr['ptable'] = $db['ptable'] ? $db['ptable'] : '';
+            $dynDo = $this->getDo($arr['ptable']);
+            $arr['doTable'] = $dynDo ? $dynDo : '';
         }
 
         // exception for tl_page
@@ -358,9 +361,6 @@ class ProSearch extends Backend
             $arr['pid'] = '';
         }
 
-        // set operations
-        $arr = $this->pluckOperations($dca, $arr);
-
         // set type
         $arr['type'] = $this->setType($db) ? $this->setType($db) : '';
 
@@ -369,6 +369,9 @@ class ProSearch extends Backend
 
         // set title
         $arr['title'] = $this->setTitle($db) ? $this->setTitle($db) : 'no title';
+
+        // set operations
+        $arr['buttonsStr'] = $this->createButtons($db, $arr);
 
         return $arr;
     }
@@ -458,67 +461,6 @@ class ProSearch extends Backend
         return;
     }
 
-    /**
-     * @param $dca
-     * @param $arr
-     * @return array
-     */
-    public function pluckOperations($dca, $arr)
-    {
-        //
-        $operations = $dca['list']['operations'];
-
-        //
-        $allowedOps = array(
-            'cmdEdit' => '0',
-            'cmdDelete' => '0',
-            'cmdPaste' => '0',
-            'cmdShow' => '0',
-            'cmdAjaxPublished' => '0',
-        );
-
-        //
-        if(is_array($operations) && !empty($operations))
-        {
-            // @todo cmdAjaxEdit // cmdCreate
-            foreach($operations as $act => $operation)
-            {
-
-                // edit
-                if( $act == 'edit')
-                {
-                    $allowedOps['cmdEdit'] = '1';
-                }
-
-                //delete
-                if( $act == 'delete')
-                {
-                    $allowedOps['cmdDelete'] = '1';
-                }
-
-                //past
-                if( $act == 'copy')
-                {
-                    $allowedOps['cmdPaste'] = '1';
-                }
-
-                //show
-                if( $act == 'show')
-                {
-                    $allowedOps['cmdShow'] = '1';
-                }
-
-                //toggle
-                if( $act == 'toggle')
-                {
-                    $allowedOps['cmdAjaxPublished'] = '1';
-                }
-            }
-        }
-
-        return array_merge($arr, $allowedOps);
-
-    }
 
     /**
      * @param $searchDataDB
