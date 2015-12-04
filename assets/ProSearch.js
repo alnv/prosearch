@@ -67,6 +67,7 @@
 
             //render view
             var SearchResultsView = $$('#id_search-results');
+            
             SearchResultsView.set('html', ItemsView(jsonData));
 
         }}).get({
@@ -91,7 +92,7 @@
                                 '<div class="view-panel">' +
                                     '<div class="search-results" id="id_search-results"></div>'+
                                 '</div>'+
-                                '<div class="search-ettings">' +
+                                '<div class="search-settings">' +
 
                                 '</div>'+
                             '</div>'+
@@ -115,11 +116,7 @@
     {
         var $template =
             '<div class="result <%= n %>">' +
-                '<div class="title">' +
-                    '<span class="icon"><%= icon %></span> ' +
-                    '<a href="#"><%= title %></a> ' +
-                    '<span class="info">[<%= docId %>]</span>' +
-                '</div>'+
+                '<div class="result-buttons"><%= buttonsStr %></div>'+
             '</div>';
 
         var render = _.template($template);
@@ -147,6 +144,7 @@
         _.each(data, function(item, i){
 
             item['n'] = i % 2 ? 'even' : 'odd';
+
             $template += ItemView(item);
 
         });
