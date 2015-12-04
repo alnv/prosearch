@@ -73,42 +73,12 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
             'sql' => "varchar(255) NOT NULL default ''"
         ),
 
-        'cmdEdit' => array
-        (
-            'sql' => "char(1) NOT NULL default ''"
-        ),
-
-        'cmdDelete' => array
-        (
-            'sql' => "char(1) NOT NULL default ''"
-        ),
-
-        'cmdPaste' => array
-        (
-            'sql' => "char(1) NOT NULL default ''"
-        ),
-
-        'cmdShow' => array
-        (
-            'sql' => "char(1) NOT NULL default ''"
-        ),
-
-        'cmdCreate' => array
-        (
-            'sql' => "char(1) NOT NULL default ''"
-        ),
-
-        'cmdAjaxEdit' => array
-        (
-            'sql' => "char(1) NOT NULL default ''"
-        ),
-
-        'cmdAjaxPublished' => array
-        (
-            'sql' => "char(1) NOT NULL default ''"
-        ),
-
         'search_content' => array
+        (
+            'sql' => "text NULL"
+        ),
+
+        'buttonsStr' => array
         (
             'sql' => "text NULL"
         ),
