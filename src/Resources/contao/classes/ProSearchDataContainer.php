@@ -27,10 +27,12 @@ class ProSearchDataContainer extends DataContainer
         //
     }
 
-    public function createButtons($arrRow, $dca)
+    public function createButtons($arrRow)
     {
-        $strTable = $dca['dca'];
-
+        
+        $strTable = $arrRow['dca'];
+		$this->loadDataContainer($strTable);
+		
         if (empty($GLOBALS['TL_DCA'][$strTable]['list']['operations']))
         {
             return '';
@@ -39,18 +41,18 @@ class ProSearchDataContainer extends DataContainer
         $return = '';
 
         $operations = $GLOBALS['TL_DCA'][$strTable]['list']['operations'];
+		$mode = $GLOBALS['TL_DCA'][$strTable]['list']['sorting']['mode'];
 
-
-        $id = specialchars(rawurldecode($dca['docId']));
+        $id = specialchars(rawurldecode($arrRow['docId']));
         $id = $id ? '&amp;id='.$id : '';
-        $pid = $dca['pid'] ? '&amp;pid='.$dca['pid'] : '';
-        $table = $dca['dca'] ? '&amp;table='.$dca['dca'] : '';
+        $pid = $arrRow['pid'] ? '&amp;pid='.$arrRow['pid'] : '';
+        $table = $arrRow['dca'] ? '&amp;table='.$arrRow['dca'] : '';
 
         if( $operations['editheader'] || $operations['edit'] )
         {
             $href = 'act=edit';
             $queryStr = $href.$id.$table;
-            $return .= '<div class="title"><span class="icon">'.$dca['icon'].'</span><a href="'.$this->addToSearchUrl($dca, $queryStr).'" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$dca['title'].'\',\'url\':this.href});return false">'.$dca['title'].' <span class="info">['.$dca['docId'].']</span></a></div>';
+            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false">'.$arrRow['title'].' <span class="info">['.$arrRow['docId'].']</span></a></div>';
         }
 
         $return .= '<div class="operations">';
@@ -60,32 +62,42 @@ class ProSearchDataContainer extends DataContainer
         {
 
             // if has childs go to overview
-            $ctableArr = deserialize($dca['ctable']);
+            $ctableArr = deserialize($arrRow['ctable']);
             $href = 'act=edit';
-            $icon = 'edit.gif';
-
-            if(is_array($ctableArr))
+            $icon = 'header.gif';
+			$mode = $mode ? $mode : 5;
+			$ptable = $table;
+            if(is_array($ctableArr)  && $mode != 5 )
             {
                 foreach($ctableArr as $ctable)
                 {
                     $href = '&amp;table='.$ctable.'';
-                    $icon = 'header.gif';
-                    $table = '';
+                    $icon = 'edit.gif';
+                    $ptable = '';
                 }
             }
 
-            $queryStr = $href.$id.$table;
-            $return .= '<a href="'.$this->addToSearchUrl($dca, $queryStr).'">'.Image::getHtml($icon,$dca['title']).'</a>';
+            $queryStr = $href.$id.$ptable;
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'">'.Image::getHtml($icon,$arrRow['title']).'</a>';
         }
 
         //copy
+        /*
         if( $operations['copy'] )
         {
-            $href = 'act=copy';
-            $attributes = ($operations['copy']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['copy']['attributes'], $id, $id)) : '';
+	        
+            $href = $operations['copy']['href'];      
+            $attributes = 'onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"';
+            
+            if(!strpos($href, 'paste'))
+            {
+	            $href = 'act=copy';
+	            $attributes = ($operations['copy']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['copy']['attributes'], $id, $id)) : '';
+            }
+            
             $queryStr = $href.$id.$table.$pid;
             $icon = 'copy.gif';
-            $return .= '<a href="'.$this->addToSearchUrl($dca, $queryStr).'" '.$attributes.'>'.Image::getHtml($icon,$dca['title']).'</a>';
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" '.$attributes.'>'.Image::getHtml($icon,$arrRow['title']).'</a>';
         }
 
         // delete item
@@ -95,26 +107,27 @@ class ProSearchDataContainer extends DataContainer
             $attributes = ($operations['delete']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['delete']['attributes'], $id, $id)) : '';
             $queryStr = $href.$id.$table.$pid;
             $icon = 'delete.gif';
-            $return .= '<a href="'.$this->addToSearchUrl($dca, $queryStr).'" '.$attributes.'>'.Image::getHtml($icon,$dca['title']).'</a>';
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" '.$attributes.'>'.Image::getHtml($icon,$arrRow['title']).'</a>';
         }
-
+		*/
+		
         // show
-        if( $operations['show'] && $dca['dca'] != 'tl_files' )
+        if( $operations['show'] && $arrRow['dca'] != 'tl_files' )
         {
             $href = 'act=show';
             $icon = 'show.gif';
             $attributes = ($operations['show']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['show']['attributes'], $id, $id)) : '';
             $queryStr = $href.$id.$table.'&amp;popup=1';
-            $return .= '<a href="'.$this->addToSearchUrl($dca, $queryStr).'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($icon).'</a> ';
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['docId']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($icon).'</a> ';
 
         }
 
-        if( $operations['show'] && $dca['dca'] == 'tl_files' )
+        if( $operations['show'] && $arrRow['dca'] == 'tl_files' )
         {
-            $href = 'contao/popup.php?src='.base64_encode($arrRow['path']).'';
+            $href = 'contao/popup.php?src='.base64_encode($arrRow['docId']).'';
             $icon = 'show.gif';
             //$attributes = ($operations['show']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['show']['attributes'], $id, $id)) : '';
-            $return .= '<a href="'.$href.'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.str_replace("'", "\\'", specialchars($arrRow['name'], false, true)).'\',\'url\':this.href,\'height\':500});return false" >'.Image::getHtml($icon).'</a>';
+            $return .= '<a href="'.$href.'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.str_replace("'", "\\'", specialchars($arrRow['title'], false, true)).'\',\'url\':this.href,\'height\':500});return false" >'.Image::getHtml($icon).'</a>';
         }
 
         $return .= '</div>';
@@ -153,7 +166,17 @@ class ProSearchDataContainer extends DataContainer
             {
                 unset($queries[$k]);
             }
-
+            
+            if($key == 'ajaxRequestForProSearch')
+            {
+                unset($queries[$k]);
+            }
+			
+			if($key == 'searchQuery')
+            {
+                unset($queries[$k]);
+            }
+			
             if (in_array($key, $arrUnset) || preg_match('/(^|&(amp;)?)' . preg_quote($key, '/') . '=/i', $strRequest))
             {
                 unset($queries[$k]);
