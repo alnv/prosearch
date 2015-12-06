@@ -114,11 +114,14 @@
      */
     function ItemView(item)
     {
+	   
         var $template =
             '<div class="result <%= n %>">' +
-                '<div class="result-buttons"><%= buttonsStr %></div>'+
+                '<div class="category-results">'+
+                	'<%= buttonsStr %>'+
+                '</div>'+
             '</div>';
-
+		
         var render = _.template($template);
 
         return render(item);
@@ -132,7 +135,7 @@
      */
     function ItemsView(data)
     {
-
+	    	 
         var options = {
             count: data.length
         };
@@ -141,20 +144,45 @@
         var endWrapper = '</div>';
         var $template = startWrapper;
 
-        _.each(data, function(item, i){
-
-            item['n'] = i % 2 ? 'even' : 'odd';
-
-            $template += ItemView(item);
-
+        _.each(data, function(item, category){
+	        
+	        
+	        $template += ItemsCategory(item, category);
+	        
         });
 
         $template += endWrapper;
 
         var render = _.template($template);
-
         return render(options);
-
+        
+    }
+    
+    /**
+	 *
+	 */   
+    function ItemsCategory(item, category)
+    {
+	    
+	    var $template = '';
+	   	     
+	    $template += '<div class="result-category"><div class="result-category-header"><%= category %></div>';
+	    
+	    _.each(item, function(row, i){
+							
+			row['n'] = i % 2 ? 'even' : 'odd';
+			$template += ItemView(row);		
+		
+		});
+	    
+	    $template += '</div>';	  
+	    
+	    var render = _.template($template);
+	    var obj = {
+		    category: category
+	    };
+        return render(obj);
+        
     }
 
     //debug
