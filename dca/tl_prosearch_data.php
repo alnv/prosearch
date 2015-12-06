@@ -78,11 +78,6 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
             'sql' => "text NULL"
         ),
 
-        'buttonsStr' => array
-        (
-            'sql' => "text NULL"
-        ),
-
         'clicks' => array
         (
             'sql' => "int(10) unsigned NOT NULL default '0'"
@@ -92,6 +87,7 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
         (
             'sql' => "varchar(255) NOT NULL default ''"
         ),
+        
 
         'shortcut' => array
         (
