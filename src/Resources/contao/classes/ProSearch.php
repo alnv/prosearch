@@ -122,7 +122,8 @@ class ProSearch extends ProSearchDataContainer
      */
     public function loadModules()
     {
-
+		
+		// 
         $return = array();
 
         // set core modules
@@ -145,18 +146,15 @@ class ProSearch extends ProSearchDataContainer
             $return[] = $tablename;
 
         }
-
+		
+		// 
         return $return;
     }
 
     public function __construct()
     {
         parent::__construct();
-
-        //$this->Import('ButtonGenerator');
-
         $this->setCoreModules();
-
     }
 
     /**
@@ -224,7 +222,7 @@ class ProSearch extends ProSearchDataContainer
 
         // current data
         $dcaArr = $dc->activeRecord ? $dc->activeRecord->row() : array();
-
+				
         // get act
         $act = Input::get('act');
 
@@ -238,6 +236,7 @@ class ProSearch extends ProSearchDataContainer
         //
         $arr = array();
         $data = $this->prepareIndexData($dcaArr, $GLOBALS['TL_DCA'][$tablename], $tablename);
+		
         if($data == false)
         {
             return;
@@ -339,9 +338,9 @@ class ProSearch extends ProSearchDataContainer
 
         //add icon
         $arr['icon'] = $this->getIcon($doTable, $arr['dynCol']);
-
-        // exception for tl_content
-        if( $table == 'tl_content' && $arr['ptable'] == '')
+				
+		// exception for tl_content
+        if( $table == 'tl_content')
         {
             $arr['ptable'] = $db['ptable'] ? $db['ptable'] : '';
             $dynDo = $this->getDo($arr['ptable']);
@@ -349,7 +348,7 @@ class ProSearch extends ProSearchDataContainer
         }
 
         // exception for tl_page
-        if( $table == 'tl_page' && $arr['ptable'] == '')
+        if( $table == 'tl_page')
         {
             $arr['ptable'] = 'tl_page';
         }
@@ -369,9 +368,6 @@ class ProSearch extends ProSearchDataContainer
 
         // set title
         $arr['title'] = $this->setTitle($db) ? $this->setTitle($db) : 'no title';
-
-        // set operations
-        $arr['buttonsStr'] = $this->createButtons($db, $arr);
 
         return $arr;
     }
@@ -429,7 +425,7 @@ class ProSearch extends ProSearchDataContainer
         $strContent = strip_tags($strContent);
         $strContent = trim($strContent);
         $strContent = mb_strtolower($strContent);
-        $strContent = preg_replace('/[.,_-]/', ' ', $strContent);
+        //$strContent = preg_replace('/[.,_-]/', ' ', $strContent);
         return $strContent;
 
     }
@@ -675,17 +671,64 @@ class ProSearch extends ProSearchDataContainer
     public function getSearchDataFromIndex($header)
     {
 
-        $dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$header['q'].'*" IN BOOLEAN MODE) ORDER BY tstamp DESC LIMIT 15;')->execute();
-        //$dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE search_content LIKE "%' . $header['q'] . '%" ORDER BY tstamp DESC LIMIT 15;')->query();
-
-        $return = array();
+		
+		// check for shortcuts
+		$q = $header['q'];
+		$shortcutAndQ = explode(':', $q);
+		$shortcutSqlStr = '';
+		$limit = 3;
+		
+		
+		if( count($shortcutAndQ) >= 2 )
+		{
+			$shortcut = $shortcutAndQ[0];
+			$q = $shortcutAndQ[1];
+			$shortcutSqlStr = ' AND shortcut = "'.$shortcut.'"';
+			$limit = 25;
+		}
+		
+			
+        $dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$q.'*" IN BOOLEAN MODE)   '.$shortcutSqlStr.' ORDER BY tstamp DESC LIMIT 1000;')->execute();
+        
+        /*        
+        $contentDB = $this->database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$q.'*" IN BOOLEAN MODE) ORDER BY tstamp DESC LIMIT 10;')->execute();
+                
+        //$dataDB = 
+        */
+        
+        
+        $searchResultsContainer = array();
 
         while($dataDB->next())
         {
-            $return[] = $dataDB->row();
+	        
+	        $tempArr = $dataDB->row();
+	        
+	        //add buttons
+	        $this->loadDataContainer($tempArr['dca']);
+	        $tempArr['buttonsStr'] = $this->createButtons($tempArr);			
+            $searchResultsContainer[] = $tempArr;
+            
         }
-
-        return $return;
+        
+        $searchResultsContainerGroup = array();
+        for($i = 0; $i < count($searchResultsContainer); $i++)
+        {
+	        
+	        if($i <= 0)
+	        {
+		        $searchResultsContainerGroup['top'][] = $searchResultsContainer[$i];
+		        continue;
+	        }
+	        
+	        if(count($searchResultsContainerGroup[$searchResultsContainer[$i]['shortcut']]) <= $limit)
+	        {
+		    	$searchResultsContainerGroup[$searchResultsContainer[$i]['shortcut']][] = $searchResultsContainer[$i];   
+	        }
+	        
+        }
+        
+        return $searchResultsContainerGroup;
     }
 
 }
