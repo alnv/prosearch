@@ -20,7 +20,8 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
 
         'sql' => array(
             'keys' => array(
-                'id' => 'primary'
+                'id' => 'primary',
+                'search_content' => 'fulltext'
             )
         )
     ),
