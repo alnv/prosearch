@@ -52,7 +52,7 @@ class ProSearchDataContainer extends DataContainer
         {
             $href = 'act=edit';
             $queryStr = $href.$id.$table;
-            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false">'.$arrRow['title'].' <span class="info">['.$arrRow['docId'].']</span></a></div>';
+            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false">'.$arrRow['title'].' <span class="info">['.$arrRow['docId'].']</span></a></div>';
         }
 
         $return .= '<div class="operations">';
@@ -78,7 +78,7 @@ class ProSearchDataContainer extends DataContainer
             }
 
             $queryStr = $href.$id.$ptable;
-            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'">'.Image::getHtml($icon,$arrRow['title']).'</a>';
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
         }
 
         //copy
@@ -118,7 +118,7 @@ class ProSearchDataContainer extends DataContainer
             $icon = 'show.gif';
             $attributes = ($operations['show']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['show']['attributes'], $id, $id)) : '';
             $queryStr = $href.$id.$table.'&amp;popup=1';
-            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['docId']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($icon).'</a> ';
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['docId']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($icon).'</a> ';
 
         }
 
@@ -127,7 +127,7 @@ class ProSearchDataContainer extends DataContainer
             $href = 'contao/popup.php?src='.base64_encode($arrRow['docId']).'';
             $icon = 'show.gif';
             //$attributes = ($operations['show']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['show']['attributes'], $id, $id)) : '';
-            $return .= '<a href="'.$href.'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.str_replace("'", "\\'", specialchars($arrRow['title'], false, true)).'\',\'url\':this.href,\'height\':500});return false" >'.Image::getHtml($icon).'</a>';
+            $return .= '<a href="'.$href.'" tabindex="1" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.str_replace("'", "\\'", specialchars($arrRow['title'], false, true)).'\',\'url\':this.href,\'height\':500});return false" >'.Image::getHtml($icon).'</a>';
         }
 
         $return .= '</div>';
