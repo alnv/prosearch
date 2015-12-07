@@ -14,7 +14,7 @@
     'use strict';
 
     var timeOut = null;
-   
+    var tabIndex = -1;
     /**
      *
      */
@@ -24,10 +24,10 @@
 
         $(el).addEvent('keyup', function(e){
 
-            if(timeOut != null) clearTimeout(timeOut);
-
             //get q
             var value = $(e.target).get('value');
+
+            if(timeOut != null) clearTimeout(timeOut);
 
             // settings
             var settings = {
@@ -36,13 +36,58 @@
 
             timeOut = setTimeout(function(){
 
-                addItems(settings)
+                addItems(settings);
 
             }, 250);
-
-
         });
 
+        setArrowDownEvent();
+    }
+
+    function setArrowDownEvent()
+    {
+        var el = $$(document.getElementById("id_searchProInputField"));
+
+        if(el.length > 0)
+        {
+
+            $$(document).addEvent('keydown:keys(down)', function(e){
+
+                var results = $$('a.search-result');
+
+                if(results.length < 1) return;
+
+                tabIndex++;
+
+                var count = results.length ? results.length: 0;
+
+                if(tabIndex >= count)
+                {
+                    tabIndex = 0;
+                }
+
+                results[tabIndex].focus();
+
+            });
+
+            $$(document).addEvent('keydown:keys(up)', function(e){
+
+                var results = $$('a.search-result');
+
+                if(results.length < 1) return;
+
+                tabIndex--;
+
+                if(tabIndex < 0)
+                {
+                   tabIndex = results.length - 1;
+                }
+
+                results[tabIndex].focus();
+
+            });
+
+        }
     }
 
     /**
@@ -87,7 +132,7 @@
                         '<div class="menu">'+
                             '<div class="menu-inside">' +
                                 '<div class="search-input">' +
-                                    '<input type="text" name="searchProInputField" id="id_searchProInputField" placeholder="ProSearch" tabIndex="1">'+
+                                    '<input type="text" name="searchProInputField" id="id_searchProInputField" placeholder="ProSearch" tabindex="1">'+
                                 '</div>'+
                                 '<div class="view-panel">' +
                                     '<div class="search-results" id="id_search-results"></div>'+
@@ -185,7 +230,7 @@
         
     }
 
-    //debug
+    //
     window.addEvent('domready', function() {
 	    
 	    /**
@@ -197,8 +242,9 @@
 			
 			var body = $$('body');
 			body.toggleClass('searchMenuActive');
-			
-	        // load menu
+            var menu;
+
+            // load menu
 	        if(body.hasClass('searchMenuActive')[0])
 	        {
 	            body.appendHTML(menuView());
@@ -209,13 +255,19 @@
 	        // remove search
 	        if(!body.hasClass('searchMenuActive')[0])
 	        {
-		       
-		        var menu = document.getElementById("id_menu-overlay");
-	            $(menu).destroy();
+                menu = $$("#id_menu-overlay");
+
+                if(menu.length)
+                {
+                    $$(document).removeEvent('keydown:keys(down)');
+                    $$(document).removeEvent('keydown:keys(up)');
+                    tabIndex = -1;
+                    menu.destroy();
+                }
 	        }
 	        
-	        var menu = $$("#id_menu-overlay");
-	        
+	        menu = $$("#id_menu-overlay");
+
 	        if(menu.length)
 	        {
 		    	menu.addEvent('click', function(e){
@@ -248,7 +300,12 @@
 	        if(!body.hasClass('searchMenuActive')[0])
 	        {		       
 		        var menu = document.getElementById("id_menu-overlay");
-	            $(menu).destroy();
+
+                $$(document).removeEvent('keydown:keys(down)');
+                $$(document).removeEvent('keydown:keys(up)');
+                tabIndex = -1;
+
+                $(menu).destroy();
 	        }
 	        
 	
