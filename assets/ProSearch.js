@@ -15,6 +15,7 @@
 
     var timeOut = null;
     var tabIndex = -1;
+
     /**
      *
      */
@@ -103,16 +104,16 @@
         var path = window.location.pathname;
         var ajaxCall = '?do=prosearch_settings';
         var url = host+path+ajaxCall;
-
+        var SearchResultsView = $$('#id_search-results');
         var q = settings.q;
+
+        SearchResultsView.set('html', '<span class="loading"></span>');
 
         new Request( {'url': url, onSuccess: function(searchData)
         {
             var jsonData = JSON.parse(searchData);
 
             //render view
-            var SearchResultsView = $$('#id_search-results');
-            
             SearchResultsView.set('html', ItemsView(jsonData));
 
         }}).get({
@@ -190,8 +191,7 @@
         var $template = startWrapper;
 
         _.each(data, function(item, category){
-	        
-	        
+
 	        $template += ItemsCategory(item, category);
 	        
         });
@@ -272,7 +272,7 @@
 	        {
 		    	menu.addEvent('click', function(e){
 				
-					e.stopPropagation()
+					e.stopPropagation();
 					
 					var el = $(e.target);
 					
