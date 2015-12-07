@@ -54,11 +54,6 @@
     color: #444;
 }
 
-.searchMenuActive .menu .view-panel{
-	max-height: 300px;
-	overflow-y: scroll;
-}
-
 .searchMenuActive .menu input:focus{
     border: 1px solid #77ac45;
     background: #ebfdd7;
@@ -66,6 +61,8 @@
 
 .searchMenuActive .menu .results{
     margin-top: 10px;
+    max-height: 300px;
+    overflow-y: scroll;
 }
 
 .searchMenuActive .menu .result{
@@ -85,6 +82,9 @@
 .searchMenuActive .menu .result .title a{
     padding-left: 26px;
 }
+.searchMenuActive .menu .result a{
+    outline: none;
+}
 
 .searchMenuActive .menu .result .title {
     float: left;
@@ -96,6 +96,10 @@
 
 .searchMenuActive .menu .result .operations a{
    margin-right: 3px;
+}
+
+.searchMenuActive .menu .result .operations a:focus{
+    border-bottom: 1px solid #77ac45;
 }
 
 .searchMenuActive .menu .result .operations{
@@ -124,6 +128,7 @@
 
 .searchMenuActive .menu .no-results{
     margin-top: 0;
+    overflow-y: hidden;
 }
 
 .searchMenuActive .menu input::-webkit-input-placeholder { color:#b3b3b3; font-weight: 300;}
