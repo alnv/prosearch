@@ -52,7 +52,9 @@ class ProSearchDataContainer extends DataContainer
         {
             $href = 'act=edit';
             $queryStr = $href.$id.$table;
-            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false">'.$arrRow['title'].' <span class="info">['.$arrRow['docId'].']</span></a></div>';
+            $info = strlen($arrRow['docId']) > 35 ? substr($arrRow['docId'],0,35).'…' : $arrRow['docId'];
+            $title = strlen($arrRow['title']) > 75 ? substr($arrRow['title'],0,75).'…' : $arrRow['title'];
+            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false">'.$title.' <span class="info">['.$info.']</span></a></div>';
         }
 
         $return .= '<div class="operations">';
@@ -85,7 +87,6 @@ class ProSearchDataContainer extends DataContainer
         /*
         if( $operations['copy'] )
         {
-	        
             $href = $operations['copy']['href'];      
             $attributes = 'onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"';
             
@@ -119,7 +120,6 @@ class ProSearchDataContainer extends DataContainer
             $attributes = ($operations['show']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['show']['attributes'], $id, $id)) : '';
             $queryStr = $href.$id.$table.'&amp;popup=1';
             $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['docId']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($icon).'</a> ';
-
         }
 
         if( $operations['show'] && $arrRow['dca'] == 'tl_files' )
@@ -131,8 +131,6 @@ class ProSearchDataContainer extends DataContainer
         }
 
         $return .= '</div>';
-
-
         return trim($return);
     }
 
