@@ -676,8 +676,8 @@ class ProSearch extends ProSearchDataContainer
 		$q = $header['q'];
 		$shortcutAndQ = explode(':', $q);
 		$shortcutSqlStr = '';
-		$limit = 3;
-		
+		$limit = 4;
+        $searchResultsContainer = array();
 		
 		if( count($shortcutAndQ) >= 2 )
 		{
@@ -686,18 +686,8 @@ class ProSearch extends ProSearchDataContainer
 			$shortcutSqlStr = ' AND shortcut = "'.$shortcut.'"';
 			$limit = 25;
 		}
-		
-			
-        $dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$q.'*" IN BOOLEAN MODE)   '.$shortcutSqlStr.' ORDER BY tstamp DESC LIMIT 1000;')->execute();
-        
-        /*        
-        $contentDB = $this->database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$q.'*" IN BOOLEAN MODE) ORDER BY tstamp DESC LIMIT 10;')->execute();
-                
-        //$dataDB = 
-        */
-        
-        
-        $searchResultsContainer = array();
+
+        $dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$q.'*" IN BOOLEAN MODE)   '.$shortcutSqlStr.' ORDER BY tstamp DESC LIMIT 500;')->execute();
 
         while($dataDB->next())
         {
@@ -712,6 +702,7 @@ class ProSearch extends ProSearchDataContainer
         }
         
         $searchResultsContainerGroup = array();
+
         for($i = 0; $i < count($searchResultsContainer); $i++)
         {
 	        
