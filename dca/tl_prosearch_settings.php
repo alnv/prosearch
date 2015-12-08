@@ -73,9 +73,8 @@ class tl_prosearch_settings extends ProSearch
 
             // get table
             $tableToIndex = Input::get('index');
-            $pageNum = Input::get('page') ? (int)Input::get('page') : 1;
-            $page = 250 * $pageNum;
-            $skip = $pageNum == 1 ? 0 : $page;
+            $pageNum = Input::get('page') ? (int)Input::get('page') : 0;
+            $limit = 1000;
 
             // load dca
             $this->loadDataContainer($tableToIndex);
@@ -83,102 +82,62 @@ class tl_prosearch_settings extends ProSearch
             // ckeck if dca exist
             if(!$GLOBALS['TL_DCA'][$tableToIndex])
             {
-                $data = array('state' => 'failure', 'table' => $tableToIndex, 'page' => $pageNum);
+                $data = array('state' => 'failure', 'table' => $tableToIndex, 'page' => $pageNum, 'left' => 0);
                 header('Content-type: application/json');
                 echo json_encode($data);
                 exit;
             }
 
-            $dataDB = $this->Database->prepare('SELECT * FROM '.$tableToIndex.' LIMIT '.$page.' OFFSET '.$skip.'')->execute();
+            $dataDB = $this->Database->prepare('SELECT * FROM '.$tableToIndex.'')->execute();
+            $count = $dataDB->count();
 
-            if($dataDB->count() < 1)
+            if($count < 1)
             {
-                $data = array('state' => 'empty', 'table' => $tableToIndex, 'page' => $pageNum, 'count' => $dataDB->count());
+                $data = array('state' => 'empty', 'table' => $tableToIndex, 'page' => $pageNum, 'left' => 0);
                 header('Content-type: application/json');
                 echo json_encode($data);
                 exit;
             }
 
-            if( $dataDB->count() >= 250 )
+            if( $count >= $limit )
             {
-                $this->saveToIndex($dataDB, $tableToIndex);
-                $data = array('state' => 'repeat', 'table' => $tableToIndex, 'page' => $pageNum, 'count' => $dataDB->count());
-                header('Content-type: application/json');
-                echo json_encode($data);
-                exit;
-            }
 
-            if( $dataDB->count() < 250 )
-            {
-                $this->saveToIndex($dataDB,$tableToIndex);
-                header('Content-type: application/json');
-                echo json_encode(array('state' => 'success', 'table' => $tableToIndex, 'page' => $pageNum, 'count' => $dataDB->count()));
-                exit;
-            }
-        }
+                $skip = $count - ( $pageNum * $limit );
+                $offset = $limit * $pageNum;
 
-        /*
-        if (strlen(Input::get('index'))) {
-
-            $toIndex = Input::get('index');
-
-            // load dca
-            $this->loadDataContainer($toIndex);
-
-            // set not found if module not exist
-            if(!$GLOBALS['TL_DCA'][$toIndex])
-            {
-                echo '<li class="failure">'.$toIndex.' <span>[x]</span></li>';
-                exit;
-            }
-
-            $dcaDB = $this->Database->prepare('SELECT * FROM '.$toIndex.'')->execute();
-
-            // set empty if module do not have any data
-            if($dcaDB->count() < 1)
-            {
-                echo '<li class="empty">'.$toIndex.' <span>[-]</span></li>';
-                exit;
-            }
-
-            // loop through data and create index
-            $arr = array();
-
-            while($dcaDB->next())
-            {
-                $data = $this->prepareIndexData($dcaDB->row(), $GLOBALS['TL_DCA'][$toIndex], $toIndex);
-
-                if($data == false)
+                if($skip > 0)
                 {
-                    continue;
+                    $dataDBLong = $this->Database->prepare('SELECT * FROM '.$tableToIndex.' LIMIT '.$offset.','.$limit.'')->execute();
+                    $this->saveToIndex($dataDBLong, $tableToIndex, $pageNum);
+                    $data = array('state' => 'repeat', 'table' => $tableToIndex, 'page' => $pageNum, 'left' => $skip);
+                    header('Content-type: application/json');
+                    echo json_encode($data);
+                    exit;
+
+                }else{
+
+                    $data = array('state' => 'success', 'table' => $tableToIndex, 'page' => $pageNum, 'left' => 0);
+                    header('Content-type: application/json');
+                    echo json_encode($data);
+                    exit;
+
                 }
 
-                $arr[] = $data;
 
             }
 
-            // save in db
-            if(count($arr) > 0)
+            if( $count < $limit )
             {
-
-                $searchDataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE dca = ?')->execute($toIndex);
-
-                // check if data already exist in search index
-                // get all items, which should me delete
-                $newIndexData = $this->fillNewIndexWithExistData($searchDataDB, $arr);
-
-                // save
-                $this->saveIndexDataIntoDB($newIndexData, $toIndex);
-
+                $this->saveToIndex($dataDB, $tableToIndex, 0);
+                header('Content-type: application/json');
+                $data = array('state' => 'success', 'table' => $tableToIndex, 'page' => $pageNum, 'left' => 0);
+                echo json_encode($data);
+                exit;
             }
-
-            echo '<li class="success">'.$toIndex.' <span>[√]</span></li>';
-            exit;
         }
-        */
     }
 
-    public function saveToIndex($dataDB, $tablename)
+    public function saveToIndex($dataDB, $tablename, $pageNum)
     {
         $arr = array();
 
@@ -195,9 +154,7 @@ class tl_prosearch_settings extends ProSearch
 
         }
 
-        $searchDataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE dca = ?')->execute($tablename);
-        $newIndexData = $this->fillNewIndexWithExistData($searchDataDB, $arr);
-        $this->saveIndexDataIntoDB($newIndexData, $tablename);
+        $this->saveIndexDataIntoDB($arr, $tablename, $pageNum);
 
     }
 
