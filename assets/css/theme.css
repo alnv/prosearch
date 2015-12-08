@@ -148,3 +148,78 @@
 .searchMenuActive .menu input::-moz-placeholder { color:#b3b3b3; font-weight: 300;} /* firefox 19+ */
 .searchMenuActive .menu input:-ms-input-placeholder { color:#b3b3b3; font-weight: 300;} /* ie */
 .searchMenuActive .menu input input:-moz-placeholder { color:#b3b3b3; font-weight: 300;}
+
+.ps_alert{
+    position: relative;
+    margin-bottom: 5px;
+    border: 1px solid #e9e9e9;
+    background: #fff;
+}
+.ps_alert .loading{
+    background-image: url("../loading.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 50px;
+    height: 29px;
+    padding: 3px;
+    display: block;
+}
+.ps_alert p{
+    margin-bottom: 0;
+    color: #fff;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.ps_alert .empty,
+.ps_alert .success{
+
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#8fc400+0,8fc400+100;Green+Flat+%236 */
+    background: #8fc400; /* Old browsers */
+    background: -moz-linear-gradient(top,  #8fc400 0%, #8fc400 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #8fc400 0%,#8fc400 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #8fc400 0%,#8fc400 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8fc400', endColorstr='#8fc400',GradientType=0 ); /* IE6-9 */
+    height: 29px;
+    line-height: 29px;
+    padding: 3px;
+}
+
+
+.ps_alert .failure{
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f2825b+0,e55b2b+50,f07146+100;Red+3D+%232 */
+    background: #f2825b; /* Old browsers */
+    background: -moz-linear-gradient(top,  #f2825b 0%, #e55b2b 50%, #f07146 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #f2825b 0%,#e55b2b 50%,#f07146 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #f2825b 0%,#e55b2b 50%,#f07146 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2825b', endColorstr='#f07146',GradientType=0 ); /* IE6-9 */
+    height: 29px;
+    line-height: 29px;
+    padding: 3px;
+}
+
+.ps_alert .repeat{
+    position: relative;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#4096ee+0,4096ee+100;Blue+Flat+%232 */
+    background: #4096ee; /* Old browsers */
+    background: -moz-linear-gradient(top,  #4096ee 0%, #4096ee 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #4096ee 0%,#4096ee 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #4096ee 0%,#4096ee 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4096ee', endColorstr='#4096ee',GradientType=0 ); /* IE6-9 */
+    height: 29px;
+    line-height: 29px;
+    padding: 3px;
+}
+
+.ps_alert .repeat:after{
+    content: '';
+    width: 50px;
+    height: 29px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    background-image: url("../loading2.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: block;
+}
