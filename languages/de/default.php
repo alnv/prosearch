@@ -11,4 +11,4 @@
  * @copyright 2015 Alexander Naumov
  */
 
-$GLOBALS['TL_LANG']['MSC']['ajaxSearchIndex']['button'] = 'Suchindex aufbauen';
+$GLOBALS['TL_LANG']['MSC']['ajaxSearchIndex']['button'] = 'Aufbauen';
