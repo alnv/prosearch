@@ -177,22 +177,22 @@ class ProSearch extends ProSearchDataContainer
     public function deleteModulesFromIndex()
     {
         $activeModules = deserialize(Config::get('searchIndexModules')) ? deserialize(Config::get('searchIndexModules')) : array();
-
         $toDeleteArr = array_diff($this->coreModules, $activeModules);
+        $i = 0;
+        $whereStr = '';
 
-        $whereStr = 'WHERE dca = "'.$toDeleteArr[0].'"';
-
-        if(count($toDeleteArr) > 1)
+        foreach($toDeleteArr as $key => $value)
         {
-            foreach($toDeleteArr as $key => $value)
+            if($i == 0)
             {
-                if($key == 0)
-                {
-                    continue;
-                }
+                $whereStr = 'WHERE dca = "'.$value.'"';
+
+            }else{
 
                 $whereStr .= ' OR dca = "'.$value.'"';
             }
+
+            $i++;
         }
 
         $this->Database->prepare('DELETE FROM tl_prosearch_data '.$whereStr.'')->execute();
@@ -244,9 +244,9 @@ class ProSearch extends ProSearchDataContainer
         $arr[] = $data;
 
         //
-        $searchDataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE dca = ? AND docId = ?')->execute($tablename, $dcaArr['id']);
-        $newIndexData = $this->fillNewIndexWithExistData($searchDataDB, $arr);
-
+        //$searchDataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE dca = ? AND docId = ?')->execute($tablename, $dcaArr['id']);
+        //$newIndexData = $this->fillNewIndexWithExistData($searchDataDB, $arr);
+        $newIndexData = $this->fillNewIndexWithExistData($arr);
         //save data
         $this->saveSingleIndexIntoDB($newIndexData, $tablename);
 
@@ -463,6 +463,22 @@ class ProSearch extends ProSearchDataContainer
      * @param $arr
      * @return array
      */
+    public function fillNewIndexWithExistData($arr)
+    {
+        for($i = 0; $i < count($arr); $i++)
+        {
+            $doTable = $arr[$i]['doTable'];
+            $docId = $arr[$i]['docId'];
+            $searchIndexDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE docID = ? AND doTable = ?')->execute($docId, $doTable);
+            while($searchIndexDB->next())
+            {
+                $arr[$i]['id'] = $searchIndexDB->id;
+            }
+        }
+
+        return $arr;
+    }
+    /*
     public function fillNewIndexWithExistData($searchDataDB, $arr)
     {
         if($searchDataDB->count() == 0)
@@ -478,7 +494,7 @@ class ProSearch extends ProSearchDataContainer
                 if( $searchDataDB->docId == $arr[$i]['docId'] && $searchDataDB->doTable == $arr[$i]['doTable'] )
                 {
                     $arr[$i]['id'] = $searchDataDB->id;
-                    $arr[$i]['clicks'] = $searchDataDB->clicks;
+                    //$arr[$i]['clicks'] = $searchDataDB->clicks;
                 }
 
             }
@@ -486,14 +502,18 @@ class ProSearch extends ProSearchDataContainer
 
         return $arr;
     }
+    */
 
     /**
      * @param $indexData
      */
-    public function saveIndexDataIntoDB($data, $dca)
+    public function saveIndexDataIntoDB($data,$dca, $page = 0)
     {
         //reset table
-        $this->Database->prepare('DELETE FROM tl_prosearch_data WHERE dca = ?')->execute($dca);
+        if($page == 0)
+        {
+            $this->clearSearchIndexTable($dca);
+        }
 
         // insert new cols
         foreach($data as $arr)
@@ -511,6 +531,12 @@ class ProSearch extends ProSearchDataContainer
             $this->Database->prepare('INSERT INTO tl_prosearch_data('.$cols.') VALUES ('.$placeholder.')')->execute($values);
 
         }
+    }
+
+
+    public function clearSearchIndexTable($dca)
+    {
+        $this->Database->prepare('DELETE FROM tl_prosearch_data WHERE dca = ?')->execute($dca);
     }
 
     /**
@@ -678,16 +704,47 @@ class ProSearch extends ProSearchDataContainer
 		$shortcutSqlStr = '';
 		$limit = 4;
         $searchResultsContainer = array();
-		
+        $docLimit = 250;
+
+        //
+        $downRateTable = 'WHEN dca = "tl_content" THEN 10 ';
+
 		if( count($shortcutAndQ) >= 2 )
 		{
 			$shortcut = $shortcutAndQ[0];
 			$q = $shortcutAndQ[1];
-			$shortcutSqlStr = ' AND shortcut = "'.$shortcut.'"';
+			$shortcutSqlStr = 'AND shortcut = "'.$shortcut.'"';
 			$limit = 25;
-		}
 
-        $dataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE MATCH (title, search_content) AGAINST ( "*'.$q.'*" IN BOOLEAN MODE)   '.$shortcutSqlStr.' ORDER BY tstamp DESC LIMIT 500;')->execute();
+            if($shortcut == 'ce')
+            {
+                $downRateTable = '';
+            }
+
+		}
+        if(strlen($q) > 4)
+        {
+            $docLimit = 1000;
+        }
+
+        $dataDB = $this->Database->prepare(
+
+            "SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr." "
+                ."ORDER BY "
+                    ."CASE "
+                        ."WHEN (LOCATE(?, search_content) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
+                        ."WHEN search_content = ? THEN 1 "                // 2 "word"     Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
+                        ."WHEN search_content LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
+                        ."WHEN search_content LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
+                        ."WHEN search_content LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
+                        ."WHEN search_content LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
+                        .$downRateTable
+                        ."ELSE 6 "  //whatever
+                        ."END "
+                ."LIMIT ".$docLimit.""
+
+        )->execute("%$q%", $q, $q, "$q %", "%$q", "$q%", "%$q%");
+
 
         while($dataDB->next())
         {
@@ -705,13 +762,13 @@ class ProSearch extends ProSearchDataContainer
 
         for($i = 0; $i < count($searchResultsContainer); $i++)
         {
-	        
+
 	        if($i <= 0)
 	        {
 		        $searchResultsContainerGroup['top'][] = $searchResultsContainer[$i];
 		        continue;
 	        }
-	        
+
 	        if(count($searchResultsContainerGroup[$searchResultsContainer[$i]['shortcut']]) <= $limit)
 	        {
 		    	$searchResultsContainerGroup[$searchResultsContainer[$i]['shortcut']][] = $searchResultsContainer[$i];   
