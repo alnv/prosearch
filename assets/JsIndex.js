@@ -21,35 +21,37 @@
         // disable btn
         $$('.ajaxSearchIndex').setStyle('display', 'none');
 
-        //var host = window.location.origin;
-        //var path = window.location.pathname;
-        //var ajaxCall = '?do=prosearch_settings';
-        //var url = host+path+ajaxCall;
-        //var page = 1;
+        loadHtml(activeModules, function(){
 
-        // loop through all modules
-        for(var i = 0; i < activeModules.length; i++)
-        {
-
-            // send request for indexing
-            sendRequest(activeModules[i], 1);
-            /*
-            new Request.Contao( {'url': url, onSuccess: function(data)
+            // loop through all modules
+            for(var i = 0; i < activeModules.length; i++)
             {
-                //$$('.index_list ul').appendHTML(li);
-                var jsonData = JSON.parse(data);
-                console.log(jsonData);
+                // send request for indexing
+                sendRequest(activeModules[i], 0);
+            }
 
-            }}).get({'index':activeModules[i], 'rt':Contao.request_token});
-            */
+        });
 
-
-        }
 
         return false;
 
     };
 
+
+    function loadHtml(modules, callback)
+    {
+        setTimeout(function(){
+
+            for(var i = 0; i < modules.length; i++)
+            {
+                var template = '<div class="ps_alert" id="id_'+modules[i]+'"><span class="loading"></span></div>';
+                $$('.index_list .ul').appendHTML(template);
+            }
+
+            callback();
+
+        }, 0);
+    }
 
     function sendRequest($table, $page)
     {
@@ -57,22 +59,25 @@
         var path = window.location.pathname;
         var ajaxCall = '?do=prosearch_settings';
         var url = host+path+ajaxCall;
-        var page = $page;
+        var _page = $page;
 
         new Request({'url': url, onSuccess: function(data)
         {
 
             var jsonData = JSON.parse(data);
 
+            var template = '<div class="'+jsonData.state+'"><p><span class="attr">Table: </span><span class="value">'+jsonData.table+' [left: '+jsonData.left+']</span></p></div>';
+
+            $$('#id_'+jsonData.table+'').set('html', template);
+
             if(jsonData.state == 'repeat')
             {
                 var num = jsonData.page + 1;
-
                 return sendRequest(jsonData.table, num);
             }
 
 
-        }}).get({'rt':Contao.request_token, 'index': $table, 'page': page});
+        }}).get({'rt':Contao.request_token, 'index': $table, 'page': _page});
 
     }
 
