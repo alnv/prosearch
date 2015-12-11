@@ -21,6 +21,7 @@ ClassLoader::addClasses(array(
 
     'ProSearch\ProSearch' => $path.'src/Resources/contao/classes/ProSearch.php',
     'ProSearch\Helper' => $path.'src/Resources/contao/classes/Helper.php',
+    'ProSearch\PrepareDataException' => $path.'src/Resources/contao/classes/PrepareDataException.php',
     'ProSearch\ProSearchDataContainer' => $path.'src/Resources/contao/classes/ProSearchDataContainer.php',
     'ProSearch\AjaxSearchIndex' => $path.'src/Resources/contao/widgets/AjaxSearchIndex.php'
 
