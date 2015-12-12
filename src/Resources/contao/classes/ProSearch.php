@@ -287,17 +287,22 @@ class ProSearch extends ProSearchDataContainer
      */
     public function getDo($stable)
     {
-       foreach($this->modules as $do => $module)
-       {
-           foreach($module['tables'] as $table)
-           {
-               if($stable == $table)
-               {
-                   return $do;
-               }
-           }
-       }
-
+	    
+	   if($stable || $stable != '')
+	   {		  
+	       foreach($this->modules as $do => $module)
+	       {
+	           foreach($module['tables'] as $table)
+	           {
+	               if($stable == $table)
+	               {
+	                   return $do;
+	               }
+	           }
+	       }
+       
+	   }
+	   
        return '';
     }
 
@@ -388,7 +393,8 @@ class ProSearch extends ProSearchDataContainer
         {
             foreach($this->modules[$doTable]['prepareDataException'] as $callable)
             {
-                $pDoTable = $this->getDo($arr['ptable']);
+                
+                $pDoTable = $this->getDo($db['ptable']);    
                 $arr = call_user_func( array( $callable[0], $callable[1] ), $arr, $db, $table, $pDoTable );
             }
 
