@@ -35,29 +35,21 @@ class ProSearch extends ProSearchDataContainer
             'title' => array('title'),
         ),
 
-        // dynCol schaut nach einer spalte nach der ein icon zugeordnet werden kann
-        // dynCol ist standard mässig type wenn type nicht vorhanden ist dan dynCol
-        // wenn er die spalte findet schaut er in den dynPath array nach icons
-        // dynCol eintrag sollte den keys des dynPaths entsprechen
         'page' => array(
             'shortcut' => 'pa',
-            'dynCol' => true,
-            'dynPath' => array(
-                'root' => 'root.gif',
-                'regular' => 'regular.gif'
-            ),
             'tables' => array('tl_page'),
             'searchIn' => array('title', 'pageTitle', 'description'),
             'title' => array('title'),
             'prepareDataException' => array( array('PrepareDataException', 'prepareDataExceptions') ),
+            'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
         ),
 
         'form' => array(
             'shortcut' => 'fo',
             'icon' => 'form.gif',
-            'tables' => array('tl_form'),
-            'searchIn' => array('title'),
-            'title' => array('title'),
+            'tables' => array('tl_form', 'tl_form_field'),
+            'searchIn' => array('title', 'name'),
+            'title' => array('title', 'name'),
         ),
 
         'member' => array(
@@ -79,7 +71,7 @@ class ProSearch extends ProSearchDataContainer
         'news' => array(
             'shortcut' => 'ne',
             'icon' => 'news.gif',
-            'tables' => array('tl_news_archive', 'tl_news'),
+            'tables' => array('tl_news_archive', 'tl_news', 'tl_news_feed'),
             'searchIn' => array('title', 'subheadline', 'teaser'),
             'title' => array('title'),
         ),
@@ -93,16 +85,13 @@ class ProSearch extends ProSearchDataContainer
         ),
 
         'files' => array(
+
             'shortcut' => 'fi',
-            'dynCol' => true,
-            'dynPath' => array(
-                'file' => 'files.gif',
-                'folder' => 'folderC.gif'
-            ),
             'tables' => array('tl_files'),
             'searchIn' => array('name', 'meta'),
             'title' => array('name'),
             'prepareDataException' => array( array('PrepareDataException', 'prepareDataExceptions') ),
+            'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
         ),
 
         'comments' => array(
@@ -114,11 +103,12 @@ class ProSearch extends ProSearchDataContainer
         ),
 
         'newsletter' => array(
-            'shortcut' => 'nl',
-            'icon' => 'system/modules/newsletter/assets/icon.gif',
-            'tables' => array('tl_newsletter'),
-            'searchIn' => array('subject'),
-            'title' => array('subject'),
+
+            'tables' => array('tl_newsletter', 'tl_newsletter_recipients'),
+            'searchIn' => array('subject', 'email'),
+            'title' => array('subject', 'email'),
+            'setCustomShortcut' => array( array('PrepareDataException', 'setCustomShortcut') ),
+            'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
         ),
 
         'faq' => array(
@@ -129,7 +119,7 @@ class ProSearch extends ProSearchDataContainer
             'title' => array('question', 'title'),
         ),
 
-        'content' => array(
+        'prosearch_content' => array(
             'shortcut' => 'ce',
             'icon' => 'alias.gif',
             'tables' => array('tl_content'),
@@ -139,10 +129,10 @@ class ProSearch extends ProSearchDataContainer
         ),
 
         'themes' => array(
-            'shortcut' => 'fe',
-            'tables' => array('tl_module', 'tl_layout'),
-            'searchIn' => array('name', 'type'),
-            'title' => array('name'),
+            'tables' => array('tl_module', 'tl_layout', 'tl_style_sheet', 'tl_style', 'tl_image_size'),
+            'searchIn' => array('name', 'type', 'selector'),
+            'title' => array('name', 'selector'),
+            'setCustomShortcut' => array( array('PrepareDataException', 'setCustomShortcut') ),
             'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
         )
 
@@ -162,10 +152,7 @@ class ProSearch extends ProSearchDataContainer
         $coreModules = $this->coreModules;
 
         // push dca' into $searchDataContainerArr
-        foreach ($coreModules as $coreModule) {
-
-            // set tablename
-            $tablename = $coreModule;
+        foreach ($coreModules as $tablename => $coreModule) {
 
             // load dca
             $this->loadDataContainer($tablename);
@@ -175,7 +162,7 @@ class ProSearch extends ProSearchDataContainer
                 continue;
             }
 
-            $return[] = $tablename;
+            $return[$tablename] = $coreModule.' ['.$tablename.']';
 
         }
 
@@ -193,11 +180,14 @@ class ProSearch extends ProSearchDataContainer
      */
     public function setCoreModules()
     {
-        foreach($this->modules as $module)
+        foreach($this->modules as $k => $module)
         {
+            $label = $GLOBALS['TL_LANG']['MOD'][$k];
+            $this->modules[$k]['label'] = $label;
+
             foreach($module['tables'] as $table)
             {
-                $this->coreModules[] = $table;
+                $this->coreModules[$table] = $label[0] ? $label[0] : '[-]';
             }
         }
     }
@@ -208,7 +198,11 @@ class ProSearch extends ProSearchDataContainer
     public function deleteModulesFromIndex()
     {
         $activeModules = deserialize(Config::get('searchIndexModules')) ? deserialize(Config::get('searchIndexModules')) : array();
-        $toDeleteArr = array_diff($this->coreModules, $activeModules);
+
+        $coreModulesArr = Helper::pluckModules($this->coreModules);
+
+        $toDeleteArr = array_diff($coreModulesArr, $activeModules);
+
         $i = 0;
         $whereStr = '';
 
@@ -235,7 +229,10 @@ class ProSearch extends ProSearchDataContainer
      */
     public function createOnSubmitCallback($strName)
     {
-        if( in_array( $strName, $this->coreModules ) && $GLOBALS['TL_DCA'][$strName] )
+
+        $coreModulesArr = Helper::pluckModules($this->coreModules);
+
+        if( in_array( $strName, $coreModulesArr ) && $GLOBALS['TL_DCA'][$strName] )
         {
             $GLOBALS['TL_DCA'][$strName]['config']['onsubmit_callback'][] = array('ProSearch', 'sendDataToIndex');
             $GLOBALS['TL_DCA'][$strName]['config']['oncut_callback'][] = array('ProSearch', 'sendDataToIndex');
@@ -310,7 +307,7 @@ class ProSearch extends ProSearchDataContainer
      * @param $doTable
      * @return string
      */
-    public function getIcon($doTable, $type)
+    public function getIcon($doTable)
     {
         $icon = '';
 
@@ -318,19 +315,6 @@ class ProSearch extends ProSearchDataContainer
         {
             $icon = Image::getHtml($this->modules[$doTable]['icon']);
         }
-
-        if( $this->modules[$doTable] && $this->modules[$doTable]['dynCol'] == true && is_array($this->modules[$doTable]['dynPath']) )
-        {
-            foreach($this->modules[$doTable]['dynPath'] as $key => $value)
-            {
-                if($type == $key)
-                {
-                    $parseImage = Image::getHtml($value);
-                    $icon = $parseImage ? $parseImage :$value;
-                }
-            }
-        }
-
         return $icon;
     }
 
@@ -361,9 +345,26 @@ class ProSearch extends ProSearchDataContainer
             'ptable' => $dca['config']['ptable'] ? $dca['config']['ptable'] : '',
             'ctable' => $dca['config']['ctable'] ? serialize($dca['config']['ctable']) : '',
             'docId' => $db['id'],
-            'pid' => $db['pid'] ? $db['pid'] : '',
-            'shortcut' => $this->modules[$doTable] ? $this->modules[$doTable]['shortcut'] : ''
+            'pid' => $db['pid'] ? $db['pid'] : ''
         );
+
+
+        /**
+         * set shortcut
+         */
+        $shortcut = '';
+        if($this->modules[$doTable])
+        {
+            $shortcut = $this->modules[$doTable]['shortcut'] ? $this->modules[$doTable]['shortcut'] : '';
+        }
+        $arr['shortcut'] = $shortcut;
+        if( $this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomShortcut']) )
+        {
+            foreach($this->modules[$doTable]['setCustomShortcut'] as $callable)
+            {
+                $arr['shortcut'] = call_user_func( array( $callable[0], $callable[1] ), $table, $db, $arr, $dca );
+            }
+        }
 
         /**
          * set custom icon callbacks
@@ -372,19 +373,13 @@ class ProSearch extends ProSearchDataContainer
         {
             foreach($this->modules[$doTable]['setCustomIcon'] as $callable)
             {
-                $this->modules[$doTable]['icon'] = call_user_func( array( $callable[0], $callable[1] ), $table );
+                $this->modules[$doTable]['icon'] = call_user_func( array( $callable[0], $callable[1] ), $table, $db, $arr, $dca );
             }
 
         }
 
-        //add dyncol for icon
-        if( $db['dynCol'] || ( !$db['dynCol'] && $db['type'] ) )
-        {
-            $arr['dynCol'] = $db['dynCol'] ? $db['dynCol'] : $db['type'];
-        }
-
         //add icon
-        $arr['icon'] = $this->getIcon($doTable, $arr['dynCol']);
+        $arr['icon'] = $this->getIcon($doTable);
 
         /**
          * exception callbacks
@@ -712,9 +707,16 @@ class ProSearch extends ProSearchDataContainer
                 'q' => $q ? $q : ''
             );
 
+
+            $results = array();
+            $results['response'] = $this->getSearchDataFromIndex($header);
+            $results['shortcut_labels'] = array();
+            $this->loadLanguageFile('tl_prosearch_data');
+            $results['shortcut_labels'] = $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut'];
+
             // send response
             header('Content-type: application/json');
-            echo json_encode($this->getSearchDataFromIndex($header));
+            echo json_encode($results);
             exit;
         }
     }
@@ -731,7 +733,7 @@ class ProSearch extends ProSearchDataContainer
 		$q = $header['q'];
 		$shortcutAndQ = explode(':', $q);
 		$shortcutSqlStr = '';
-		$limit = 4;
+		$limit = 5;
         $searchResultsContainer = array();
         $docLimit = 250;
 
@@ -754,6 +756,20 @@ class ProSearch extends ProSearchDataContainer
         if(strlen($q) > 4)
         {
             $docLimit = 1000;
+        }
+
+
+        $lastUpdateDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr." ORDER BY tstamp DESC LIMIT 3")->execute("%$q%");
+        $topContainer = array();
+
+        while($lastUpdateDB->next())
+        {
+            $top = $lastUpdateDB->row();
+            //add buttons
+            $this->loadDataContainer($top['dca']);
+            $top['buttonsStr'] = $this->createButtons($top);
+            $topContainer[] = $top;
+
         }
 
         $dataDB = $this->Database->prepare(
@@ -788,15 +804,10 @@ class ProSearch extends ProSearchDataContainer
         }
         
         $searchResultsContainerGroup = array();
+        $searchResultsContainerGroup['top'] = $topContainer;
 
         for($i = 0; $i < count($searchResultsContainer); $i++)
         {
-
-	        if($i <= 0)
-	        {
-		        $searchResultsContainerGroup['top'][] = $searchResultsContainer[$i];
-		        continue;
-	        }
 
 	        if(count($searchResultsContainerGroup[$searchResultsContainer[$i]['shortcut']]) <= $limit)
 	        {
