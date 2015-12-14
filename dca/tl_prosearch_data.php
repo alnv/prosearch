@@ -95,11 +95,6 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
             'sql' => "varchar(32) NOT NULL default ''"
         ),
 
-        'dynCol' => array
-        (
-            'sql' => "varchar(255) NOT NULL default ''"
-        ),
-
         'type' => array
         (
             'sql' => "varchar(255) NOT NULL default ''"
