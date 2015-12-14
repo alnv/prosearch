@@ -58,4 +58,18 @@ class Helper
 
     }
 
+    /**
+     * @param $modules
+     * @return array
+     */
+    static public function pluckModules($modules)
+    {
+        $return = array();
+        foreach($modules as $key => $coreModule)
+        {
+            $return[] = $key;
+        }
+        return $return;
+    }
+
 }
