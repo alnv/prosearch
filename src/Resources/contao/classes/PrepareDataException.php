@@ -163,7 +163,6 @@ class PrepareDataException
 
         }
 
-
         return $iconName;
 
     }
@@ -201,6 +200,26 @@ class PrepareDataException
         if($table == 'tl_newsletter_recipients')
         {
             $shortcut = 'abo';
+        }
+
+        if($table == 'tl_files')
+        {
+            $shortcut = 'fi';
+        }
+
+        if($table == 'tl_files' && $db['extension'] == 'pdf')
+        {
+            $shortcut = 'pdf';
+        }
+
+        if( $table == 'tl_files' && ( $db['extension'] == 'png' || $db['extension'] == 'jpg' || $db['extension'] == 'gif' || $db['extension'] == 'svg' || $db['extension'] == 'tif' ) )
+        {
+            $shortcut = 'img';
+        }
+
+        if( $table == 'tl_files' && ( $db['extension'] == 'zip' || $db['extension'] == 'rar' ) )
+        {
+            $shortcut = 'zip';
         }
 
         return $shortcut;
