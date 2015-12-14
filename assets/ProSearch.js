@@ -15,6 +15,7 @@
 
     var timeOut = null;
     var tabIndex = -1;
+    var shortcut_labels = [];
 
     /**
      *
@@ -111,10 +112,14 @@
 
         new Request( {'url': url, onSuccess: function(searchData)
         {
+
             var jsonData = JSON.parse(searchData);
+            var response = jsonData['response'];
+
+            shortcut_labels = jsonData['shortcut_labels'];
 
             //render view
-            SearchResultsView.set('html', ItemsView(jsonData));
+            SearchResultsView.set('html', ItemsView(response));
 
         }}).get({
                 'rt':Contao.request_token,
@@ -160,9 +165,8 @@
      */
     function ItemView(item)
     {
-	   
         var $template =
-            '<div class="result <%= n %>">' +
+            '<div class="<%= cssClass %> <%= n %>">' +
                 '<div class="category-results">'+
                 	'<%= buttonsStr %>'+
                 '</div>'+
@@ -192,7 +196,9 @@
 
         _.each(data, function(item, category){
 
-	        $template += ItemsCategory(item, category);
+            var category_label = shortcut_labels[category];
+
+	        $template += ItemsCategory(item, category_label);
 	        
         });
 
@@ -210,12 +216,24 @@
     {
 	    
 	    var $template = '';
-	   	     
+
 	    $template += '<div class="result-category"><div class="result-category-header"><%= category %></div>';
 	    
 	    _.each(item, function(row, i){
 							
 			row['n'] = i % 2 ? 'even' : 'odd';
+            row['cssClass'] = 'result';
+
+            if(i == item.length - 1)
+            {
+                row['cssClass'] = 'result last';
+            }
+
+            if(i == 0)
+            {
+                row['cssClass'] = 'result first';
+            }
+
 			$template += ItemView(row);		
 		
 		});
