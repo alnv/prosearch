@@ -49,7 +49,7 @@ class ProSearch extends ProSearchDataContainer
             'icon' => 'form.gif',
             'tables' => array('tl_form', 'tl_form_field'),
             'searchIn' => array('title', 'name'),
-            'title' => array('title', 'name'),
+            'title' => array('title', 'name', 'type'),
         ),
 
         'member' => array(
@@ -85,13 +85,12 @@ class ProSearch extends ProSearchDataContainer
         ),
 
         'files' => array(
-
-            'shortcut' => 'fi',
             'tables' => array('tl_files'),
             'searchIn' => array('name', 'meta'),
             'title' => array('name'),
             'prepareDataException' => array( array('PrepareDataException', 'prepareDataExceptions') ),
             'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
+            'setCustomShortcut' => array( array('PrepareDataException', 'setCustomShortcut') ),
         ),
 
         'comments' => array(
@@ -348,7 +347,6 @@ class ProSearch extends ProSearchDataContainer
             'pid' => $db['pid'] ? $db['pid'] : ''
         );
 
-
         /**
          * set shortcut
          */
@@ -377,6 +375,10 @@ class ProSearch extends ProSearchDataContainer
             }
 
         }
+
+        //add lang if there
+        $langField = $this->getLanguageField($doTable);
+        $arr['language'] = $db[$langField] ? $db[$langField] : '';
 
         //add icon
         $arr['icon'] = $this->getIcon($doTable);
@@ -408,6 +410,21 @@ class ProSearch extends ProSearchDataContainer
         $arr['title'] = $sTitle ? $sTitle : 'no title';
 
         return $arr;
+    }
+
+    /**
+     *
+     */
+    public function getLanguageField($doTable)
+    {
+        $language = '';
+
+        if( $this->modules[$doTable] && $this->modules[$doTable]['language'] )
+        {
+            $language = $this->modules[$doTable]['language'];
+        }
+
+        return $language;
     }
 
     /**
@@ -710,6 +727,8 @@ class ProSearch extends ProSearchDataContainer
 
             $results = array();
             $results['response'] = $this->getSearchDataFromIndex($header);
+
+            // get shortcut labels
             $results['shortcut_labels'] = array();
             $this->loadLanguageFile('tl_prosearch_data');
             $results['shortcut_labels'] = $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut'];
@@ -732,39 +751,58 @@ class ProSearch extends ProSearchDataContainer
 		// check for shortcuts
 		$q = $header['q'];
 		$shortcutAndQ = explode(':', $q);
-		$shortcutSqlStr = '';
-		$limit = 5;
-        $searchResultsContainer = array();
         $docLimit = 250;
+        $limit = 5;
+        $searchResultsContainer = array();
 
-        //
-        $downRateTable = 'WHEN dca = "tl_content" THEN 10 ';
+        //shortcut query Str
+        $shortcutSqlStr = '';
 
-		if( count($shortcutAndQ) >= 2 )
-		{
-			$shortcut = $shortcutAndQ[0];
-			$q = $shortcutAndQ[1];
-			$shortcutSqlStr = 'AND shortcut = "'.$shortcut.'"';
-			$limit = 25;
+        //lang query str
+        $langSqlStr = '';
 
-            if($shortcut == 'ce')
-            {
-                $downRateTable = '';
-            }
-
-		}
-        if(strlen($q) > 4)
+        // Ohne Shortcut
+        if(count($shortcutAndQ) == 1)
         {
-            $docLimit = 1000;
+            $q = $shortcutAndQ[0];
+            if(strlen($q) > 4)
+            {
+                $docLimit = 500;
+            }
         }
 
+        // Mit Shortcut
+        if(count($shortcutAndQ) > 1)
+        {
+            $shortcut = $shortcutAndQ[0];
+            $q = $shortcutAndQ[1];
+            $docLimit = 500;
+            $limit = 50;
+            $shortcutSqlStr = 'AND shortcut = "'.$shortcut.'" ';
+        }
 
-        $lastUpdateDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr." ORDER BY tstamp DESC LIMIT 3")->execute("%$q%");
+        // Mit Shortcut und Sprache
+        if(count($shortcutAndQ) > 2)
+        {
+            $lang = $shortcutAndQ[1];
+            $q = $shortcutAndQ[2];
+            $docLimit = 1000;
+            $limit = 50;
+            $langSqlStr = 'AND language = "'.$lang.'"';
+        }
+
+        if(!$q)
+        {
+           return array();
+        }
+
+        $lastUpdateDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr.$langSqlStr." ORDER BY tstamp DESC LIMIT 3")->execute("%$q%");
         $topContainer = array();
 
         while($lastUpdateDB->next())
         {
             $top = $lastUpdateDB->row();
+
             //add buttons
             $this->loadDataContainer($top['dca']);
             $top['buttonsStr'] = $this->createButtons($top);
@@ -774,7 +812,7 @@ class ProSearch extends ProSearchDataContainer
 
         $dataDB = $this->Database->prepare(
 
-            "SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr." "
+            "SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr.$langSqlStr." "
                 ."ORDER BY "
                     ."CASE "
                         ."WHEN (LOCATE(?, search_content) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
@@ -783,7 +821,6 @@ class ProSearch extends ProSearchDataContainer
                         ."WHEN search_content LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
                         ."WHEN search_content LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
                         ."WHEN search_content LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
-                        .$downRateTable
                         ."ELSE 6 "  //whatever
                         ."END "
                 ."LIMIT ".$docLimit.""
@@ -804,7 +841,11 @@ class ProSearch extends ProSearchDataContainer
         }
         
         $searchResultsContainerGroup = array();
-        $searchResultsContainerGroup['top'] = $topContainer;
+
+        if(count($topContainer) > 0)
+        {
+            $searchResultsContainerGroup['top'] = $topContainer;
+        }
 
         for($i = 0; $i < count($searchResultsContainer); $i++)
         {
@@ -817,6 +858,7 @@ class ProSearch extends ProSearchDataContainer
         }
         
         return $searchResultsContainerGroup;
+
     }
 
 }
