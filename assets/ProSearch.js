@@ -224,17 +224,17 @@
 			row['n'] = i % 2 ? 'even' : 'odd';
             row['cssClass'] = 'result';
 
-            if(i == item.length - 1)
-            {
-                row['cssClass'] = 'result last';
-            }
-
             if(i == 0)
             {
                 row['cssClass'] = 'result first';
             }
 
-			$template += ItemView(row);		
+            if(i == item.length - 1)
+            {
+                row['cssClass'] = 'result last';
+            }
+
+            $template += ItemView(row);
 		
 		});
 	    
