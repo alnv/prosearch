@@ -73,6 +73,10 @@
     overflow: hidden;
 }
 
+.searchMenuActive .menu .result.last{
+    border-bottom: 0;
+}
+
 .searchMenuActive .menu .result .title .icon{
     position: absolute;
     left: 5px;
