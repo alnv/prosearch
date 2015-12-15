@@ -27,6 +27,8 @@ $GLOBALS['BE_FFL']['ajaxSearchIndex'] = 'AjaxSearchIndex';
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('ProSearch', 'createOnSubmitCallback');
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'setUserSettings');
+
 
 if(TL_MODE == 'BE')
 {

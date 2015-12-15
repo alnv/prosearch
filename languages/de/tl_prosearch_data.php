@@ -30,3 +30,5 @@ $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['ce'] = 'Inhaltselemente';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['fq'] = 'FAQ';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['co'] = 'Kommentare';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['nl'] = 'Newsletter';
+$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['pdf'] = 'PDF';
+$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['img'] = 'Bilder';

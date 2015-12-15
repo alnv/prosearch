@@ -12,27 +12,50 @@
  * @copyright 2015 Alexander Naumov
  */
 
+use Contao\BackendUser;
 use Contao\DataContainer;
 use Contao\Image;
 
+/**
+ * Class ProSearchDataContainer
+ * @package ProSearch
+ */
 class ProSearchDataContainer extends DataContainer
 {
+    /**
+     * @return string
+     */
     public function getPalette()
     {
         return '';
     }
 
+    /**
+     * @param mixed $varValue
+     */
     public function save($varValue)
     {
         //
     }
 
-    public function createButtons($arrRow)
+    /**
+     * @param $arrRow
+     * @param $admin
+     * @param $permArr
+     * @return string
+     */
+    public function createButtons($arrRow, $admin, $permArr)
     {
-        
+
         $strTable = $arrRow['dca'];
 		$this->loadDataContainer($strTable);
-		
+
+        if(!$admin)
+        {
+            //$doTable = $arrRow['doTable'];
+            //call_user_func( array('CheckPermission', 'checkFieldPermission'), $doTable, $arrRow, $permArr );
+        }
+
         if (empty($GLOBALS['TL_DCA'][$strTable]['list']['operations']))
         {
             return '';
@@ -45,7 +68,7 @@ class ProSearchDataContainer extends DataContainer
 
         $id = specialchars(rawurldecode($arrRow['docId']));
         $id = $id ? '&amp;id='.$id : '';
-        $pid = $arrRow['pid'] ? '&amp;pid='.$arrRow['pid'] : '';
+        //$pid = $arrRow['pid'] ? '&amp;pid='.$arrRow['pid'] : '';
         $table = $arrRow['dca'] ? '&amp;table='.$arrRow['dca'] : '';
 
         if( $operations['editheader'] || $operations['edit'] )
@@ -135,7 +158,13 @@ class ProSearchDataContainer extends DataContainer
     }
 
 
-
+    /**
+     * @param $dca
+     * @param $queryStr
+     * @param bool|true $blnAddRef
+     * @param array $arrUnset
+     * @return string
+     */
     public function addToSearchUrl($dca, $queryStr, $blnAddRef=true, $arrUnset=array())
     {
 

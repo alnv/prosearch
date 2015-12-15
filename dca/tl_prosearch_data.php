@@ -89,9 +89,14 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
             'sql' => "varchar(255) NOT NULL default ''"
         ),
 
-        'language' => array
+        'chmod' => array
         (
-            'sql' => "varchar(5) NOT NULL default ''"
+            'sql' => "varchar(255) NOT NULL default ''"
+        ),
+
+        'detail' => array
+        (
+            'sql' => "varchar(32) NOT NULL default ''"
         ),
 
         'shortcut' => array

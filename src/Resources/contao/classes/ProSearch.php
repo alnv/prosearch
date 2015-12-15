@@ -168,6 +168,9 @@ class ProSearch extends ProSearchDataContainer
         return $return;
     }
 
+    /**
+     *
+     */
     public function __construct()
     {
         parent::__construct();
@@ -196,10 +199,9 @@ class ProSearch extends ProSearchDataContainer
      */
     public function deleteModulesFromIndex()
     {
+
         $activeModules = deserialize(Config::get('searchIndexModules')) ? deserialize(Config::get('searchIndexModules')) : array();
-
         $coreModulesArr = Helper::pluckModules($this->coreModules);
-
         $toDeleteArr = array_diff($coreModulesArr, $activeModules);
 
         $i = 0;
@@ -344,7 +346,8 @@ class ProSearch extends ProSearchDataContainer
             'ptable' => $dca['config']['ptable'] ? $dca['config']['ptable'] : '',
             'ctable' => $dca['config']['ctable'] ? serialize($dca['config']['ctable']) : '',
             'docId' => $db['id'],
-            'pid' => $db['pid'] ? $db['pid'] : ''
+            'pid' => $db['pid'] ? $db['pid'] : '',
+            'chmod' => $db['chmod'] ? $db['chmod'] : '',
         );
 
         /**
@@ -377,8 +380,8 @@ class ProSearch extends ProSearchDataContainer
         }
 
         //add lang if there
-        $langField = $this->getLanguageField($doTable);
-        $arr['language'] = $db[$langField] ? $db[$langField] : '';
+        //$detailField = $this->getDetailField($doTable);
+        //$arr['detail'] = $db[$detailField] ? $db[$detailField] : '';
 
         //add icon
         $arr['icon'] = $this->getIcon($doTable);
@@ -415,17 +418,19 @@ class ProSearch extends ProSearchDataContainer
     /**
      *
      */
-    public function getLanguageField($doTable)
+    /*
+    public function getDetailField($doTable)
     {
-        $language = '';
+        $detail = '';
 
-        if( $this->modules[$doTable] && $this->modules[$doTable]['language'] )
+        if( $this->modules[$doTable] && $this->modules[$doTable]['detail'] )
         {
-            $language = $this->modules[$doTable]['language'];
+            $detail = $this->modules[$doTable]['detail'];
         }
 
-        return $language;
+        return $detail;
     }
+    */
 
     /**
      * @param $db
@@ -484,7 +489,6 @@ class ProSearch extends ProSearchDataContainer
         $strContent = strip_tags($strContent);
         $strContent = trim($strContent);
         $strContent = mb_strtolower($strContent);
-        //$strContent = preg_replace('/[.,_-]/', ' ', $strContent);
 
         return $strContent;
 
@@ -724,7 +728,6 @@ class ProSearch extends ProSearchDataContainer
                 'q' => $q ? $q : ''
             );
 
-
             $results = array();
             $results['response'] = $this->getSearchDataFromIndex($header);
 
@@ -747,13 +750,23 @@ class ProSearch extends ProSearchDataContainer
     public function getSearchDataFromIndex($header)
     {
 
-		
 		// check for shortcuts
 		$q = $header['q'];
 		$shortcutAndQ = explode(':', $q);
         $docLimit = 250;
         $limit = 5;
-        $searchResultsContainer = array();
+
+        // import
+        $this->import('BackendUser', 'User');
+
+        $isAdmin = $this->User->isAdmin;
+
+        $permArr = array(
+            'modules' => $this->User->modules ?  $this->User->modules : array(),
+            'allowedPageTypes' => $this->User->alpty,
+            'pagemounts' => $this->User->pagemounts ? $this->User->pagemounts : array(),
+            'groups' => $this->User->groups ? $this->User->groups: '0'
+        );
 
         //shortcut query Str
         $shortcutSqlStr = '';
@@ -796,69 +809,97 @@ class ProSearch extends ProSearchDataContainer
            return array();
         }
 
+        // put all results
+        $searchResultsContainerGroup = array();
+
+        // get top
         $lastUpdateDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr.$langSqlStr." ORDER BY tstamp DESC LIMIT 3")->execute("%$q%");
-        $topContainer = array();
 
-        while($lastUpdateDB->next())
-        {
-            $top = $lastUpdateDB->row();
-
-            //add buttons
-            $this->loadDataContainer($top['dca']);
-            $top['buttonsStr'] = $this->createButtons($top);
-            $topContainer[] = $top;
-
-        }
-
+        //
         $dataDB = $this->Database->prepare(
 
             "SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr.$langSqlStr." "
-                ."ORDER BY "
-                    ."CASE "
-                        ."WHEN (LOCATE(?, search_content) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
-                        ."WHEN search_content = ? THEN 1 "                // 2 "word"     Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
-                        ."WHEN search_content LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
-                        ."WHEN search_content LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
-                        ."WHEN search_content LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
-                        ."WHEN search_content LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
-                        ."ELSE 6 "  //whatever
-                        ."END "
-                ."LIMIT ".$docLimit.""
+            ."ORDER BY "
+            ."CASE "
+            ."WHEN (LOCATE(?, search_content) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
+            ."WHEN title = ? THEN 1 "                // 2 "word"     Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
+            ."WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
+            ."WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
+            ."WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
+            ."WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
+            ."ELSE 6 "  //whatever
+            ."END "
+            ."LIMIT ".$docLimit.""
 
         )->execute("%$q%", $q, $q, "$q %", "%$q", "$q%", "%$q%");
 
 
+        // parse
+        while($lastUpdateDB->next())
+        {
+            $searchItem = $lastUpdateDB->row();
+
+            if(!$isAdmin)
+            {
+                if( !$this->checkPermission($permArr, $searchItem) )
+                {
+                    //continue;
+                }
+            }
+
+            $searchItem['buttonsStr'] = $this->addButtonStr($searchItem, $isAdmin, $permArr);
+
+            $searchResultsContainerGroup['top'][] = $searchItem;
+
+        }
         while($dataDB->next())
         {
-	        
-	        $tempArr = $dataDB->row();
-	        
-	        //add buttons
-	        $this->loadDataContainer($tempArr['dca']);
-	        $tempArr['buttonsStr'] = $this->createButtons($tempArr);			
-            $searchResultsContainer[] = $tempArr;
-            
-        }
-        
-        $searchResultsContainerGroup = array();
 
-        if(count($topContainer) > 0)
-        {
-            $searchResultsContainerGroup['top'] = $topContainer;
+            $searchItem = $dataDB->row();
+
+            if(!$isAdmin)
+            {
+                if( !$this->checkPermission($permArr, $searchItem) )
+                {
+                    //continue;
+                }
+            }
+
+            $searchItem['buttonsStr'] = $this->addButtonStr($searchItem, $isAdmin, $permArr);
+
+            if(count($searchResultsContainerGroup[$searchItem['shortcut']]) <= $limit)
+            {
+                $searchResultsContainerGroup[$searchItem['shortcut']][] = $searchItem;
+            }
         }
 
-        for($i = 0; $i < count($searchResultsContainer); $i++)
-        {
-
-	        if(count($searchResultsContainerGroup[$searchResultsContainer[$i]['shortcut']]) <= $limit)
-	        {
-		    	$searchResultsContainerGroup[$searchResultsContainer[$i]['shortcut']][] = $searchResultsContainer[$i];   
-	        }
-	        
-        }
-        
         return $searchResultsContainerGroup;
 
     }
 
+    /**
+     * @param $searchItem
+     * @param $admin
+     * @param $permArr
+     * @return string
+     */
+    public function addButtonStr($searchItem, $admin, $permArr)
+    {
+        return $this->createButtons($searchItem, $admin, $permArr);
+    }
+
+    /**
+     * @param $permArr
+     * @param $searchItem
+     * @return bool
+     */
+    public function checkPermission($permArr, $searchItem)
+    {
+        if(in_array( $searchItem['doTable'], $permArr['modules'] ) )
+        {
+            return call_user_func(array('CheckPermission', 'checkPermission'), $searchItem['doTable'], $permArr, $searchItem);
+        }
+        return false;
+
+    }
 }
