@@ -27,9 +27,10 @@ $GLOBALS['BE_FFL']['ajaxSearchIndex'] = 'AjaxSearchIndex';
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('ProSearch', 'createOnSubmitCallback');
-$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'setUserSettings');
+$GLOBALS['TL_HOOKS']['postLogin'][] = array('UserSettings', 'setUserSettings');
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'getUserSettings');
 
-
+//
 if(TL_MODE == 'BE')
 {
     $GLOBALS['TL_CSS'][] = 'system/modules/prosearch/assets/css/theme.css|static';

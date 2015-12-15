@@ -19,12 +19,17 @@ $GLOBALS['TL_DCA']['tl_user']['palettes']['group'] = str_replace('backendTheme;'
 $GLOBALS['TL_DCA']['tl_user']['palettes']['extend'] = str_replace('backendTheme;', 'backendTheme;{prosearch_legend},keyboard_shortcut;', $GLOBALS['TL_DCA']['tl_user']['palettes']['extend']);
 $GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('backendTheme;', 'backendTheme;{prosearch_legend},keyboard_shortcut;', $GLOBALS['TL_DCA']['tl_user']['palettes']['custom']);
 
+/**
+ *
+ */
 $GLOBALS['TL_DCA']['tl_user']['fields']['keyboard_shortcut'] = array
 (
+
     'label' => &$GLOBALS['TL_LANG']['tl_user']['keyboard_shortcut'],
     'exclude' => true,
     'inputType' => 'text',
     'eval' => array('tl_class' => 'w50', 'helpwizard' => true),
     'explanation' => 'keyboard_shortcut',
     'sql' => "varchar(12) NOT NULL default ''"
+
 );
