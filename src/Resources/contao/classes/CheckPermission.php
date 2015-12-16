@@ -11,7 +11,7 @@
  * @copyright 2015 Alexander Naumov
  */
 
-use Contao\BackendUser;
+//use Contao\BackendUser;
 
 class CheckPermission
 {
@@ -28,7 +28,10 @@ class CheckPermission
         {
             case 'page':
                 return static::checkPage($permArr, $searchItem);
-            break;
+                break;
+            case 'article':
+                return static::checkArticle($permArr, $searchItem);
+                break;
         }
 
         return true;
@@ -85,4 +88,20 @@ class CheckPermission
 
         return $return;
     }
+
+    /**
+     *
+     */
+    public function checkArticle($permArr, $searchItem)
+    {
+        $return = false;
+
+        if( in_array( $searchItem['pid'], $permArr['pagemounts'] ) && $searchItem['ptable'] != 'tl_page' )
+        {
+            $return = true;
+        }
+
+        return $return;
+    }
+
 }

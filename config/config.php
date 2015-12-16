@@ -29,7 +29,7 @@ $GLOBALS['BE_FFL']['ajaxSearchIndex'] = 'AjaxSearchIndex';
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('ProSearch', 'createOnSubmitCallback');
-$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('PermissionHandler', 'insertProSearchLegend');
+$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('ProSearchPalette', 'insertProSearchLegend');
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('UserSettings', 'setUserSettingsOnLogin');
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'getUserSettings');
 

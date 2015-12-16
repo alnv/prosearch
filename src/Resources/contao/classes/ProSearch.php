@@ -838,14 +838,15 @@ class ProSearch extends ProSearchDataContainer
         while($lastUpdateDB->next())
         {
             $searchItem = $lastUpdateDB->row();
-
+            /*
             if(!$isAdmin)
             {
                 if( !$this->checkPermission($permArr, $searchItem) )
                 {
-                    //continue;
+                    continue;
                 }
             }
+            */
 
             $searchItem['buttonsStr'] = $this->addButtonStr($searchItem, $isAdmin, $permArr);
 
@@ -856,15 +857,15 @@ class ProSearch extends ProSearchDataContainer
         {
 
             $searchItem = $dataDB->row();
-
+            /*
             if(!$isAdmin)
             {
                 if( !$this->checkPermission($permArr, $searchItem) )
                 {
-                    //continue;
+                    continue;
                 }
             }
-
+            */
             $searchItem['buttonsStr'] = $this->addButtonStr($searchItem, $isAdmin, $permArr);
 
             if(count($searchResultsContainerGroup[$searchItem['shortcut']]) <= $limit)
@@ -893,6 +894,7 @@ class ProSearch extends ProSearchDataContainer
      * @param $searchItem
      * @return bool
      */
+    /*
     public function checkPermission($permArr, $searchItem)
     {
         if(in_array( $searchItem['doTable'], $permArr['modules'] ) )
@@ -902,4 +904,5 @@ class ProSearch extends ProSearchDataContainer
         return false;
 
     }
+    */
 }
