@@ -32,3 +32,10 @@ $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['co'] = 'Kommentare';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['nl'] = 'Newsletter';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['pdf'] = 'PDF';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['img'] = 'Bilder';
+
+$GLOBALS['TL_LANG']['tl_prosearch_data']['prosearch_legend'] = 'ProSearch';
+$GLOBALS['TL_LANG']['tl_prosearch_data']['ps_block_item'] = array('Aus der Suche entfernen','Dieser Datensatz wird nicht in der Suche angezeigt');
+$GLOBALS['TL_LANG']['tl_prosearch_data']['ps_title'] = array('Pro Search Titel','Titel nur für die ProSearch Suche.');
+$GLOBALS['TL_LANG']['tl_prosearch_data']['ps_search_content'] = array('Suchinhalt','Such kriterien');
+$GLOBALS['TL_LANG']['tl_prosearch_data']['ps_tags'] = array('Tags','Datensatz  taggen');
+$GLOBALS['TL_LANG']['tl_prosearch_data']['ps_block_usergroup'] = array('Diesen Inhalt für bestimmte Gruppen speeren','Gruppen auswählen in dennen dieser Datensatz gespert werden soll');
