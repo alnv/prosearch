@@ -11,7 +11,7 @@
  * @copyright 2015 Alexander Naumov
  */
 
-use \Contao\BackendUser;
+//use \Contao\BackendUser;
 
 /**
  * Back end modules
@@ -29,6 +29,7 @@ $GLOBALS['BE_FFL']['ajaxSearchIndex'] = 'AjaxSearchIndex';
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('ProSearch', 'createOnSubmitCallback');
+$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('PermissionHandler', 'insertProSearchLegend');
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('UserSettings', 'setUserSettingsOnLogin');
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'getUserSettings');
 
