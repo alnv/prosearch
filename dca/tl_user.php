@@ -24,12 +24,12 @@ $GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('backendTheme;
  */
 $GLOBALS['TL_DCA']['tl_user']['fields']['keyboard_shortcut'] = array
 (
-
     'label' => &$GLOBALS['TL_LANG']['tl_user']['keyboard_shortcut'],
     'exclude' => true,
     'inputType' => 'text',
     'eval' => array('tl_class' => 'w50', 'helpwizard' => true),
     'explanation' => 'keyboard_shortcut',
     'sql' => "varchar(12) NOT NULL default ''"
-
 );
+
+$GLOBALS['TL_DCA']['tl_user']['config']['onsubmit_callback'][] = array('UserSettings', 'setUserSettingsOnSave');
