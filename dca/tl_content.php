@@ -12,6 +12,7 @@
  */
 
 // extend palettes
+/*
 foreach( $GLOBALS['TL_DCA']['tl_content']['palettes'] as $palette => $str )
 {
     if($palette == '__selector__')
@@ -27,8 +28,10 @@ foreach( $GLOBALS['TL_DCA']['tl_content']['palettes'] as $palette => $str )
     $GLOBALS['TL_DCA']['tl_content']['palettes'][$palette] = str_replace('type', 'type,ps_title', $str);
 
 }
+*/
 
 // pro Search title
+/*
 $GLOBALS['TL_DCA']['tl_content']['fields']['ps_title'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_content']['ps_title'],
@@ -36,3 +39,4 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['ps_title'] = array
     'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''"
 );
+*/
