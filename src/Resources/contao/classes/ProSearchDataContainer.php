@@ -12,7 +12,7 @@
  * @copyright 2015 Alexander Naumov
  */
 
-use Contao\BackendUser;
+//use Contao\BackendUser;
 use Contao\DataContainer;
 use Contao\Image;
 
@@ -50,11 +50,13 @@ class ProSearchDataContainer extends DataContainer
         $strTable = $arrRow['dca'];
 		$this->loadDataContainer($strTable);
 
+        /*
         if(!$admin)
         {
             //$doTable = $arrRow['doTable'];
             //call_user_func( array('CheckPermission', 'checkFieldPermission'), $doTable, $arrRow, $permArr );
         }
+        */
 
         if (empty($GLOBALS['TL_DCA'][$strTable]['list']['operations']))
         {
