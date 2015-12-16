@@ -347,7 +347,7 @@ class ProSearch extends ProSearchDataContainer
             'ctable' => $dca['config']['ctable'] ? serialize($dca['config']['ctable']) : '',
             'docId' => $db['id'],
             'pid' => $db['pid'] ? $db['pid'] : '',
-            'chmod' => $db['chmod'] ? $db['chmod'] : '',
+        //  'chmod' => $db['chmod'] ? $db['chmod'] : '',
         );
 
         /**
