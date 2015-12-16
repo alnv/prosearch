@@ -22,9 +22,9 @@ class UserSettings{
 
 
     /**
-     *
+     * set user setting on login
      */
-    public function setUserSettings(User $user)
+    public function setUserSettingsOnLogin(User $user)
     {
 
         if ($user instanceof BackendUser) {
@@ -40,10 +40,24 @@ class UserSettings{
     }
 
     /**
+     * set user setting on login
+     */
+    public function setUserSettingsOnSave($dc)
+    {
+        $settings = array(
+            'id' => $dc->activeRecord->id,
+            'shortcut' => $dc->activeRecord->keyboard_shortcut ? $dc->activeRecord->keyboard_shortcut : 'alt+space',
+        );
+
+        $_SESSION['ps_settings'] = $settings;
+    }
+
+    /**
      *
      */
     public function getUserSettings()
     {
+
         if(TL_MODE == 'BE')
         {
             $settings = $_SESSION['ps_settings'];
