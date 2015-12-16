@@ -23,7 +23,7 @@ ClassLoader::addClasses(array(
     'ProSearch\Helper' => $path.'src/Resources/contao/classes/Helper.php',
     'ProSearch\CheckPermission' => $path.'src/Resources/contao/classes/CheckPermission.php',
     'ProSearch\UserSettings' => $path.'src/Resources/contao/classes/UserSettings.php',
-    'ProSearch\PermissionHandler' => $path.'src/Resources/contao/classes/PermissionHandler.php',
+    'ProSearch\ProSearchPalette' => $path.'src/Resources/contao/classes/ProSearchPalette.php',
     'ProSearch\PrepareDataException' => $path.'src/Resources/contao/classes/PrepareDataException.php',
     'ProSearch\ProSearchDataContainer' => $path.'src/Resources/contao/classes/ProSearchDataContainer.php',
     'ProSearch\AjaxSearchIndex' => $path.'src/Resources/contao/widgets/AjaxSearchIndex.php'
