@@ -73,7 +73,7 @@ class ProSearch extends ProSearchDataContainer
             'icon' => 'news.gif',
             'tables' => array('tl_news_archive', 'tl_news', 'tl_news_feed'),
             'searchIn' => array('title', 'subheadline', 'teaser'),
-            'title' => array('title'),
+            'title' => array('headline','title'),
         ),
 
         'calendar' => array(
