@@ -49,7 +49,7 @@ class ProSearchPalette extends ProSearch
                 }
 
             }
-
+            $GLOBALS['TL_DCA'][$strName]['config']['onload_callback'][]  = array('ProSearchPalette', 'getAvailabletags');
             $GLOBALS['TL_DCA'][$strName]['fields']['ps_title'] = static::ps_title();
             $GLOBALS['TL_DCA'][$strName]['fields']['ps_search_content'] = static::ps_search_content();
             $GLOBALS['TL_DCA'][$strName]['fields']['ps_tags'] = static::ps_tags();
@@ -89,11 +89,11 @@ class ProSearchPalette extends ProSearch
     {
         return array(
             'label' => &$GLOBALS['TL_LANG']['tl_prosearch_data']['ps_tags'],
-            'inputType' => 'select',
+            'inputType' => 'tagTextField',
             'exclude' => true,
-            'eval' => array('multiple' => true, 'chosen' => true),
-            'options' => array(),
-            'sql' => "blob NULL",
+            //'save_callback' => array( array('ProSearchPalette', 'updateTagTable') ),
+            'eval' => array(),
+            'sql' => "text NULL"
         );
     }
 
@@ -118,6 +118,31 @@ class ProSearchPalette extends ProSearch
             'options' => array(),
             'sql' => "blob NULL",
         );
+    }
+
+
+
+    public function getAvailabletags($dc)
+    {
+
+        $table = $dc->table;
+        $options = array();
+
+        //DB
+        $tagsDB = $this->Database->prepare('SELECT * FROM tl_prosearch_tags ORDER BY tstamp DESC')->execute();
+
+        while($tagsDB->next())
+        {
+            $options[] = $tagsDB->tagname;
+        }
+        
+        //set
+        $GLOBALS['TL_DCA'][$table]['fields']['ps_tags']['eval']['options'] = $options;
+    }
+
+    public function createColsIfNotExist()
+    {
+        //
     }
 
 }
