@@ -135,7 +135,7 @@ class ProSearchPalette extends ProSearch
         {
             $options[] = $tagsDB->tagname;
         }
-        
+
         //set
         $GLOBALS['TL_DCA'][$table]['fields']['ps_tags']['eval']['options'] = $options;
     }
