@@ -24,6 +24,7 @@ $GLOBALS['BE_MOD']['system']['prosearch_settings'] = array(
  * Widgets
  */
 $GLOBALS['BE_FFL']['ajaxSearchIndex'] = 'AjaxSearchIndex';
+$GLOBALS['BE_FFL']['tagTextField'] = 'TagTextField';
 
 /**
  * Hooks
