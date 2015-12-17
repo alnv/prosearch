@@ -26,6 +26,7 @@ ClassLoader::addClasses(array(
     'ProSearch\ProSearchPalette' => $path.'src/Resources/contao/classes/ProSearchPalette.php',
     'ProSearch\PrepareDataException' => $path.'src/Resources/contao/classes/PrepareDataException.php',
     'ProSearch\ProSearchDataContainer' => $path.'src/Resources/contao/classes/ProSearchDataContainer.php',
-    'ProSearch\AjaxSearchIndex' => $path.'src/Resources/contao/widgets/AjaxSearchIndex.php'
+    'ProSearch\AjaxSearchIndex' => $path.'src/Resources/contao/widgets/AjaxSearchIndex.php',
+    'ProSearch\TagTextField' => $path.'src/Resources/contao/widgets/TagTextField.php'
 
 ));
