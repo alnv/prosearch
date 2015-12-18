@@ -40,8 +40,8 @@ class ProSearch extends ProSearchDataContainer
             'tables' => array('tl_page'),
             'searchIn' => array('title', 'pageTitle', 'description'),
             'title' => array('title'),
-            'prepareDataException' => array( array('PrepareDataException', 'prepareDataExceptions') ),
-            'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
+            'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
+            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
         ),
 
         'form' => array(
@@ -73,7 +73,7 @@ class ProSearch extends ProSearchDataContainer
             'icon' => 'news.gif',
             'tables' => array('tl_news_archive', 'tl_news', 'tl_news_feed'),
             'searchIn' => array('title', 'subheadline', 'teaser'),
-            'title' => array('headline','title'),
+            'title' => array('headline', 'title'),
         ),
 
         'calendar' => array(
@@ -88,9 +88,9 @@ class ProSearch extends ProSearchDataContainer
             'tables' => array('tl_files'),
             'searchIn' => array('name', 'meta'),
             'title' => array('name'),
-            'prepareDataException' => array( array('PrepareDataException', 'prepareDataExceptions') ),
-            'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
-            'setCustomShortcut' => array( array('PrepareDataException', 'setCustomShortcut') ),
+            'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
+            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
+            'setCustomShortcut' => array(array('PrepareDataException', 'setCustomShortcut')),
         ),
 
         'comments' => array(
@@ -106,8 +106,8 @@ class ProSearch extends ProSearchDataContainer
             'tables' => array('tl_newsletter', 'tl_newsletter_recipients'),
             'searchIn' => array('subject', 'email'),
             'title' => array('subject', 'email'),
-            'setCustomShortcut' => array( array('PrepareDataException', 'setCustomShortcut') ),
-            'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
+            'setCustomShortcut' => array(array('PrepareDataException', 'setCustomShortcut')),
+            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
         ),
 
         'faq' => array(
@@ -124,15 +124,15 @@ class ProSearch extends ProSearchDataContainer
             'tables' => array('tl_content'),
             'searchIn' => array('headline', 'ps_title'),
             'title' => array('ps_title'),
-            'prepareDataException' => array( array('PrepareDataException', 'prepareDataExceptions') ),
+            'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
         ),
 
         'themes' => array(
             'tables' => array('tl_module', 'tl_layout', 'tl_style_sheet', 'tl_style', 'tl_image_size'),
             'searchIn' => array('name', 'type', 'selector'),
             'title' => array('name', 'selector'),
-            'setCustomShortcut' => array( array('PrepareDataException', 'setCustomShortcut') ),
-            'setCustomIcon' => array( array('PrepareDataException', 'setCustomIcon') ),
+            'setCustomShortcut' => array(array('PrepareDataException', 'setCustomShortcut')),
+            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
         )
 
     );
@@ -143,8 +143,8 @@ class ProSearch extends ProSearchDataContainer
      */
     public function loadModules()
     {
-		
-		// 
+
+        //
         $return = array();
 
         // set core modules
@@ -161,7 +161,7 @@ class ProSearch extends ProSearchDataContainer
                 continue;
             }
 
-            $return[$tablename] = $coreModule.' ['.$tablename.']';
+            $return[$tablename] = $coreModule . ' [' . $tablename . ']';
 
         }
 
@@ -182,13 +182,11 @@ class ProSearch extends ProSearchDataContainer
      */
     public function setCoreModules()
     {
-        foreach($this->modules as $k => $module)
-        {
+        foreach ($this->modules as $k => $module) {
             $label = $GLOBALS['TL_LANG']['MOD'][$k];
             $this->modules[$k]['label'] = $label;
 
-            foreach($module['tables'] as $table)
-            {
+            foreach ($module['tables'] as $table) {
                 $this->coreModules[$table] = $label[0] ? $label[0] : '[-]';
             }
         }
@@ -207,21 +205,19 @@ class ProSearch extends ProSearchDataContainer
         $i = 0;
         $whereStr = '';
 
-        foreach($toDeleteArr as $key => $value)
-        {
-            if($i == 0)
-            {
-                $whereStr = 'WHERE dca = "'.$value.'"';
+        foreach ($toDeleteArr as $key => $value) {
+            if ($i == 0) {
+                $whereStr = 'WHERE dca = "' . $value . '"';
 
-            }else{
+            } else {
 
-                $whereStr .= ' OR dca = "'.$value.'"';
+                $whereStr .= ' OR dca = "' . $value . '"';
             }
 
             $i++;
         }
 
-        $this->Database->prepare('DELETE FROM tl_prosearch_data '.$whereStr.'')->execute();
+        $this->Database->prepare('DELETE FROM tl_prosearch_data ' . $whereStr . '')->execute();
 
     }
 
@@ -233,8 +229,7 @@ class ProSearch extends ProSearchDataContainer
 
         $coreModulesArr = Helper::pluckModules($this->coreModules);
 
-        if( in_array( $strName, $coreModulesArr ) && $GLOBALS['TL_DCA'][$strName] )
-        {
+        if (in_array($strName, $coreModulesArr) && $GLOBALS['TL_DCA'][$strName]) {
             $GLOBALS['TL_DCA'][$strName]['config']['onsubmit_callback'][] = array('ProSearch', 'sendDataToIndex');
             $GLOBALS['TL_DCA'][$strName]['config']['oncut_callback'][] = array('ProSearch', 'sendDataToIndex');
             $GLOBALS['TL_DCA'][$strName]['config']['ondelete_callback'][] = array('ProSearch', 'deleteDataFromIndex');
@@ -251,23 +246,21 @@ class ProSearch extends ProSearchDataContainer
 
         // current data
         $dcaArr = $dc->activeRecord ? $dc->activeRecord->row() : array();
-				
+
         // get act
         $act = Input::get('act');
 
         // if cut
-        if($act && $act == 'cut')
-        {
+        if ($act && $act == 'cut') {
             $id = Input::get('id');
-            $dcaArr = $this->Database->prepare('SELECT * FROM '.$tablename.' WHERE id = ?')->execute($id)->row();
+            $dcaArr = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($id)->row();
 
         }
         //
         $arr = array();
         $data = $this->prepareIndexData($dcaArr, $GLOBALS['TL_DCA'][$tablename], $tablename);
-		
-        if($data == false)
-        {
+
+        if ($data == false) {
             return;
         }
         $arr[] = $data;
@@ -285,23 +278,19 @@ class ProSearch extends ProSearchDataContainer
      */
     public function getDo($stable)
     {
-	    
-	   if($stable || $stable != '')
-	   {		  
-	       foreach($this->modules as $do => $module)
-	       {
-	           foreach($module['tables'] as $table)
-	           {
-	               if($stable == $table)
-	               {
-	                   return $do;
-	               }
-	           }
-	       }
-       
-	   }
-	   
-       return '';
+
+        if ($stable || $stable != '') {
+            foreach ($this->modules as $do => $module) {
+                foreach ($module['tables'] as $table) {
+                    if ($stable == $table) {
+                        return $do;
+                    }
+                }
+            }
+
+        }
+
+        return '';
     }
 
     /**
@@ -312,8 +301,7 @@ class ProSearch extends ProSearchDataContainer
     {
         $icon = '';
 
-        if( $this->modules[$doTable] && $this->modules[$doTable]['icon'] )
-        {
+        if ($this->modules[$doTable] && $this->modules[$doTable]['icon']) {
             $icon = Image::getHtml($this->modules[$doTable]['icon']);
         }
         return $icon;
@@ -333,8 +321,7 @@ class ProSearch extends ProSearchDataContainer
         $doTable = $doStr != '' ? $doStr : '';
 
         // break up if data has no id
-        if( !$db['id'] || !$table || $doTable == '')
-        {
+        if (!$db['id'] || !$table || $doTable == '') {
             return false;
         }
 
@@ -347,34 +334,31 @@ class ProSearch extends ProSearchDataContainer
             'ctable' => $dca['config']['ctable'] ? serialize($dca['config']['ctable']) : '',
             'docId' => $db['id'],
             'pid' => $db['pid'] ? $db['pid'] : '',
-        //  'chmod' => $db['chmod'] ? $db['chmod'] : '',
+            'tags' => $db['ps_tags'] ? $db['ps_tags'] : '',
+            'blocked' => $db['ps_block_item'] ? $db['ps_block_item'] : '',
+            'blocked_ug' => $db['ps_block_usergroup'] ? $db['ps_block_usergroup'] : ''
         );
 
         /**
          * set shortcut
          */
         $shortcut = '';
-        if($this->modules[$doTable])
-        {
+        if ($this->modules[$doTable]) {
             $shortcut = $this->modules[$doTable]['shortcut'] ? $this->modules[$doTable]['shortcut'] : '';
         }
         $arr['shortcut'] = $shortcut;
-        if( $this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomShortcut']) )
-        {
-            foreach($this->modules[$doTable]['setCustomShortcut'] as $callable)
-            {
-                $arr['shortcut'] = call_user_func( array( $callable[0], $callable[1] ), $table, $db, $arr, $dca );
+        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomShortcut'])) {
+            foreach ($this->modules[$doTable]['setCustomShortcut'] as $callable) {
+                $arr['shortcut'] = call_user_func(array($callable[0], $callable[1]), $table, $db, $arr, $dca);
             }
         }
 
         /**
          * set custom icon callbacks
          */
-        if( $this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomIcon']))
-        {
-            foreach($this->modules[$doTable]['setCustomIcon'] as $callable)
-            {
-                $this->modules[$doTable]['icon'] = call_user_func( array( $callable[0], $callable[1] ), $table, $db, $arr, $dca );
+        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomIcon'])) {
+            foreach ($this->modules[$doTable]['setCustomIcon'] as $callable) {
+                $this->modules[$doTable]['icon'] = call_user_func(array($callable[0], $callable[1]), $table, $db, $arr, $dca);
             }
 
         }
@@ -389,13 +373,11 @@ class ProSearch extends ProSearchDataContainer
         /**
          * exception callbacks
          */
-        if( $this->modules[$doTable] && is_array($this->modules[$doTable]['prepareDataException']))
-        {
-            foreach($this->modules[$doTable]['prepareDataException'] as $callable)
-            {
-                
-                $pDoTable = $this->getDo($db['ptable']);    
-                $arr = call_user_func( array( $callable[0], $callable[1] ), $arr, $db, $table, $pDoTable );
+        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['prepareDataException'])) {
+            foreach ($this->modules[$doTable]['prepareDataException'] as $callable) {
+
+                $pDoTable = $this->getDo($db['ptable']);
+                $arr = call_user_func(array($callable[0], $callable[1]), $arr, $db, $table, $pDoTable);
             }
 
         }
@@ -440,12 +422,10 @@ class ProSearch extends ProSearchDataContainer
     {
         $colsForTypes = array('type');
 
-        foreach($colsForTypes as $type)
-        {
-            if( $db[$type] && is_string($db[$type]) && $db[$type] != '' )
-            {
+        foreach ($colsForTypes as $type) {
+            if ($db[$type] && is_string($db[$type]) && $db[$type] != '') {
                 $meta = Helper::parseStrForMeta($db[$type]);
-                $return = $meta != '' ? ' '.$meta : ' '.$db[$type];
+                $return = $meta != '' ? ' ' . $meta : ' ' . $db[$type];
                 $return = Controller::replaceInsertTags($return);
                 $return = strip_tags($return);
                 $return = trim($return);
@@ -466,22 +446,20 @@ class ProSearch extends ProSearchDataContainer
     public function setSearchContent($db, $doTable)
     {
 
-        if(!$doTable && $doTable == '')
-        {
+        if (!$doTable && $doTable == '') {
             return '';
         }
 
         $colsSearchContent = $this->modules[$doTable]['searchIn'];
+        array_unshift($colsSearchContent, 'ps_search_content');
         $colsSearchContent = $colsSearchContent ? $colsSearchContent : array();
 
         $strContent = '';
 
-        foreach($colsSearchContent as $content)
-        {
-            if( $db[$content] && is_string($db[$content]) && $db[$content] != '' )
-            {
+        foreach ($colsSearchContent as $content) {
+            if ($db[$content] && is_string($db[$content]) && $db[$content] != '') {
                 $meta = Helper::parseStrForMeta($db[$content]);
-                $strContent .= $meta != '' ? ' '.$meta : ' '.$db[$content];
+                $strContent .= $meta != '' ? ' ' . $meta : ' ' . $db[$content];
             }
         }
 
@@ -500,21 +478,19 @@ class ProSearch extends ProSearchDataContainer
     public function setTitle($db, $doTable)
     {
         // sorted by priority
-        if(!$doTable && $doTable == '')
-        {
+        if (!$doTable && $doTable == '') {
             return null;
         }
 
         $colsForTitle = $this->modules[$doTable]['title'];
+        array_unshift($colsForTitle, 'ps_title');
         $colsForTitle = $colsForTitle ? $colsForTitle : array();
 
-        foreach($colsForTitle as $title)
-        {
-            if( $db[$title] && is_string($db[$title]) && $db[$title] != '' )
-            {
+        foreach ($colsForTitle as $title) {
+            if ($db[$title] && is_string($db[$title]) && $db[$title] != '') {
                 $meta = Helper::parseStrForMeta($db[$title]);
 
-                $return = $meta != '' ? ' '.$meta : ' '.$db[$title];
+                $return = $meta != '' ? ' ' . $meta : ' ' . $db[$title];
                 $return = Controller::replaceInsertTags($return);
                 $return = strip_tags($return);
                 $return = trim($return);
@@ -535,13 +511,11 @@ class ProSearch extends ProSearchDataContainer
      */
     public function fillNewIndexWithExistData($arr)
     {
-        for($i = 0; $i < count($arr); $i++)
-        {
+        for ($i = 0; $i < count($arr); $i++) {
             $doTable = $arr[$i]['doTable'];
             $docId = $arr[$i]['docId'];
             $searchIndexDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE docID = ? AND doTable = ?')->execute($docId, $doTable);
-            while($searchIndexDB->next())
-            {
+            while ($searchIndexDB->next()) {
                 $arr[$i]['id'] = $searchIndexDB->id;
             }
         }
@@ -552,28 +526,26 @@ class ProSearch extends ProSearchDataContainer
     /**
      * @param $indexData
      */
-    public function saveIndexDataIntoDB($data,$dca, $page = 0)
+    public function saveIndexDataIntoDB($data, $dca, $page = 0)
     {
         //reset table
-        if($page == 0)
-        {
+        if ($page == 0) {
             $this->clearSearchIndexTable($dca);
         }
 
         // insert new cols
-        foreach($data as $arr)
-        {
+        foreach ($data as $arr) {
 
             // values
             $values = array_values($arr);
-            $placeholder = implode(',', array_fill(0,count($values), '?'));
+            $placeholder = implode(',', array_fill(0, count($values), '?'));
 
             // cols
             $cols = array_keys($arr);
-            $cols = implode(',',$cols);
+            $cols = implode(',', $cols);
 
             // db operations
-            $this->Database->prepare('INSERT INTO tl_prosearch_data('.$cols.') VALUES ('.$placeholder.')')->execute($values);
+            $this->Database->prepare('INSERT INTO tl_prosearch_data(' . $cols . ') VALUES (' . $placeholder . ')')->execute($values);
 
         }
     }
@@ -591,11 +563,9 @@ class ProSearch extends ProSearchDataContainer
     public function saveSingleIndexIntoDB($data, $dca)
     {
 
-        foreach($data as $arr)
-        {
+        foreach ($data as $arr) {
 
-            if( !$arr['docId'] || !$arr['docId'] != '' )
-            {
+            if (!$arr['docId'] || !$arr['docId'] != '') {
                 continue;
             }
 
@@ -603,13 +573,13 @@ class ProSearch extends ProSearchDataContainer
 
             // values
             $values = array_values($arr);
-            $placeholder = implode(',', array_fill(0,count($values), '?'));
+            $placeholder = implode(',', array_fill(0, count($values), '?'));
 
             // cols
             $cols = array_keys($arr);
-            $cols = implode(',',$cols);
+            $cols = implode(',', $cols);
 
-            $this->Database->prepare('INSERT INTO tl_prosearch_data('.$cols.') VALUES ('.$placeholder.')')->execute($values);
+            $this->Database->prepare('INSERT INTO tl_prosearch_data(' . $cols . ') VALUES (' . $placeholder . ')')->execute($values);
 
         }
 
@@ -625,27 +595,23 @@ class ProSearch extends ProSearchDataContainer
         $docId = $dc->activeRecord->id;
 
         // files exception
-        if(Input::get('do') == 'files')
-        {
+        if (Input::get('do') == 'files') {
             $tablename = 'tl_files';
             $docId = $dc;
         }
 
-        if( !$tablename )
-        {
+        if (!$tablename) {
             return;
         }
 
-        if( !$docId )
-        {
+        if (!$docId) {
             return;
         }
 
         //delete parent
         $pDataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE dca = ? AND docId = ?')->execute($tablename, $docId);
 
-        while($pDataDB->next())
-        {
+        while ($pDataDB->next()) {
             $this->deletedIndexData[] = $pDataDB->row();
         }
 
@@ -665,10 +631,8 @@ class ProSearch extends ProSearchDataContainer
 
         $cDataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE ptable = ? AND pid = ?')->execute($ptable, $pid);
 
-        if( $cDataDB->count() > 0 )
-        {
-            while( $cDataDB->next() )
-            {
+        if ($cDataDB->count() > 0) {
+            while ($cDataDB->next()) {
 
                 $table = $cDataDB->dca;
                 $id = $cDataDB->docId;
@@ -676,18 +640,14 @@ class ProSearch extends ProSearchDataContainer
                 $ctables = deserialize($cDataDB->ctable);
 
 
-                if( in_array( $table, $activeModules ) )
-                {
+                if (in_array($table, $activeModules)) {
                     $this->deleteChildrenFromIndex($table, $id);
                 }
 
 
-                if( is_array($ctables) )
-                {
-                    foreach($ctables as $ctable)
-                    {
-                        if( in_array($ctable, $activeModules) )
-                        {
+                if (is_array($ctables)) {
+                    foreach ($ctables as $ctable) {
+                        if (in_array($ctable, $activeModules)) {
                             $this->deleteChildrenFromIndex($ctable, $id);
                         }
                     }
@@ -705,8 +665,7 @@ class ProSearch extends ProSearchDataContainer
      */
     public function clearIndex()
     {
-        foreach($this->deletedIndexData as $indexData)
-        {
+        foreach ($this->deletedIndexData as $indexData) {
             $this->Database->prepare('DELETE FROM tl_prosearch_data WHERE id = ?')->execute($indexData['id']);
         }
     }
@@ -716,8 +675,7 @@ class ProSearch extends ProSearchDataContainer
      */
     public function ajaxRequest()
     {
-        if( Input::get('ajaxRequestForProSearch') && Input::get('ajaxRequestForProSearch') == 'getSearchIndex' )
-        {
+        if (Input::get('ajaxRequestForProSearch') && Input::get('ajaxRequestForProSearch') == 'getSearchIndex') {
             // query
             $q = Input::get('searchQuery');
 
@@ -750,23 +708,14 @@ class ProSearch extends ProSearchDataContainer
     public function getSearchDataFromIndex($header)
     {
 
-		// check for shortcuts
-		$q = $header['q'];
-		$shortcutAndQ = explode(':', $q);
+        // check for shortcuts
+        $q = $header['q'];
+        $shortcutAndQ = explode(':', $q);
         $docLimit = 250;
         $limit = 5;
 
         // import
         $this->import('BackendUser', 'User');
-
-        $isAdmin = $this->User->isAdmin;
-
-        $permArr = array(
-            'modules' => $this->User->modules ?  $this->User->modules : array(),
-            'allowedPageTypes' => $this->User->alpty,
-            'pagemounts' => $this->User->pagemounts ? $this->User->pagemounts : array(),
-            'groups' => $this->User->groups ? $this->User->groups: '0'
-        );
 
         //shortcut query Str
         $shortcutSqlStr = '';
@@ -775,101 +724,127 @@ class ProSearch extends ProSearchDataContainer
         $langSqlStr = '';
 
         // Ohne Shortcut
-        if(count($shortcutAndQ) == 1)
-        {
+        if (count($shortcutAndQ) == 1) {
             $q = $shortcutAndQ[0];
-            if(strlen($q) > 4)
-            {
+            if (strlen($q) > 4) {
                 $docLimit = 500;
             }
         }
 
         // Mit Shortcut
-        if(count($shortcutAndQ) > 1)
-        {
+        if (count($shortcutAndQ) > 1) {
             $shortcut = $shortcutAndQ[0];
             $q = $shortcutAndQ[1];
             $docLimit = 500;
             $limit = 50;
-            $shortcutSqlStr = 'AND shortcut = "'.$shortcut.'" ';
+
+            if ($shortcut == 'tag' || $shortcut == 't') {
+                return $this->getSerachDataByTag($q);
+            }
+
+            $shortcutSqlStr = 'AND shortcut = "' . $shortcut . '" ';
         }
 
-        // Mit Shortcut und Sprache
-        if(count($shortcutAndQ) > 2)
-        {
+        // Mit Shortcut und detail
+        if (count($shortcutAndQ) > 2) {
             $lang = $shortcutAndQ[1];
             $q = $shortcutAndQ[2];
             $docLimit = 1000;
             $limit = 50;
-            $langSqlStr = 'AND language = "'.$lang.'"';
+            $langSqlStr = 'AND language = "' . $lang . '"';
         }
 
-        if(!$q)
-        {
-           return array();
+        if (!$q) {
+            return array();
         }
 
         // put all results
         $searchResultsContainerGroup = array();
 
         // get top
-        $lastUpdateDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr.$langSqlStr." ORDER BY tstamp DESC LIMIT 3")->execute("%$q%");
+        $lastUpdateDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE blocked != '1' AND search_content LIKE ? " . $shortcutSqlStr . $langSqlStr . " ORDER BY tstamp DESC LIMIT 3")->execute("%$q%");
 
         //
         $dataDB = $this->Database->prepare(
 
-            "SELECT * FROM tl_prosearch_data WHERE search_content LIKE ? ".$shortcutSqlStr.$langSqlStr." "
-            ."ORDER BY "
-            ."CASE "
-            ."WHEN (LOCATE(?, search_content) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
-            ."WHEN title = ? THEN 1 "                // 2 "word"     Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
-            ."WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
-            ."WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
-            ."WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
-            ."WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
-            ."ELSE 6 "  //whatever
-            ."END "
-            ."LIMIT ".$docLimit.""
+            "SELECT * FROM tl_prosearch_data WHERE blocked != '1' AND search_content LIKE ? " . $shortcutSqlStr . $langSqlStr . " "
+            . "ORDER BY "
+            . "CASE "
+            . "WHEN (LOCATE(?, search_content) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
+            . "WHEN title = ? THEN 1 "                // 2 "word"     Sortier genaue Matches nach oben ( Berlin vor Berlingen für "Berlin")
+            . "WHEN title LIKE ? THEN 2 "             // 3 "word "    Sortier passende Matches nach oben ( "Berlin Spandau" vor Berlingen für "Berlin")
+            . "WHEN title LIKE ? THEN 3 "             // 4 "word%"    Sortier Anfang passt
+            . "WHEN title LIKE ? THEN 4 "             // 4 "%word"    Sortier Ende passt
+            . "WHEN title LIKE ? THEN 5 "             // 5 "%word%"   Irgendwo getroffen
+            . "ELSE 6 "  //whatever
+            . "END "
+            . "LIMIT " . $docLimit . ""
 
         )->execute("%$q%", $q, $q, "$q %", "%$q", "$q%", "%$q%");
 
 
         // parse
-        while($lastUpdateDB->next())
-        {
+        while ($lastUpdateDB->next()) {
+
             $searchItem = $lastUpdateDB->row();
-            /*
-            if(!$isAdmin)
+
+            if(!$this->checkPermission($searchItem))
             {
-                if( !$this->checkPermission($permArr, $searchItem) )
-                {
-                    continue;
-                }
+               continue;
             }
-            */
 
-            $searchItem['buttonsStr'] = $this->addButtonStr($searchItem, $isAdmin, $permArr);
-
+            $searchItem['buttonsStr'] = $this->addButtonStr($searchItem);
             $searchResultsContainerGroup['top'][] = $searchItem;
 
         }
-        while($dataDB->next())
-        {
+        while ($dataDB->next()) {
 
             $searchItem = $dataDB->row();
-            /*
-            if(!$isAdmin)
-            {
-                if( !$this->checkPermission($permArr, $searchItem) )
-                {
-                    continue;
-                }
-            }
-            */
-            $searchItem['buttonsStr'] = $this->addButtonStr($searchItem, $isAdmin, $permArr);
 
-            if(count($searchResultsContainerGroup[$searchItem['shortcut']]) <= $limit)
+            if(!$this->checkPermission($searchItem))
             {
+                continue;
+            }
+
+            $searchItem['buttonsStr'] = $this->addButtonStr($searchItem);
+
+            if (count($searchResultsContainerGroup[$searchItem['shortcut']]) <= $limit) {
+
+                $searchResultsContainerGroup[$searchItem['shortcut']][] = $searchItem;
+
+            }
+        }
+
+        return $searchResultsContainerGroup;
+
+    }
+
+    /**
+     * @param $q
+     * @return array
+     */
+    public function getSerachDataByTag($q)
+    {
+
+        if (!$q) {
+            return array();
+        }
+
+        $tagDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE blocked != '1' AND tags LIKE ? ORDER BY tstamp DESC LIMIT 500")->execute("%$q%");
+        $searchResultsContainerGroup = array();
+
+        while ($tagDB->next()) {
+
+            $searchItem = $tagDB->row();
+
+            if(!$this->checkPermission($searchItem))
+            {
+                continue;
+            }
+
+            $searchItem['buttonsStr'] = $this->addButtonStr($searchItem);
+
+            if (count($searchResultsContainerGroup[$searchItem['shortcut']]) <= 250) {
                 $searchResultsContainerGroup[$searchItem['shortcut']][] = $searchItem;
             }
         }
@@ -884,25 +859,43 @@ class ProSearch extends ProSearchDataContainer
      * @param $permArr
      * @return string
      */
-    public function addButtonStr($searchItem, $admin, $permArr)
+    public function addButtonStr($searchItem)
     {
-        return $this->createButtons($searchItem, $admin, $permArr);
+        return $this->createButtons($searchItem);
     }
 
     /**
-     * @param $permArr
      * @param $searchItem
      * @return bool
      */
-    /*
-    public function checkPermission($permArr, $searchItem)
+    private function checkPermission($searchItem)
     {
-        if(in_array( $searchItem['doTable'], $permArr['modules'] ) )
-        {
-            return call_user_func(array('CheckPermission', 'checkPermission'), $searchItem['doTable'], $permArr, $searchItem);
-        }
-        return false;
 
+        $group = $this->User->groups ? $this->User->groups : array();
+
+        if(empty($group))
+        {
+            return true;
+        }
+
+        if(!$this->User->isAdmin)
+        {
+            $blocked_ug = $searchItem['blocked_ug'] ? $searchItem['blocked_ug'] : array();
+            $blocked_ug = deserialize($blocked_ug);
+
+            if(empty($blocked_ug))
+            {
+                return true;
+            }
+
+            if( array_intersect($group, $blocked_ug) > 0 )
+            {
+                return false;
+            }
+
+        }
+
+        return true;
     }
-    */
+
 }
