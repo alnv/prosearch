@@ -21,6 +21,7 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
         'sql' => array(
             'keys' => array(
                 'id' => 'primary',
+                'tags' => 'fulltext',
                 'search_content' => 'fulltext'
             )
         )
@@ -89,12 +90,19 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
             'sql' => "varchar(255) NOT NULL default ''"
         ),
 
-        /*
-        'chmod' => array
-        (
-            'sql' => "varchar(255) NOT NULL default ''"
+        'tags' => array(
+            'sql' => "varchar(1024) NOT NULL default ''"
         ),
 
+        'blocked' => array(
+            'sql' => "char(1) NOT NULL default ''"
+        ),
+
+        'blocked_ug' => array(
+            'sql' => "blob NULL",
+        ),
+
+        /*
         'detail' => array
         (
             'sql' => "varchar(32) NOT NULL default ''"
