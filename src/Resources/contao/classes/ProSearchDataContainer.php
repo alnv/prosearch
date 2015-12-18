@@ -44,7 +44,7 @@ class ProSearchDataContainer extends DataContainer
      * @param $permArr
      * @return string
      */
-    public function createButtons($arrRow, $admin, $permArr)
+    public function createButtons($arrRow)
     {
 
         $strTable = $arrRow['dca'];
