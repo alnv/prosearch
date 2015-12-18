@@ -119,6 +119,7 @@ class TagTextField extends Widget
         $existedTags = array();
 
         $db = Database::getInstance();
+
         $tagsDB = $db->prepare('SELECT * FROM tl_prosearch_tags')->execute();
 
         while($tagsDB->next())
@@ -147,6 +148,14 @@ class TagTextField extends Widget
 
         $tagname = $tag ? $tag : '';
         $db = Database::getInstance();
+
+        $existInSearchDB = $db->prepare("SELECT * FROM tl_prosearch_data WHERE tags LIKE ? ORDER BY tstamp DESC LIMIT 10")->execute("%$tagname%");
+
+        if($existInSearchDB->count() > 1)
+        {
+            $this->sendRes();
+        }
+
         $db->prepare('DELETE FROM tl_prosearch_tags WHERE tagname = ?')->execute($tagname);
 
         $this->sendRes();
