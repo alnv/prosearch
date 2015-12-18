@@ -254,8 +254,7 @@
 	    /**
 	     * event
 	     */
-
-        var shortcut = UserSettings ? UserSettings.shortcut : 'alt+space';
+        var shortcut = UserSettings.shortcut ? UserSettings.shortcut : 'alt+space';
 
 	    document.addEvent('keydown:keys('+shortcut+')', function(e){
 	
