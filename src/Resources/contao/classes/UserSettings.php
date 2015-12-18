@@ -31,7 +31,7 @@ class UserSettings{
 
             $settings = array(
                 'id' => $user->id,
-                'shortcut' => $user->keyboard_shortcut,
+                'shortcut' => $user->keyboard_shortcut ? $user->keyboard_shortcut : 'alt+space',
             );
 
             $_SESSION['ps_settings'] = $settings;
