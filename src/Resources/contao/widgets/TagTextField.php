@@ -48,7 +48,11 @@ class TagTextField extends Widget
         $action = Input::get('actionPSTag');
         $tags = Input::get('ps_tags');
         $url = Environment::get('request');
-
+		
+		// request token fix
+		// eventuell auf zentrale schnittstelle umleiten
+		// alle ajax anfragen zentalisieren
+		
         if($action == 'updateTags')
         {
             $this->updateTags($tags);
@@ -79,7 +83,7 @@ class TagTextField extends Widget
                     var tags = tagify.getTags();
                     document.id("ctrl_%s").set("value", tags.join());
 
-                    new Request({url: "%s&actionPSTag=updateTags"}).get({"ps_tags": tags});
+                    new Request({url: "%s&actionPSTag=updateTags"}).get({"ps_tags": tags, "rt": Contao.request_token });
 
                 });
 
@@ -91,12 +95,12 @@ class TagTextField extends Widget
 
                     document.id("ctrl_%s").set("value", tags.join());
 
-                    new Request({url: "%s&actionPSTag=removeTags"}).get({"ps_tags": deleted});
+                    new Request({url: "%s&actionPSTag=removeTags"}).get({ "ps_tags": deleted, "rt": Contao.request_token });
 
                 });
             });'.'</script>', $this->strId, $this->strId, $url, $this->strId, $url);
 
-        return sprintf('<input type="hidden" id="ctrl_%s" name="%s" value="%s"><div id="tagWrap_%s" class="hide"> <div class="left"></div> <div class="left"><input type="text" id="listTags" name="listTags" value="%s" placeholder="+Tag"></div> <div class="clear"></div></div>'.$script.'',
+        return sprintf('<input type="hidden" id="ctrl_%s" name="%s" value="%s"><div id="tagWrap_%s" class="hide"> <div class="tag-wrapper"></div> <div class="tag-input"> <input type="text" id="listTags" class="tl_text" name="listTags" value="%s" placeholder="+Tag"> </div> <div class="clear"></div></div>'.$script.'',
             $this->strId,
             $this->strName,
             specialchars($this->varValue),
