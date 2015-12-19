@@ -1,4 +1,5 @@
 /*generics*/
+/*
 html {
 	font-size: 100%;
 	overflow-y: scroll;
@@ -25,7 +26,9 @@ button, input, select, textarea {
 	vertical-align: baseline;
 	*vertical-align: middle;
 }
+*/
 
+/*
 input::-webkit-input-placeholder {
 	-webkit-appearance: textfield;
 	color: #999;
@@ -34,19 +37,21 @@ input::-webkit-input-placeholder {
 :-moz-placeholder {
 	color: #999;
 }
-
+*/
 /*positional generics*/
+/*
 .left {
 	float: left;
 }
-
+*/
 .clear {
 	clear: both;
 }
-
+/*
 div.main {
 	margin: 20px;
 }
+*/
 
 /*mooTagify specifics*/
 #tagWrap {
@@ -56,10 +61,18 @@ div.main {
 }
 
 div.tagLock {
-	height: 20px !important;
+	/*height: 20px !important;*/
 	overflow-y: hidden;
 }
 
+.tag-wrapper{
+	display: block;
+	width: 100%;
+	margin-bottom: 5px;
+	margin-top: 5px; 	
+}
+
+/*
 #listTags {
 	padding: 2px;
 	width: 250px;
@@ -67,45 +80,62 @@ div.tagLock {
 	background-color: #fff;
 	font-size: 12px;
 }
-
+*/
 div.tag {
 	position: relative;
-	float: left;
-	background: #CFDAE7;
-	border: 1px solid #6A6A6A;
-	border-top: 0;
-	border-left: 0;
-	padding-top: 2px;
-	padding-right: 21px;
-	padding-left: 3px;
-	font-weight: bold;
-	font-size: 14px;
-	text-transform: uppercase;
-	margin-right: 6px;
-	color: #000;
+	display: inline-block;
+	background: #eee;
+	border: 1px solid #aaa;
+	padding: 4px;
+	padding-right: 25px;
+	margin-right: 5px;
+	/*font-weight: bold;*/
+	/*font-size: 14px;*/
+	/*text-transform: uppercase;*/
+	/*margin-right: 6px;*/
+	color: #555;
+	
 	border-radius: 3px 3px 3px 3px;
 	-ms-border-radius: 3px 3px 3px 3px;
 	-o-border-radius: 3px 3px 3px 3px;
 	-moz-border-radius: 3px 3px 3px 3px;
 	-webkit-border-radius: 3px 3px 3px 3px;
-
+	/*
 	background-image: -moz-linear-gradient(top, #CFDAE7, #899294);
 	background-image: -webkit-linear-gradient(top, #CFDAE7, #899294);
 	background-image: -o-linear-gradient(top, #CFDAE7, #899294);
+	*/
+	background-image: -moz-linear-gradient(bottom,#ccc 0,#eee 60%);
+    background-image: -webkit-linear-gradient(bottom,#ccc 0,#eee 60%);
+    background-image: -o-linear-gradient(bottom,#ccc 0,#eee 60%);
+    background-image: -ms-linear-gradient(bottom,#ccc 0,#eee 60%);
+    background-image: linear-gradient(to top,#ccc 0,#eee 60%);
+	
 	-webkit-background-clip: padding-box;
+	cursor: pointer;
+	/*
 	text-shadow: 1px 1px 1px rgba(255, 255, 255, .3);
 	-webkit-text-shadow: 1px 1px 1px rgba(255, 255, 255, .3);
 	-moz-text-shadow: 1px 1px 1px rgba(255, 255, 255, .3);
+	*/
 }
 
 div.tag:hover {
-	border: 1px solid #000;
+	border: 1px solid #aaa;
+	/*
 	border-top: 0;
 	border-left: 0;
 	background: #DCEC71;
 	background-image: -moz-linear-gradient(top, #DCEC71, #5F9F00);
 	background-image: -webkit-linear-gradient(top, #DCEC71, #5F9F00);
 	background-image: -o-linear-gradient(top, #DCEC71, #5F9F00);
+	*/
+	box-shadow: 0 0 3px #aaa;
+	text-shadow: 1px 1px 0 #eee;
+}
+
+div.tag:hover span.tagClose:after{
+	color: #000;
 }
 
 div.pub {
@@ -117,23 +147,38 @@ div.pub {
 }
 
 span.tagClose {
-	background: url(../images/close-off.png) no-repeat 3px 2px;
-	width: 16px;
-	height: 18px;
+	/*
+	background: url(../images/close-off.png) no-repeat center center;
+	*/
+	width: 20px;
 	cursor: pointer;
-	margin-top: 0px;
-	margin-left: 3px;
 	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
 	_cursor: hand;
-	border-left: 1px solid #6A6A6A;
+	border-left: 1px solid #aaa;	
 }
 
+span.tagClose:after{
+	content: "✖";
+	display: block;
+	text-align: center;
+	line-height: 22px;
+}
+
+.tag-input input{
+	width: 312px !important;
+}
+
+/*
 span.tagClose:hover {
 	background-position: 3px 3px;
 	background-color: rgba(255, 255, 255, .5);
 	border-left: 1px solid #000;
 }
-
+*/
+/*
 div.autocompleteWrapper {
 	border: 1px solid #ccc;
 	position: absolute;
@@ -178,8 +223,10 @@ div.autocompleteOptionSelected, div.autocompleteOptionSelected:hover {
 div.autocompleteOption:hover, div.autocompleteOptionOver {
 	background: #ffffcf;
 }
-
+*/
+/*
 span.HL {
 	background: #555;
 	color: #fff;
 }
+*/
