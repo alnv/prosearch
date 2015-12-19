@@ -32,7 +32,7 @@ class ProSearch extends ProSearchDataContainer
             'icon' => 'article.gif',
             'tables' => array('tl_article'),
             'searchIn' => array('title'),
-            'title' => array('title'),
+            'title' => array('title')
         ),
 
         'page' => array(
@@ -41,7 +41,7 @@ class ProSearch extends ProSearchDataContainer
             'searchIn' => array('title', 'pageTitle', 'description'),
             'title' => array('title'),
             'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
-            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
+            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon'))
         ),
 
         'form' => array(
@@ -265,10 +265,10 @@ class ProSearch extends ProSearchDataContainer
         }
         $arr[] = $data;
 
-        //
-        $newIndexData = $this->fillNewIndexWithExistData($arr);
-
-        //save data
+        // Problem beim seichern -> Query error: Duplicate entry
+        // lösung: Das Delete und Insert durch Update austauschen.
+        //$newIndexData = $this->fillNewIndexWithExistData($arr);
+        $newIndexData = $arr;
         $this->saveSingleIndexIntoDB($newIndexData, $tablename);
 
     }
@@ -511,13 +511,17 @@ class ProSearch extends ProSearchDataContainer
      */
     public function fillNewIndexWithExistData($arr)
     {
+	    
         for ($i = 0; $i < count($arr); $i++) {
+        
             $doTable = $arr[$i]['doTable'];
             $docId = $arr[$i]['docId'];
             $searchIndexDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE docID = ? AND doTable = ?')->execute($docId, $doTable);
-            while ($searchIndexDB->next()) {
-                $arr[$i]['id'] = $searchIndexDB->id;
+        
+            while ($searchIndexDB->next()) {            
+                $arr[$i]['id'] = $searchIndexDB->id;           
             }
+        
         }
 
         return $arr;
