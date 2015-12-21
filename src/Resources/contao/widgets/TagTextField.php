@@ -47,18 +47,16 @@ class TagTextField extends Widget
 
         $action = Input::get('actionPSTag');
         $tags = Input::get('ps_tags');
-        $url = Environment::get('request');
-		
-		// request token fix
-		// eventuell auf zentrale schnittstelle umleiten
-		// alle ajax anfragen zentalisieren
-		
-        if($action == 'updateTags')
+
+        $requestUri = Environment::get('requestUri');
+        $requestUri = Helper::removeRequestTokenFromUri($requestUri);
+
+        if($action && $action == 'updateTags')
         {
             $this->updateTags($tags);
         }
 
-        if($action == 'removeTags')
+        if($action && $action == 'removeTags')
         {
             $this->removeTags($tags);
         }
@@ -98,7 +96,7 @@ class TagTextField extends Widget
                     new Request({url: "%s&actionPSTag=removeTags"}).get({ "ps_tags": deleted, "rt": Contao.request_token });
 
                 });
-            });'.'</script>', $this->strId, $this->strId, $url, $this->strId, $url);
+            });'.'</script>', $this->strId, $this->strId, $requestUri, $this->strId, $requestUri);
 
         return sprintf('<input type="hidden" id="ctrl_%s" name="%s" value="%s"><div id="tagWrap_%s" class="hide"> <div class="tag-wrapper"></div> <div class="tag-input"> <input type="text" id="listTags" class="tl_text" name="listTags" value="%s" placeholder="+Tag"> </div> <div class="clear"></div></div>'.$script.'',
             $this->strId,
