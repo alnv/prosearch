@@ -87,7 +87,7 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
 
         'icon' => array
         (
-            'sql' => "varchar(255) NOT NULL default ''"
+            'sql' => "varchar(512) NOT NULL default ''"
         ),
 
         'tags' => array(
@@ -100,6 +100,11 @@ $GLOBALS['TL_DCA']['tl_prosearch_data'] = array(
 
         'blocked_ug' => array(
             'sql' => "blob NULL",
+        ),
+
+        'extension' => array
+        (
+            'sql' => "varchar(255) NOT NULL default ''"
         ),
 
         /*
