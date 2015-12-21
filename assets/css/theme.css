@@ -79,7 +79,7 @@
 .searchMenuActive .menu .result .title .icon{
     position: absolute;
     left: 5px;
-    bottom: 5px;
+    line-height: 0;
 }
 
 .searchMenuActive .menu .result .title a{
@@ -113,8 +113,16 @@
     color: #b3b3b3;
     white-space: nowrap;
     max-width: 375px;
-    display: inline-block;
     overflow: hidden;
+}
+
+.searchMenuActive .menu .result .ps_tag{
+    background: #eb8623;
+    color: #fff;
+    margin-left: 2px;
+    padding: 2px;
+    border-radius: 3px;
+    display: inline-block;
 }
 
 .searchMenuActive .menu .result.odd{
