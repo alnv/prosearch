@@ -12,7 +12,6 @@
  * @copyright 2015 Alexander Naumov
  */
 
-//use Contao\BackendUser;
 use Contao\DataContainer;
 use Contao\Image;
 
@@ -50,13 +49,6 @@ class ProSearchDataContainer extends DataContainer
         $strTable = $arrRow['dca'];
 		$this->loadDataContainer($strTable);
 
-        /*
-        if(!$admin)
-        {
-            //$doTable = $arrRow['doTable'];
-            //call_user_func( array('CheckPermission', 'checkFieldPermission'), $doTable, $arrRow, $permArr );
-        }
-        */
 
         if (empty($GLOBALS['TL_DCA'][$strTable]['list']['operations']))
         {
@@ -77,9 +69,22 @@ class ProSearchDataContainer extends DataContainer
         {
             $href = 'act=edit';
             $queryStr = $href.$id.$table;
+
             $info = strlen($arrRow['docId']) > 35 ? substr($arrRow['docId'],0,35).'…' : $arrRow['docId'];
+            $info = '['.$info.']';
+            if($arrRow['tags'])
+            {
+                $tags = explode(',', $arrRow['tags']);
+                $info = '';
+                foreach($tags as $tag)
+                {
+                    $info .= '<span class="ps_tag">'.$tag.'</span>';
+                }
+            }
+
             $title = strlen($arrRow['title']) > 75 ? substr($arrRow['title'],0,75).'…' : $arrRow['title'];
-            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false">'.$title.' <span class="info">['.$info.']</span></a></div>';
+            $arrRow['dynTable'] = null; // reset dyntable if not needed
+            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"><span>'.$title.'</span> <span class="info">'.$info.'</span></a></div>';
         }
 
         $return .= '<div class="operations">';
@@ -94,6 +99,8 @@ class ProSearchDataContainer extends DataContainer
             $icon = 'header.gif';
 			$mode = $mode ? $mode : 5;
 			$ptable = $table;
+            $arrRow['dynTable'] = null; // reset dyntable if not needed
+
             if(is_array($ctableArr)  && $mode != 5 )
             {
                 foreach($ctableArr as $ctable)
@@ -108,40 +115,48 @@ class ProSearchDataContainer extends DataContainer
             $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
         }
 
-        //copy
-        /*
-        if( $operations['copy'] )
+        if($arrRow['doTable'] == 'page')
         {
-            $href = $operations['copy']['href'];      
-            $attributes = 'onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"';
-            
-            if(!strpos($href, 'paste'))
+
+            $pageID = $arrRow['docId'];
+
+            // page node
+            $pageNodeQueryStr = 'node='.$pageID;
+            $dca['dynTable'] = null; // reset dyntable if not needed
+            $icon = $arrRow['icon'];
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $pageNodeQueryStr).'" tabindex="1">'.$icon.'</a>';
+
+            // article node
+            $articleNodeQueryStr = 'node='.$pageID;
+            $arrRow['dynTable'] = 'article';
+            $icon = 'article.gif';
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $articleNodeQueryStr).'" tabindex="1">'.Image::getHtml($icon, $arrRow['title']).'</a>';
+
+            // Open Frontend Page
+            if($arrRow['type'] == 'regular')
             {
-	            $href = 'act=copy';
-	            $attributes = ($operations['copy']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['copy']['attributes'], $id, $id)) : '';
+                $feQueryStr = 'page='.$pageID;
+                $arrRow['dynTable'] = 'feRedirect';
+                $icon = 'preview.gif';
+                $return .= '<a href="'.$this->addToSearchUrl($arrRow, $feQueryStr).'" target="_blank" tabindex="1">'.Image::getHtml($icon, $arrRow['title']).'</a>';
             }
-            
-            $queryStr = $href.$id.$table.$pid;
-            $icon = 'copy.gif';
-            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" '.$attributes.'>'.Image::getHtml($icon,$arrRow['title']).'</a>';
+
         }
 
-        // delete item
-        if( $operations['delete'] )
+        if( $arrRow['dca'] == 'tl_files' && in_array($arrRow['extension'], $GLOBALS['PS_EDITABLE_FILES']))
         {
-            $href = 'act=delete';
-            $attributes = ($operations['delete']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['delete']['attributes'], $id, $id)) : '';
-            $queryStr = $href.$id.$table.$pid;
-            $icon = 'delete.gif';
-            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" '.$attributes.'>'.Image::getHtml($icon,$arrRow['title']).'</a>';
+            $href = 'act=source';
+            $queryStr = $href.$id;
+            $icon = 'editor.gif';
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon, $arrRow['title']).'</a>';
         }
-		*/
-		
+
         // show
         if( $operations['show'] && $arrRow['dca'] != 'tl_files' )
         {
             $href = 'act=show';
             $icon = 'show.gif';
+            $arrRow['dynTable'] = null; // reset dyntable if not needed
             $attributes = ($operations['show']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['show']['attributes'], $id, $id)) : '';
             $queryStr = $href.$id.$table.'&amp;popup=1';
             $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['docId']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($icon).'</a> ';
@@ -151,6 +166,7 @@ class ProSearchDataContainer extends DataContainer
         {
             $href = 'contao/popup.php?src='.base64_encode($arrRow['docId']).'';
             $icon = 'show.gif';
+            $arrRow['dynTable'] = null; // reset dyntable if not needed
             //$attributes = ($operations['show']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['show']['attributes'], $id, $id)) : '';
             $return .= '<a href="'.$href.'" tabindex="1" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.str_replace("'", "\\'", specialchars($arrRow['title'], false, true)).'\',\'url\':this.href,\'height\':500});return false" >'.Image::getHtml($icon).'</a>';
         }
@@ -188,7 +204,7 @@ class ProSearchDataContainer extends DataContainer
 
             if($key == 'do')
             {
-                $queries[$k] = 'do='.$dca['doTable'].'';
+                $queries[$k] = $dca['dynTable'] ? 'do='.$dca['dynTable'].'' : 'do='.$dca['doTable'].'';
             }
 
             if($key == 'index')
