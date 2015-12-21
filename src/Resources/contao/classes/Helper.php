@@ -72,4 +72,23 @@ class Helper
         return $return;
     }
 
+
+    static public function removeRequestTokenFromUri($reqStr)
+    {
+        $requestUriArr = explode('&', $reqStr);
+        $temp = [];
+
+        foreach($requestUriArr as $part)
+        {
+            if(substr($part, 0, 2) == 'rt')
+            {
+                continue;
+            }
+            $temp[] = $part;
+        }
+
+        return implode('&', $temp);
+
+    }
+
 }
