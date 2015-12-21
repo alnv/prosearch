@@ -11,8 +11,6 @@
  * @copyright 2015 Alexander Naumov
  */
 
-//use \Contao\BackendUser;
-
 /**
  * Back end modules
  */
@@ -44,4 +42,4 @@ if(TL_MODE == 'BE')
 }
 
 
-$GLOBALS['PS_EDITABLE_FILES'] = array('css', 'js', 'scss', 'txt', 'svg', 'less', 'html', 'xhtml', 'html5', 'coffee', 'md');
+$GLOBALS['PS_EDITABLE_FILES'] = explode(',',( \Contao\Config::get('editableFiles') ));
