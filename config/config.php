@@ -43,3 +43,5 @@ if(TL_MODE == 'BE')
 
 }
 
+
+$GLOBALS['PS_EDITABLE_FILES'] = array('css', 'js', 'scss', 'txt', 'svg', 'less', 'html', 'xhtml', 'html5', 'coffee', 'md');
