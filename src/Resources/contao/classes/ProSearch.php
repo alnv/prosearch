@@ -182,11 +182,14 @@ class ProSearch extends ProSearchDataContainer
      */
     public function setCoreModules()
     {
-        foreach ($this->modules as $k => $module) {
+        foreach ($this->modules as $k => $module)
+        {
+
             $label = $GLOBALS['TL_LANG']['MOD'][$k];
             $this->modules[$k]['label'] = $label;
 
-            foreach ($module['tables'] as $table) {
+            foreach ($module['tables'] as $table)
+            {
                 $this->coreModules[$table] = $label[0] ? $label[0] : '[-]';
             }
         }
@@ -215,6 +218,11 @@ class ProSearch extends ProSearchDataContainer
             }
 
             $i++;
+        }
+
+        if(!$whereStr)
+        {
+            return null;
         }
 
         $this->Database->prepare('DELETE FROM tl_prosearch_data ' . $whereStr . '')->execute();
@@ -265,8 +273,7 @@ class ProSearch extends ProSearchDataContainer
         }
         $arr[] = $data;
 
-        // Problem beim seichern -> Query error: Duplicate entry
-        // lösung: Das Delete und Insert durch Update austauschen.
+        // wird eventuell nicht mehr benötigt
         //$newIndexData = $this->fillNewIndexWithExistData($arr);
         $newIndexData = $arr;
         $this->saveSingleIndexIntoDB($newIndexData, $tablename);
@@ -334,6 +341,7 @@ class ProSearch extends ProSearchDataContainer
             'ctable' => $dca['config']['ctable'] ? serialize($dca['config']['ctable']) : '',
             'docId' => $db['id'],
             'pid' => $db['pid'] ? $db['pid'] : '',
+            'extension' => $db['extension'] ? $db['extension'] : '',
             'tags' => $db['ps_tags'] ? $db['ps_tags'] : '',
             'blocked' => $db['ps_block_item'] ? $db['ps_block_item'] : '',
             'blocked_ug' => $db['ps_block_usergroup'] ? $db['ps_block_usergroup'] : ''
@@ -509,6 +517,7 @@ class ProSearch extends ProSearchDataContainer
      * @param $arr
      * @return array
      */
+    /*
     public function fillNewIndexWithExistData($arr)
     {
 	    
@@ -526,6 +535,7 @@ class ProSearch extends ProSearchDataContainer
 
         return $arr;
     }
+    */
 
     /**
      * @param $indexData
@@ -533,7 +543,7 @@ class ProSearch extends ProSearchDataContainer
     public function saveIndexDataIntoDB($data, $dca, $page = 0)
     {
         //reset table
-        if ($page == 0) {
+        if ( $page == 0 ) {
             $this->clearSearchIndexTable($dca);
         }
 
@@ -557,6 +567,11 @@ class ProSearch extends ProSearchDataContainer
 
     public function clearSearchIndexTable($dca)
     {
+        if(!$dca)
+        {
+            return null;
+        }
+
         $this->Database->prepare('DELETE FROM tl_prosearch_data WHERE dca = ?')->execute($dca);
     }
 
@@ -683,8 +698,6 @@ class ProSearch extends ProSearchDataContainer
             // query
             $q = Input::get('searchQuery');
 
-            // settings @todo
-
             // header information
             $header = array(
                 'q' => $q ? $q : ''
@@ -725,7 +738,7 @@ class ProSearch extends ProSearchDataContainer
         $shortcutSqlStr = '';
 
         //lang query str
-        $langSqlStr = '';
+        //$langSqlStr = '';
 
         // Ohne Shortcut
         if (count($shortcutAndQ) == 1) {
@@ -739,8 +752,8 @@ class ProSearch extends ProSearchDataContainer
         if (count($shortcutAndQ) > 1) {
             $shortcut = $shortcutAndQ[0];
             $q = $shortcutAndQ[1];
-            $docLimit = 500;
-            $limit = 50;
+            $docLimit = 1000;
+            $limit = 25;
 
             if ($shortcut == 'tag' || $shortcut == 't') {
                 return $this->getSerachDataByTag($q);
@@ -750,6 +763,7 @@ class ProSearch extends ProSearchDataContainer
         }
 
         // Mit Shortcut und detail
+        /*
         if (count($shortcutAndQ) > 2) {
             $lang = $shortcutAndQ[1];
             $q = $shortcutAndQ[2];
@@ -757,6 +771,7 @@ class ProSearch extends ProSearchDataContainer
             $limit = 50;
             $langSqlStr = 'AND language = "' . $lang . '"';
         }
+        */
 
         if (!$q) {
             return array();
@@ -766,12 +781,12 @@ class ProSearch extends ProSearchDataContainer
         $searchResultsContainerGroup = array();
 
         // get top
-        $lastUpdateDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE blocked != '1' AND search_content LIKE ? " . $shortcutSqlStr . $langSqlStr . " ORDER BY tstamp DESC LIMIT 3")->execute("%$q%");
+        $lastUpdateDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE blocked != '1' AND search_content LIKE ? " . $shortcutSqlStr . " ORDER BY tstamp DESC LIMIT 3")->execute("%$q%");
 
         //
         $dataDB = $this->Database->prepare(
 
-            "SELECT * FROM tl_prosearch_data WHERE blocked != '1' AND search_content LIKE ? " . $shortcutSqlStr . $langSqlStr . " "
+            "SELECT * FROM tl_prosearch_data WHERE blocked != '1' AND search_content LIKE ? " . $shortcutSqlStr . " "
             . "ORDER BY "
             . "CASE "
             . "WHEN (LOCATE(?, search_content) = 0) THEN 10 "  // 1 "Köl" matches "Kolka" -> sort it away
@@ -785,7 +800,6 @@ class ProSearch extends ProSearchDataContainer
             . "LIMIT " . $docLimit . ""
 
         )->execute("%$q%", $q, $q, "$q %", "%$q", "$q%", "%$q%");
-
 
         // parse
         while ($lastUpdateDB->next()) {
@@ -801,6 +815,7 @@ class ProSearch extends ProSearchDataContainer
             $searchResultsContainerGroup['top'][] = $searchItem;
 
         }
+
         while ($dataDB->next()) {
 
             $searchItem = $dataDB->row();
