@@ -29,6 +29,14 @@
             //get q
             var value = $(e.target).get('value');
 
+            if(!value || value.length <= 2) return;
+
+            var hasSC = value.split(':');
+            if(hasSC.length >= 2)
+            {
+                if(hasSC[1].length < 2 ) return;
+            }
+
             if(timeOut != null) clearTimeout(timeOut);
 
             // settings
@@ -40,7 +48,7 @@
 
                 addItems(settings);
 
-            }, 250);
+            }, 400);
         });
 
         setArrowDownEvent();
@@ -93,7 +101,7 @@
     }
 
     /**
-     *
+     * data load from search index
      */
     var addItems = function(settings)
     {
@@ -254,7 +262,9 @@
 	    /**
 	     * event
 	     */
-        var shortcut = UserSettings.shortcut ? UserSettings.shortcut : 'alt+space';
+
+        var _userSettings = UserSettings ? UserSettings : {};
+        var shortcut = _userSettings.shortcut ? _userSettings.shortcut : 'alt+space';
 
 	    document.addEvent('keydown:keys('+shortcut+')', function(e){
 	
