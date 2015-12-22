@@ -11,11 +11,18 @@
  * @copyright 2015 Alexander Naumov
  */
 
+$path = 'system/modules/prosearch/assets/';
+if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['PS_NO_COMPOSER'] && $GLOBALS['PS_NO_COMPOSER'] != true ) )
+{
+    $path = 'bundles/prosearch/';
+}
+
 /**
  * Back end modules
  */
 $GLOBALS['BE_MOD']['system']['prosearch_settings'] = array(
-    'tables' => array('tl_prosearch_settings', 'tl_prosearch_data')
+    'tables' => array('tl_prosearch_settings', 'tl_prosearch_data'),
+    'icon' => $path.'icon.png',
 );
 
 /**
@@ -32,11 +39,12 @@ $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('ProSearchPalette', 'insertP
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('UserSettings', 'setUserSettingsOnLogin');
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'getUserSettings');
 
+
 // assets
 if (TL_MODE == 'BE') {
-    $GLOBALS['TL_CSS'][] = 'system/modules/prosearch/assets/css/theme.css|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/vendor/underscore-min.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/ProSearch.js|static';
+    $GLOBALS['TL_CSS'][] = $path.'css/theme.css|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = $path.'vendor/underscore-min.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = $path.'ProSearch.js|static';
 
 }
 
