@@ -78,7 +78,7 @@ class ProSearch extends ProSearchDataContainer
 
         'calendar' => array(
             'shortcut' => 'ev',
-            'icon' => 'system/modules/calendar/assets/icon.gif',
+            'icon' => 'event.gif',
             'tables' => array('tl_calendar', 'tl_calendar_events'),
             'searchIn' => array('title', 'teaser'),
             'title' => array('title'),
@@ -95,14 +95,13 @@ class ProSearch extends ProSearchDataContainer
 
         'comments' => array(
             'shortcut' => 'co',
-            'icon' => 'system/modules/comments/assets/icon.gif',
+            'icon' => 'comment.gif',
             'tables' => array('tl_comments'),
             'searchIn' => array('name', 'comment'),
             'title' => array('name'),
         ),
 
         'newsletter' => array(
-
             'tables' => array('tl_newsletter', 'tl_newsletter_recipients'),
             'searchIn' => array('subject', 'email'),
             'title' => array('subject', 'email'),
@@ -112,7 +111,7 @@ class ProSearch extends ProSearchDataContainer
 
         'faq' => array(
             'shortcut' => 'fq',
-            'icon' => 'system/modules/faq/assets/icon.gif',
+            'icon' => 'faq.gif',
             'tables' => array('tl_faq_category', 'tl_faq'),
             'searchIn' => array('question', 'title', 'headline'),
             'title' => array('question', 'title'),
@@ -319,11 +318,28 @@ class ProSearch extends ProSearchDataContainer
      */
     public function getIcon($doTable)
     {
-        $icon = '';
+        $icon = 'error.gif';
+
+        $notCoreModules = array('faq', 'newsletter', 'comments', 'calendar', 'news');
+
+        $path = 'system/modules/prosearch/assets/images/';
+
+        if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['PS_NO_COMPOSER'] && $GLOBALS['PS_NO_COMPOSER'] != true ) )
+        {
+            $path = 'bundles/prosearch/images/';
+        }
+
+        if( !in_array($doTable, $notCoreModules) )
+        {
+            $path = '';
+        }
 
         if ($this->modules[$doTable] && $this->modules[$doTable]['icon']) {
-            $icon = Image::getHtml($this->modules[$doTable]['icon']);
+
+            $icon = Image::getHtml($path.$this->modules[$doTable]['icon']);
+
         }
+
         return $icon;
     }
 
