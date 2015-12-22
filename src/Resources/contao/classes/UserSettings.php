@@ -24,7 +24,7 @@ class UserSettings{
     /**
      * set user setting on login
      */
-    public function setUserSettingsOnLogin(User $user)
+    public function setUserSettingsOnLogin(BackendUser $user)
     {
 
         if ($user instanceof BackendUser) {
