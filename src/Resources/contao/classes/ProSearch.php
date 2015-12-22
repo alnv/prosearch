@@ -353,7 +353,7 @@ class ProSearch extends ProSearchDataContainer
             'ptable' => $dca['config']['ptable'] ? $dca['config']['ptable'] : '',
             'ctable' => $dca['config']['ctable'] ? serialize($dca['config']['ctable']) : '',
             'docId' => $db['id'],
-            'pid' => $db['pid'] ? $db['pid'] : '',
+            'pid' => isset($db['pid']) ? $db['pid'] : 0,
             'extension' => $db['extension'] ? $db['extension'] : '',
             'tags' => $db['ps_tags'] ? $db['ps_tags'] : '',
             'blocked' => $db['ps_block_item'] ? $db['ps_block_item'] : '',
@@ -369,17 +369,29 @@ class ProSearch extends ProSearchDataContainer
         }
         $arr['shortcut'] = $shortcut;
         if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomShortcut'])) {
+
             foreach ($this->modules[$doTable]['setCustomShortcut'] as $callable) {
-                $arr['shortcut'] = call_user_func(array($callable[0], $callable[1]), $table, $db, $arr, $dca);
+
+                $this->import($callable[0]);
+                $arr['shortcut'] = $this->{$callable[0]}->{$callable[1]}($table, $db, $arr, $dca);
+                //$arr['shortcut'] = call_user_func(array($callable[0], $callable[1]), $table, $db, $arr, $dca);
+
             }
+
         }
 
         /**
          * set custom icon callbacks
          */
         if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomIcon'])) {
+
             foreach ($this->modules[$doTable]['setCustomIcon'] as $callable) {
-                $this->modules[$doTable]['icon'] = call_user_func(array($callable[0], $callable[1]), $table, $db, $arr, $dca);
+
+
+                $this->import($callable[0]);
+                $this->modules[$doTable]['icon'] = $this->{$callable[0]}->{$callable[1]}($table, $db, $arr, $dca);
+                //$this->modules[$doTable]['icon'] = call_user_func(array($callable[0], $callable[1]), $table, $db, $arr, $dca);
+
             }
 
         }
@@ -398,7 +410,9 @@ class ProSearch extends ProSearchDataContainer
             foreach ($this->modules[$doTable]['prepareDataException'] as $callable) {
 
                 $pDoTable = $this->getDo($db['ptable']);
-                $arr = call_user_func(array($callable[0], $callable[1]), $arr, $db, $table, $pDoTable);
+                $this->import($callable[0]);
+                $arr = $this->{$callable[0]}->{$callable[1]}( $arr, $db, $table, $pDoTable );
+                //$arr = call_user_func(array($callable[0], $callable[1]), $arr, $db, $table, $pDoTable);
             }
 
         }
