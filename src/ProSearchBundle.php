@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 /**
  * Class proSearchBundle
  */
-class proSearchBundle extends Bundle
+class ProSearchBundle extends Bundle
 {
     //
 }
