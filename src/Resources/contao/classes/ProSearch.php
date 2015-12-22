@@ -138,6 +138,27 @@ class ProSearch extends ProSearchDataContainer
     );
 
     /**
+     *
+     */
+    public function __construct()
+    {
+
+        parent::__construct();
+
+        // set Vendor Modules
+        if ($GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']) && !empty($GLOBALS['PS_SEARCHABLE_MODULES'])) {
+            foreach ($GLOBALS['PS_SEARCHABLE_MODULES'] as $modname => $module) {
+                if (is_array($module) && !empty($module)) {
+                    $this->modules[$modname] = $module;
+                }
+            }
+        }
+
+        $this->setCoreModules();
+
+    }
+
+    /**
      * @return array
      * load all searchable modules
      */
@@ -168,29 +189,20 @@ class ProSearch extends ProSearchDataContainer
         return $return;
     }
 
-    /**
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->setCoreModules();
-    }
 
     /**
      *
      */
     public function setCoreModules()
     {
-        foreach ($this->modules as $k => $module)
-        {
+
+        foreach ($this->modules as $k => $module) {
 
             $label = $GLOBALS['TL_LANG']['MOD'][$k];
             $this->modules[$k]['label'] = $label;
 
-            foreach ($module['tables'] as $table)
-            {
-                $this->coreModules[$table] = $label[0] ? $label[0] : '[-]';
+            foreach ($module['tables'] as $table) {
+                $this->coreModules[$table] = $label[0] ? $label[0] : '[no-label-found]';
             }
         }
     }
@@ -220,8 +232,7 @@ class ProSearch extends ProSearchDataContainer
             $i++;
         }
 
-        if(!$whereStr)
-        {
+        if (!$whereStr) {
             return null;
         }
 
@@ -264,16 +275,18 @@ class ProSearch extends ProSearchDataContainer
             $dcaArr = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($id)->row();
 
         }
+
         //
         $arr = array();
+
         $data = $this->prepareIndexData($dcaArr, $GLOBALS['TL_DCA'][$tablename], $tablename);
 
         if ($data == false) {
             return;
         }
+
         $arr[] = $data;
 
-        // wird eventuell nicht mehr benötigt
         //$newIndexData = $this->fillNewIndexWithExistData($arr);
         $newIndexData = $arr;
         $this->saveSingleIndexIntoDB($newIndexData, $tablename);
@@ -543,7 +556,7 @@ class ProSearch extends ProSearchDataContainer
     public function saveIndexDataIntoDB($data, $dca, $page = 0)
     {
         //reset table
-        if ( $page == 0 ) {
+        if ($page == 0) {
             $this->clearSearchIndexTable($dca);
         }
 
@@ -567,8 +580,7 @@ class ProSearch extends ProSearchDataContainer
 
     public function clearSearchIndexTable($dca)
     {
-        if(!$dca)
-        {
+        if (!$dca) {
             return null;
         }
 
@@ -806,9 +818,8 @@ class ProSearch extends ProSearchDataContainer
 
             $searchItem = $lastUpdateDB->row();
 
-            if(!$this->checkPermission($searchItem))
-            {
-               continue;
+            if (!$this->checkPermission($searchItem)) {
+                continue;
             }
 
             $searchItem['buttonsStr'] = $this->addButtonStr($searchItem);
@@ -820,8 +831,7 @@ class ProSearch extends ProSearchDataContainer
 
             $searchItem = $dataDB->row();
 
-            if(!$this->checkPermission($searchItem))
-            {
+            if (!$this->checkPermission($searchItem)) {
                 continue;
             }
 
@@ -856,8 +866,7 @@ class ProSearch extends ProSearchDataContainer
 
             $searchItem = $tagDB->row();
 
-            if(!$this->checkPermission($searchItem))
-            {
+            if (!$this->checkPermission($searchItem)) {
                 continue;
             }
 
@@ -892,23 +901,19 @@ class ProSearch extends ProSearchDataContainer
 
         $group = $this->User->groups ? $this->User->groups : array();
 
-        if(empty($group))
-        {
+        if (empty($group)) {
             return true;
         }
 
-        if(!$this->User->isAdmin)
-        {
+        if (!$this->User->isAdmin) {
             $blocked_ug = $searchItem['blocked_ug'] ? $searchItem['blocked_ug'] : array();
             $blocked_ug = deserialize($blocked_ug);
 
-            if(empty($blocked_ug))
-            {
+            if (empty($blocked_ug)) {
                 return true;
             }
 
-            if( array_intersect($group, $blocked_ug) > 0 )
-            {
+            if (array_intersect($group, $blocked_ug) > 0) {
                 return false;
             }
 
