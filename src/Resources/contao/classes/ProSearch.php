@@ -318,7 +318,7 @@ class ProSearch extends ProSearchDataContainer
      */
     public function getIcon($doTable)
     {
-        $icon = 'error.gif';
+        $icon = '';
 
         $notCoreModules = array('faq', 'newsletter', 'comments', 'calendar', 'news');
 
