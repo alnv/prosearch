@@ -67,7 +67,7 @@ class PrepareDataException
 
         if($table == 'tl_newsletter')
         {
-            $iconName = 'system/modules/newsletter/assets/icon.gif';
+            $iconName = 'newsletter.gif';
         }
 
         if($table == 'tl_newsletter_recipients')
