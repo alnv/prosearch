@@ -15,13 +15,16 @@
 \Contao\ClassLoader::addNamespace('ProSearch');
 
 $path = 'system/modules/prosearch/';
+if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['FM_NO_COMPOSER'] && $GLOBALS['FM_NO_COMPOSER'] != true ) )
+{
+    $path = 'vendor/prosearch/prosearch/';
+}
 
 // load classes
 ClassLoader::addClasses(array(
 
     'ProSearch\ProSearch' => $path.'src/Resources/contao/classes/ProSearch.php',
     'ProSearch\Helper' => $path.'src/Resources/contao/classes/Helper.php',
-    //'ProSearch\CheckPermission' => $path.'src/Resources/contao/classes/CheckPermission.php',
     'ProSearch\UserSettings' => $path.'src/Resources/contao/classes/UserSettings.php',
     'ProSearch\ProSearchPalette' => $path.'src/Resources/contao/classes/ProSearchPalette.php',
     'ProSearch\PrepareDataException' => $path.'src/Resources/contao/classes/PrepareDataException.php',
