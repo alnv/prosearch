@@ -32,14 +32,13 @@ $GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('ProSearchPalette', 'insertP
 $GLOBALS['TL_HOOKS']['postLogin'][] = array('UserSettings', 'setUserSettingsOnLogin');
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'getUserSettings');
 
-//
-if(TL_MODE == 'BE')
-{
+// assets
+if (TL_MODE == 'BE') {
     $GLOBALS['TL_CSS'][] = 'system/modules/prosearch/assets/css/theme.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/vendor/underscore-min.js|static';
     $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/ProSearch.js|static';
 
 }
 
-
-$GLOBALS['PS_EDITABLE_FILES'] = explode(',',( \Contao\Config::get('editableFiles') ));
+// get editable files
+$GLOBALS['PS_EDITABLE_FILES'] = explode(',', (\Contao\Config::get('editableFiles')));
