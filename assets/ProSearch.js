@@ -17,9 +17,6 @@
     var tabIndex = -1;
     var shortcut_labels = [];
 
-    /**
-     *
-     */
     function listenToInput()
     {
         var el = document.getElementById("id_searchProInputField");
