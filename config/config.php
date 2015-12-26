@@ -45,8 +45,21 @@ if (TL_MODE == 'BE') {
     $GLOBALS['TL_CSS'][] = $path.'css/theme.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = $path.'vendor/underscore-min.js|static';
     $GLOBALS['TL_JAVASCRIPT'][] = $path.'ProSearch.js|static';
-
 }
 
 // get editable files
 $GLOBALS['PS_EDITABLE_FILES'] = explode(',', (\Contao\Config::get('editableFiles')));
+
+$ip = Environment::get('ip');
+
+if ( TL_MODE == 'FE' && $ip != '127.0.0.1' ) {
+
+    $license = \Contao\Config::get('prosearchLicense');
+    
+    if ( !isset($license) || !in_array(md5($license), ProSearch\Helper::$validSums, true) ) {
+
+        $GLOBALS['TL_HEAD'][] = '<meta name="ProSearch" content="#" />';
+        $GLOBALS['TL_HEAD'][] = '<div><a href="#" style="background: tomato; font-size: 12px; display: block; position: fixed; bottom:0; width: 100%; height: 20px; line-height: 20px; text-align: center; z-index: 9999;color: #fff;">ProSearch Lizenz kaufen</a></div>';
+
+    }
+}
