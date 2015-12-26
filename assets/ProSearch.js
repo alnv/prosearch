@@ -29,7 +29,7 @@
             //get q
             var value = $(e.target).get('value');
 
-            if(!value || value.length <= 2) return;
+            if(!value || value.length < 2) return;
 
             var hasSC = value.split(':');
             if(hasSC.length >= 2)
@@ -48,7 +48,7 @@
 
                 addItems(settings);
 
-            }, 400);
+            }, 500);
         });
 
         setArrowDownEvent();
