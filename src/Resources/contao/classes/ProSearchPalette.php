@@ -6,11 +6,14 @@
  *
  * Copyright (c) 2005-2015 Leo Feyer
  *
- * @package   Pro Search
+ * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
  * @copyright 2015 Alexander Naumov
  */
+ 
+use Contao\Input;
+ 
 class ProSearchPalette extends ProSearch
 {
 
@@ -30,7 +33,8 @@ class ProSearchPalette extends ProSearch
      */
     public function insertProSearchLegend($strName)
     {
-
+		
+		
         $coreModulesArr = Helper::pluckModules($this->coreModules);
 
         if (in_array($strName, $coreModulesArr) && $GLOBALS['TL_DCA'][$strName]) {
