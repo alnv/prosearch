@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2005-2015 Leo Feyer
  *
- * @package   Pro Search
+ * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
  * @copyright 2015 Alexander Naumov
@@ -24,6 +24,7 @@ class ProSearch extends ProSearchDataContainer
 {
 
     public $coreModules = array();
+    public $notCoreModules = array('faq', 'newsletter', 'comments', 'calendar', 'news');
     public $deletedIndexData = array();
     public $modules = array(
 
@@ -137,8 +138,8 @@ class ProSearch extends ProSearchDataContainer
             'shortcut' => 'ce',
             'icon' => 'alias.gif',
             'tables' => array('tl_content'),
-            'searchIn' => array('headline', 'ps_title'),
-            'title' => array('ps_title'),
+            'searchIn' => array('headline'),
+            'title' => array('headline'),
             'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
         ),
 
@@ -151,28 +152,105 @@ class ProSearch extends ProSearchDataContainer
         )
 
     );
-
+	
+	
+	
     /**
      *
      */
     public function __construct()
     {
-
+		
         parent::__construct();
-
+        $this->initProSearch();
+		/*
         // set Vendor Modules
-        if ($GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']) && !empty($GLOBALS['PS_SEARCHABLE_MODULES'])) {
+        if ( $GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']) && !empty($GLOBALS['PS_SEARCHABLE_MODULES']) ) {
             foreach ($GLOBALS['PS_SEARCHABLE_MODULES'] as $modname => $module) {
                 if (is_array($module) && !empty($module)) {
                     $this->modules[$modname] = $module;
                 }
             }
         }
-
+		
+		// set f modules if fmodule installed
+		$this->setFModules();
+		
+		// set core tables
         $this->setCoreModules();
+        */
 
     }
 
+	/**
+	 * load tables
+	 */		
+	public function initProSearch()
+	{
+		// set Vendor Modules
+        if ( $GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']) && !empty($GLOBALS['PS_SEARCHABLE_MODULES']) ) {
+            foreach ($GLOBALS['PS_SEARCHABLE_MODULES'] as $modname => $module) {
+                if (is_array($module) && !empty($module)) {
+                    $this->modules[$modname] = $module;
+                }
+            }
+        }
+		
+		// set f modules if fmodule installed
+		$this->setFModules();
+		
+		// set core tables
+        $this->setCoreModules();
+	}
+	
+	/**
+	 *
+	 */	
+	public function setFModules()
+	{
+		if( $GLOBALS['PS_SEARCHABLE_MODULES'] && $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']['fmodule']) )
+		{
+			
+			$modulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
+			
+			while($modulesDB->next())
+			{
+				
+				if( !$modulesDB->tablename ) continue;
+				
+				$strTableCount = strlen($modulesDB->tablename);
+				$doTable = substr($modulesDB->tablename, 3, $strTableCount);
+				$wrapperTable = $modulesDB->tablename;
+				$dataTable = $modulesDB->tablename.'_data';
+				
+				$icon =  'files/fmodule/assets/'.$wrapperTable.'_icon.png';
+								
+				if( !file_exists( TL_ROOT . '/' .$icon ) )
+				{
+					$this->notCoreModules[] = $doTable;
+					$icon = 'fmodule.png';
+						
+				}
+				
+				$shortcut = 'fm';
+				
+				if( $modulesDB->ps_shortcut )
+				{
+					$shortcut = $modulesDB->ps_shortcut;
+					$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut'][$modulesDB->ps_shortcut] = $modulesDB->name;
+				}
+				
+				$this->modules[$doTable] = array(
+					'shortcut' => $shortcut,
+					'icon' => $icon,
+					'tables' => array($wrapperTable, $dataTable),
+					'searchIn' => array('title','info', 'description'),
+					'title' => array('title'),	
+				);
+			}
+		}
+	}
+	
     /**
      * @return array
      * load all searchable modules
@@ -180,25 +258,27 @@ class ProSearch extends ProSearchDataContainer
     public function loadModules()
     {
 
-        //
+        $this->initProSearch();
+        
         $return = array();
 
         // set core modules
         $coreModules = $this->coreModules;
-
+		
+		
         // push dca' into $searchDataContainerArr
         foreach ($coreModules as $tablename => $coreModule) {
 
             // load dca
             $this->loadDataContainer($tablename);
-
+				
             // break up if dca not exist
             if (!$GLOBALS['TL_DCA'][$tablename]) {
                 continue;
             }
-
+			
             $return[$tablename] = $coreModule . ' [' . $tablename . ']';
-
+			
         }
 
         return $return;
@@ -336,7 +416,7 @@ class ProSearch extends ProSearchDataContainer
     {
         $icon = '';
 
-        $notCoreModules = array('faq', 'newsletter', 'comments', 'calendar', 'news');
+        //$this->notCoreModules = array('faq', 'newsletter', 'comments', 'calendar', 'news');
 
         $path = 'system/modules/prosearch/assets/images/';
 
@@ -345,7 +425,7 @@ class ProSearch extends ProSearchDataContainer
             $path = 'bundles/prosearch/images/';
         }
 
-        if( !in_array($doTable, $notCoreModules) )
+        if( !in_array($doTable, $this->notCoreModules) )
         {
             $path = '';
         }
@@ -355,7 +435,7 @@ class ProSearch extends ProSearchDataContainer
             $icon = Image::getHtml($path.$this->modules[$doTable]['icon']);
 
         }
-
+		
         return $icon;
     }
 
