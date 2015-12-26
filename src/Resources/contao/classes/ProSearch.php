@@ -59,6 +59,14 @@ class ProSearch extends ProSearchDataContainer
             'searchIn' => array('firstname', 'lastname', 'username', 'email', 'company', 'city', 'postal', 'gender', 'dateOfBirth'),
             'title' => array('username', 'email'),
         ),
+        
+        'mgroup' => array(
+            'shortcut' => 'mg',
+            'icon' => 'mgroup.gif',
+            'tables' => array('tl_member_group'),
+            'searchIn' => array('name'),
+            'title' => array('name'),
+        ),
 
         'user' => array(
             'shortcut' => 'us',
@@ -67,7 +75,15 @@ class ProSearch extends ProSearchDataContainer
             'searchIn' => array('username', 'name', 'email'),
             'title' => array('username'),
         ),
-
+		
+		 'group' => array(
+            'shortcut' => 'ug',
+            'icon' => 'group.gif',
+            'tables' => array('tl_user_group'),
+            'searchIn' => array('name'),
+            'title' => array('name'),
+        ),
+		
         'news' => array(
             'shortcut' => 'ne',
             'icon' => 'news.gif',
