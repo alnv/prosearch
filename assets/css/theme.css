@@ -1,3 +1,10 @@
+.header_prosearch{
+	background-image: url('../icon.png');
+	padding: 2px 0 3px 20px;
+    background-position: left center;
+    background-repeat: no-repeat;
+    margin-left: 15px;
+}
 .searchMenuActive .menu-overlay{
     position: fixed;
     top: 0;
