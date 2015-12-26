@@ -84,7 +84,7 @@ class ProSearchDataContainer extends DataContainer
 
             $title = strlen($arrRow['title']) > 75 ? substr($arrRow['title'],0,75).'…' : $arrRow['title'];
             $arrRow['dynTable'] = null; // reset dyntable if not needed
-            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':900,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"><span>'.$title.'</span> <span class="info">'.$info.'</span></a></div>';
+            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':960,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"><span>'.$title.'</span> <span class="info">'.$info.'</span></a></div>';
         }
 
         $return .= '<div class="operations">';
@@ -159,7 +159,7 @@ class ProSearchDataContainer extends DataContainer
             $arrRow['dynTable'] = null; // reset dyntable if not needed
             $attributes = ($operations['show']['attributes'] != '') ? ' ' . ltrim(sprintf($operations['show']['attributes'], $id, $id)) : '';
             $queryStr = $href.$id.$table.'&amp;popup=1';
-            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['docId']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($icon).'</a> ';
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($arrRow['title'], $arrRow['docId']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($icon).'</a> ';
         }
 
         if( $operations['show'] && $arrRow['dca'] == 'tl_files' )
