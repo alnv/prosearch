@@ -12,3 +12,4 @@
  */
 
 $GLOBALS['TL_LANG']['MSC']['ajaxSearchIndex']['button'] = 'Aufbauen';
+$GLOBALS['TL_LANG']['MSC']['TagTextField']['tag'] = 'Schlagwort eingeben';
