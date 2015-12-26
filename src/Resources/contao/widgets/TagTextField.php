@@ -98,12 +98,13 @@ class TagTextField extends Widget
                 });
             });'.'</script>', $this->strId, $this->strId, $requestUri, $this->strId, $requestUri);
 
-        return sprintf('<input type="hidden" id="ctrl_%s" name="%s" value="%s"><div id="tagWrap_%s" class="hide"> <div class="tag-wrapper"></div> <div class="tag-input"> <input type="text" id="listTags" class="tl_text" name="listTags" value="%s" placeholder="+Tag"> </div> <div class="clear"></div></div>'.$script.'',
+        return sprintf('<input type="hidden" id="ctrl_%s" name="%s" value="%s"><div id="tagWrap_%s" class="hide"> <div class="tag-wrapper"></div> <div class="tag-input"> <input type="text" id="listTags" class="tl_text" name="listTags" value="%s" placeholder="%s"> </div> <div class="clear"></div></div>'.$script.'',
             $this->strId,
             $this->strName,
             specialchars($this->varValue),
             $this->strId,
-            specialchars($this->varValue)
+            specialchars($this->varValue),
+            $GLOBALS['TL_LANG']['MSC']['TagTextField']['tag']
         );
 
     }
