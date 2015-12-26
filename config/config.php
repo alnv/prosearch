@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2005-2015 Leo Feyer
  *
- * @package   Pro Search
+ * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
  * @copyright 2015 Alexander Naumov
