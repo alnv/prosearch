@@ -259,10 +259,13 @@
     //
     window.addEvent('domready', function() {
 	    
+	    
+	    var tpl = '<span id="openProSearch" class="header_prosearch_container"><a href="#!prosearch" class="header_prosearch" title="">ProSearch</a></span>'
+	    
+	    	    
 	    /**
 	     * event
 	     */
-
         var _userSettings = UserSettings ? UserSettings : {};
         var shortcut = _userSettings.shortcut ? _userSettings.shortcut : 'alt+space';
 
@@ -341,6 +344,14 @@
 	
 	    });
 	    
+	    //add header btn
+	    var header = $$('#tmenu');
+        header.appendHTML(tpl, 'top');
+        
+        $$('#openProSearch').addEvent('click', function(e){
+	    	e.preventDefault();
+	        document.fireEvent('keydown:keys('+shortcut+')', e);    
+        });
         
     });
 
