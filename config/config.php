@@ -11,10 +11,10 @@
  * @copyright 2015 Alexander Naumov
  */
 
-$path = 'system/modules/prosearch/assets/';
+$GLOBALS['PS_PUBLIC_PATH'] = 'system/modules/prosearch/assets/';
 if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['PS_NO_COMPOSER'] && $GLOBALS['PS_NO_COMPOSER'] != true ) )
 {
-    $path = 'bundles/prosearch/';
+    $GLOBALS['PS_PUBLIC_PATH'] = 'bundles/prosearch/';
 }
 
 /**
@@ -22,7 +22,7 @@ if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['PS_NO_COMPOSER'] && $GL
  */
 $GLOBALS['BE_MOD']['system']['prosearch_settings'] = array(
     'tables' => array('tl_prosearch_settings', 'tl_prosearch_data'),
-    'icon' => $path.'icon.png',
+    'icon' => $GLOBALS['PS_PUBLIC_PATH'].'icon.png',
 );
 
 /**
@@ -42,9 +42,9 @@ $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'getUserSetti
 
 // assets
 if (TL_MODE == 'BE') {
-    $GLOBALS['TL_CSS'][] = $path.'css/theme.css|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = $path.'vendor/underscore-min.js|static';
-    $GLOBALS['TL_JAVASCRIPT'][] = $path.'ProSearch.js|static';
+    $GLOBALS['TL_CSS'][] = $GLOBALS['PS_PUBLIC_PATH'].'css/theme.css|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = $GLOBALS['PS_PUBLIC_PATH'].'vendor/underscore-min.js|static';
+    $GLOBALS['TL_JAVASCRIPT'][] = $GLOBALS['PS_PUBLIC_PATH'].'ProSearch.js|static';
 }
 
 // get editable files
