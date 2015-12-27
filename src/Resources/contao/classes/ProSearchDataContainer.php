@@ -62,6 +62,7 @@ class ProSearchDataContainer extends DataContainer
 
         $id = specialchars(rawurldecode($arrRow['docId']));
         $id = $id ? '&amp;id='.$id : '';
+        $fmTable = substr($arrRow['dca'],0,2);
         //$pid = $arrRow['pid'] ? '&amp;pid='.$arrRow['pid'] : '';
         $table = $arrRow['dca'] ? '&amp;table='.$arrRow['dca'] : '';
 
@@ -70,7 +71,7 @@ class ProSearchDataContainer extends DataContainer
             $href = 'act=edit';
             $queryStr = $href.$id.$table;
 
-            $info = strlen($arrRow['docId']) > 35 ? substr($arrRow['docId'],0,35).'…' : $arrRow['docId'];
+            $info = strlen($arrRow['docId']) > 45 ? substr($arrRow['docId'],0,45).'…' : $arrRow['docId'];
             $info = '['.$info.']';
             if($arrRow['tags'])
             {
@@ -82,7 +83,7 @@ class ProSearchDataContainer extends DataContainer
                 }
             }
 
-            $title = strlen($arrRow['title']) > 75 ? substr($arrRow['title'],0,75).'…' : $arrRow['title'];
+            $title = strlen($arrRow['title']) > 70 ? substr($arrRow['title'],0,70).'…' : $arrRow['title'];
             $arrRow['dynTable'] = null; // reset dyntable if not needed
             $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':960,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"><span>'.$title.'</span> <span class="info">'.$info.'</span></a></div>';
         }
@@ -93,28 +94,57 @@ class ProSearchDataContainer extends DataContainer
         if( $operations['editheader'] || $operations['edit'] )
         {
 
-            // if has childs go to overview
-            $ctableArr = deserialize($arrRow['ctable']);
             $href = 'act=edit';
             $icon = 'header.gif';
-			$mode = $mode ? $mode : 5;
 			$ptable = $table;
             $arrRow['dynTable'] = null; // reset dyntable if not needed
-
-            if(is_array($ctableArr)  && $mode != 5 )
-            {
-                foreach($ctableArr as $ctable)
-                {
-                    $href = '&amp;table='.$ctable.'';
-                    $icon = 'edit.gif';
-                    $ptable = '';
-                }
-            }
-
             $queryStr = $href.$id.$ptable;
             $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
         }
+        
+        // if has childs go to overview
+        $ctableArr = deserialize($arrRow['ctable']);        
+        $mode = $mode ? $mode : 5;
+        
+        if( is_array($ctableArr) && !empty($ctableArr) && $mode != 5 && $fmTable != 'fm')
+        {
+	        
+	        $href = '';
+	        $icon = '';
+	        $ptable = '';
+	        $arrRow['dynTable'] = null;
+	        
+	        foreach($ctableArr as $ctable)
+	        {
+		       $href = '&amp;table='.$ctable.''; 
+		       $icon = 'edit.gif';
+		       $ptable = '';
+		       
+	        }
+	        
+	        $queryStr = $href.$id.$ptable;
+	        $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
 
+        }
+		
+		if( $fmTable == 'fm' )
+		{
+			// list view
+			$href = '&amp;table=tl_content';
+			$fmType = '&view=list';	
+			$icon = $GLOBALS['PS_PUBLIC_PATH'].'images/page.png';
+			$queryStr = $href.$fmType.$id;
+			$arrRow['dynTable'] = null;
+	        $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
+	        
+	        //detailview
+			$icon = $GLOBALS['PS_PUBLIC_PATH'].'images/detail.png';
+			$fmType = '&view=detail';	
+			$queryStr = $href.$fmType.$id;
+	        $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
+
+		}
+		
         if($arrRow['doTable'] == 'page')
         {
 
