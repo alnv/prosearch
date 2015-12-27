@@ -10,7 +10,7 @@
  * @license   commercial
  * @copyright 2015 Alexander Naumov
  */
-$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['top'] = 'last modified';
+$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['top'] = 'Last modified';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['ar'] = 'Articles';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['pa'] = 'Site structure';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['abo'] = 'Recipients of channel';
@@ -37,3 +37,4 @@ $GLOBALS['TL_LANG']['tl_prosearch_data']['ps_title'] = array('Title','This title
 $GLOBALS['TL_LANG']['tl_prosearch_data']['ps_search_content'] = array('Search content','Define your Search content.');
 $GLOBALS['TL_LANG']['tl_prosearch_data']['ps_tags'] = array('Tags','Optimize your workflow with Tags.');
 $GLOBALS['TL_LANG']['tl_prosearch_data']['ps_block_usergroup'] = array('Block entity for certain groups','Select groups.');
+$GLOBALS['TL_LANG']['tl_prosearch_data']['ps_shortcut'] = array('Shortcut', 'Create shortcut for proSearch.');

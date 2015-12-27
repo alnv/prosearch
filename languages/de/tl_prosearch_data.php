@@ -10,11 +10,11 @@
  * @license   commercial
  * @copyright 2015 Alexander Naumov
  */
-$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['top'] = 'zuletzt Bearbeitet';
+$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['top'] = 'Zuletzt bearbeitet';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['ar'] = 'Artikel';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['pa'] = 'Seitenbaum';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['abo'] = 'Newsletter Abonnenten';
-$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['fo'] = 'Formular';
+$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['fo'] = 'Formulargenerator';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['us'] = 'Benutzer';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['me'] = 'Mitglieder';
 $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut']['ne'] = 'Nachrichten';
@@ -37,3 +37,5 @@ $GLOBALS['TL_LANG']['tl_prosearch_data']['ps_title'] = array('Titel','Titel nur 
 $GLOBALS['TL_LANG']['tl_prosearch_data']['ps_search_content'] = array('Suchinhalt','Hier kannst du Schlagwörter definieren. Umso aussagekräftige Schlagwörter, desto bessere Suchergebnisse.');
 $GLOBALS['TL_LANG']['tl_prosearch_data']['ps_tags'] = array('Schlagwörter','Optimiere dein Arbeitsprozess mit Schlagwörtern wie z.B mit todo, done, testen usw. Anschließend gebe in der Suche "t:testen" ein und finde alle deine zu testenden Datensätze.');
 $GLOBALS['TL_LANG']['tl_prosearch_data']['ps_block_usergroup'] = array('Datensatz für bestimmte Gruppen sperren','Gruppen auswählen.');
+
+$GLOBALS['TL_LANG']['tl_prosearch_data']['ps_shortcut'] = array('Shortcut', 'Ein Shortcut für die ProSearch Suche erstellen.');
