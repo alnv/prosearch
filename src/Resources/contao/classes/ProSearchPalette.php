@@ -185,10 +185,15 @@ class ProSearchPalette extends ProSearch
     public function createColsIfNotExist($strName)
     {
         foreach ($this->getFields() as $k => $v) {
-            if (!$this->Database->fieldExists($k, $strName)) {
+	        
+	        
+            if ( !$this->Database->fieldExists($k, $strName) && Input::get('do') != 'repository_manager' && Input::get('do') != '' ) {
+            	
                 $field = call_user_func(array('ProSearchPalette', $v));
                 $this->createCol($strName, $k, $field);
+            
             }
+        
         }
 
         return true;
