@@ -104,7 +104,14 @@
     {
         //reset timeout
         timeOut = null;
-
+        
+        //ie add origin 9
+        if (!window.location.origin) {
+	        
+			window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+			
+		}
+        
         // get search data from search index
         var host = window.location.origin;
         var path = window.location.pathname;
@@ -264,7 +271,7 @@
 	     * event
 	     */
         var _userSettings = UserSettings ? UserSettings : {};
-        var shortcut = _userSettings.shortcut ? _userSettings.shortcut : 'alt+space';
+        var shortcut = _userSettings.shortcut ? _userSettings.shortcut : 'alt+m';
 
 	    document.addEvent('keydown:keys('+shortcut+')', function(e){
 	
@@ -278,7 +285,13 @@
 	        if(body.hasClass('searchMenuActive')[0])
 	        {
 	            body.appendHTML(menuView());
-	            document.getElementById('id_searchProInputField').focus();
+	            	            
+	            setTimeout(function(){
+		            
+		        	document.getElementById('id_searchProInputField').focus();    
+	            
+	            }, 10);
+	            	            
 	            listenToInput();
 	        }
 	        
