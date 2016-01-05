@@ -47,13 +47,13 @@
 .searchMenuActive .menu input{
     width: 100%;
     display: block;
-    line-height: 50px;
-    height: 50px;
+    
     font-size: 16px;
     outline: none;
-    background: #fff;
+    background: #ebfdd7;
     border: 1px solid #bbb;
-    padding: 10px;
+    line-height: normal;
+    padding: 15px 10px 15px 10px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -162,10 +162,10 @@
     height: 170px;
 }
 
-.searchMenuActive .menu input::-webkit-input-placeholder { color:#b3b3b3; font-weight: 300;}
-.searchMenuActive .menu input::-moz-placeholder { color:#b3b3b3; font-weight: 300;} /* firefox 19+ */
-.searchMenuActive .menu input:-ms-input-placeholder { color:#b3b3b3; font-weight: 300;} /* ie */
-.searchMenuActive .menu input input:-moz-placeholder { color:#b3b3b3; font-weight: 300;}
+.searchMenuActive .menu ::-webkit-input-placeholder { color:#b3b3b3; font-weight: 300; -webkit-font-smoothing: antialiased;}
+.searchMenuActive .menu ::-moz-placeholder { color:#b3b3b3; font-weight: 300;} /* firefox 19+ */
+.searchMenuActive .menu :-ms-input-placeholder { color:#b3b3b3; font-weight: 300;} /* ie */
+.searchMenuActive .menu :-moz-placeholder { color:#b3b3b3; font-weight: 300;}
 
 .ps_alert{
     position: relative;
