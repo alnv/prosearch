@@ -89,18 +89,6 @@ class ProSearchDataContainer extends DataContainer
         }
 
         $return .= '<div class="operations">';
-
-        // go to ietm
-        if( $operations['editheader'] || $operations['edit'] )
-        {
-
-            $href = 'act=edit';
-            $icon = 'header.gif';
-			$ptable = $table;
-            $arrRow['dynTable'] = null; // reset dyntable if not needed
-            $queryStr = $href.$id.$ptable;
-            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
-        }
         
         // if has childs go to overview
         $ctableArr = deserialize($arrRow['ctable']);        
@@ -125,6 +113,18 @@ class ProSearchDataContainer extends DataContainer
 	        $queryStr = $href.$id.$ptable;
 	        $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
 
+        }
+		
+		// go to ietm
+        if( $operations['editheader'] || $operations['edit'] )
+        {
+
+            $href = 'act=edit';
+            $icon = 'header.gif';
+			$ptable = $table;
+            $arrRow['dynTable'] = null; // reset dyntable if not needed
+            $queryStr = $href.$id.$ptable;
+            $return .= '<a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" tabindex="1">'.Image::getHtml($icon,$arrRow['title']).'</a>';
         }
 		
 		if( $fmTable == 'fm' )
