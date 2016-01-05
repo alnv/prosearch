@@ -55,6 +55,14 @@
 
     function sendRequest($table, $page)
     {
+	    
+	    //ie add origin 9
+        if (!window.location.origin) {
+	        
+			window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+			
+		}
+	    
         var host = window.location.origin;
         var path = window.location.pathname;
         var ajaxCall = '?do=prosearch_settings';
