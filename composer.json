@@ -1,0 +1,36 @@
+{
+	"name":"prosearch/prosearch",
+	"description":"ProSearch - Eine Backend-Suche für Contao CMS",
+	"keywords":["backend", "suche", "contao"],
+	"type":"contao-module",
+	"homepage":"http://backend-suche-contao.alexandernaumov.de",
+	"license":"commercial",
+	"authors":[
+		{
+			"name":"Alexander Naumov",
+		  	"homepage":"http://www.alexandernaumov.de",
+			"role":"Developer"
+		}
+	],
+	"support":{
+	  "email":"me@alexandernaumov.de",
+	  "issues":"https://github.com/alnv/prosearch/issues",
+	  "wiki":"http://backend-suche-contao.alexandernaumov.de/fuer-redakteure.html"
+	},
+	"require":{
+	  "php":">=5.4"
+	},
+	"autoload":{
+		"classmap":["src/"]
+	},
+	"replace":{
+	  "contao-legacy/prosearch":"*"
+	},
+	"extra":{
+		"contao":{
+			"sources":{
+				"":"system/modules/prosearch"
+			}
+		}
+	}
+}
