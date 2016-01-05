@@ -31,7 +31,7 @@ class UserSettings{
 
             $settings = array(
                 'id' => $user->id,
-                'shortcut' => $user->keyboard_shortcut ? $user->keyboard_shortcut : 'alt+space',
+                'shortcut' => $user->keyboard_shortcut ? $user->keyboard_shortcut : 'alt+m',
             );
 
             $_SESSION['ps_settings'] = $settings;
@@ -46,7 +46,7 @@ class UserSettings{
     {
         $settings = array(
             'id' => $dc->activeRecord->id,
-            'shortcut' => $dc->activeRecord->keyboard_shortcut ? $dc->activeRecord->keyboard_shortcut : 'alt+space',
+            'shortcut' => $dc->activeRecord->keyboard_shortcut ? $dc->activeRecord->keyboard_shortcut : 'alt+m',
         );
 
         $_SESSION['ps_settings'] = $settings;
@@ -61,7 +61,7 @@ class UserSettings{
         if(TL_MODE == 'BE')
         {
             $settings = $_SESSION['ps_settings'];
-            $settings = $settings ? $settings : array( 'shortcut' => 'alt+space' );
+            $settings = $settings ? $settings : array( 'shortcut' => 'alt+m' );
             $GLOBALS['TL_MOOTOOLS'][] = '<script>var UserSettings = '.json_encode($settings).';</script>';
 
         }
