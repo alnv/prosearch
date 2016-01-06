@@ -61,9 +61,9 @@ class TagTextField extends Widget
             $this->removeTags($tags);
         }
 
-        $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/vendor/mootagify.js|static';
-        $GLOBALS['TL_CSS'][] = 'system/modules/prosearch/assets/css/mootagify-bootstrap.css|static';
-        $GLOBALS['TL_CSS'][] = 'system/modules/prosearch/assets/css/mootagify.css|static';
+        $GLOBALS['TL_JAVASCRIPT'][] = $GLOBALS['PS_PUBLIC_PATH'].'vendor/mootagify.js|static';
+        $GLOBALS['TL_CSS'][] = $GLOBALS['PS_PUBLIC_PATH'].'css/mootagify-bootstrap.css|static';
+        $GLOBALS['TL_CSS'][] = $GLOBALS['PS_PUBLIC_PATH'].'css/mootagify.css|static';
 
         $options = $this->options ? $this->options : array();
 
