@@ -43,7 +43,7 @@ class AjaxSearchIndex extends Widget
         $GLOBALS['TL_MOOTOOLS'][] = '<script>var proSearchActiveModules = '.$json.';</script>';
 
         // load js
-        $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/JsIndex.js|static';
+        $GLOBALS['TL_JAVASCRIPT'][] = $GLOBALS['PS_PUBLIC_PATH'].'JsIndex.js|static';
 
         return  '<div class="index_list"><ul class="ul"></ul></div><div class="ajaxSearchIndex"><a class="tl_submit" style="margin-bottom: 5px; margin-top: 5px" onclick="Backend.getScrollOffset();return AjaxRequest.ajaxSearchIndex()">'.$bStr.'</a></div>';
 
