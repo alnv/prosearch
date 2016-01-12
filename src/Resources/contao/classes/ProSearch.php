@@ -12,6 +12,7 @@
  */
 
 use Contao\Config;
+use Contao\FilesModel;
 use Contao\Image;
 use Contao\Input;
 use Contao\Controller;
@@ -163,22 +164,6 @@ class ProSearch extends ProSearchDataContainer
 		
         parent::__construct();
         $this->initProSearch();
-		/*
-        // set Vendor Modules
-        if ( $GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']) && !empty($GLOBALS['PS_SEARCHABLE_MODULES']) ) {
-            foreach ($GLOBALS['PS_SEARCHABLE_MODULES'] as $modname => $module) {
-                if (is_array($module) && !empty($module)) {
-                    $this->modules[$modname] = $module;
-                }
-            }
-        }
-		
-		// set f modules if fmodule installed
-		$this->setFModules();
-		
-		// set core tables
-        $this->setCoreModules();
-        */
 
     }
 
