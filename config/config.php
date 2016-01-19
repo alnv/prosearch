@@ -50,7 +50,7 @@ if (TL_MODE == 'BE') {
 // get editable files
 $GLOBALS['PS_EDITABLE_FILES'] = explode(',', (\Contao\Config::get('editableFiles')));
 
-/*
+
 $license = \Contao\Config::get('prosearchLicense');
 
 if ( !isset($license) || !in_array(md5($license), ProSearch\Helper::$validSums, true) ) {
@@ -63,4 +63,4 @@ if ( !isset($license) || !in_array(md5($license), ProSearch\Helper::$validSums, 
 		}
 
 }
-*/
+
