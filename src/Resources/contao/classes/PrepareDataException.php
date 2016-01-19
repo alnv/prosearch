@@ -16,13 +16,14 @@ class PrepareDataException
     /**
      *
      */
-    public function prepareDataExceptions($arr, $db, $table, $pDoTable)
+    public function prepareDataExceptions($arr, $db, $table)
     {
         // exception for content
         if( $table == 'tl_content')
         {
-            $arr['ptable'] = $db['ptable'] ? $db['ptable'] : '';
-            $arr['doTable'] = $pDoTable ? $pDoTable : '';
+            $ptable = $db['ptable'];
+            $arr['ptable'] = $ptable ? $ptable : '';
+
         }
 
         // exception for page
