@@ -115,8 +115,32 @@ class Helper
             }
         }
 
-        return $strContent;
+        return trim($strContent);
 
+    }
+
+
+    static public function getDoParam($ctable)
+    {
+
+        if ( $ctable && $GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES'])) {
+
+            foreach ($GLOBALS['PS_SEARCHABLE_MODULES'] as $do => $module) {
+
+                foreach ($module['tables'] as $table) {
+
+                    if ($table == $ctable) {
+
+                        return $do;
+
+                    }
+
+                }
+
+            }
+
+        }
+        return '';
     }
 
     /**
