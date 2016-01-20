@@ -67,7 +67,7 @@
 
 .searchMenuActive .menu .results{
     margin-top: 10px;
-    max-height: 300px;
+    max-height: 325px;
     overflow-y: scroll;
 }
 
@@ -240,4 +240,19 @@
     background-repeat: no-repeat;
     background-position: center center;
     display: block;
+}
+
+.searchMenuActive .menu .license p{
+    margin-bottom: 0;
+    line-height: 1.25;
+    font-size: 11px;
+}
+
+.searchMenuActive .menu .license{
+    padding: 10px 0 5px 0;
+}
+.searchMenuActive .menu .license a{
+    display: inline-block;
+    font-size: inherit;
+    color: #77ac45;
 }

@@ -50,16 +50,14 @@ if (TL_MODE == 'BE') {
 // get editable files
 $GLOBALS['PS_EDITABLE_FILES'] = explode(',', (\Contao\Config::get('editableFiles')));
 
-/*
+
 $license = \Contao\Config::get('prosearchLicense');
 if ( !isset($license) || !in_array(md5($license), ProSearch\Helper::$validSums, true) ) {
 
-		if(TL_MODE == 'FE')
+		if(TL_MODE == 'BE')
 		{
-			$GLOBALS['TL_HEAD'][] = '<meta name="ProSearch.title" content="ProSearch | Eine Backend-Suche für Contao CMS" />';
-			$GLOBALS['TL_HEAD'][] = '<meta name="ProSearch.developer" content="Alexander Naumov" />';
-			$GLOBALS['TL_HEAD'][] = '<meta name="ProSearch.website" content="http://backend-suche-contao.alexandernaumov.de" />';
+			$GLOBALS['TL_MOOTOOLS'][] = '<script>var validLicense = false;</script>';
 		}
 
 }
-*/
+

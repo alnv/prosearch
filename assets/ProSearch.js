@@ -143,6 +143,14 @@
 
     function menuView()
     {
+
+        var $licenseTpl = '';
+
+        if (typeof validLicense !== 'undefined')
+        {
+            $licenseTpl = '<div class="license"><p><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title"><a href="http://backend-suche-contao.alexandernaumov.de" target="_blank">ProSearch | Eine Backend-Suche für Contao CMS</a></span> von <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.alexandernaumov.de" property="cc:attributionName" rel="cc:attributionURL" target="_blank">Alexander Naumov</a> ist lizenziert unter einer <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">Creative Commons Namensnennung - Nicht kommerziell - Keine Bearbeitungen 4.0 International Lizenz</a>. Über diese Lizenz hinausgehende Erlaubnisse können Sie unter <a xmlns:cc="http://creativecommons.org/ns#" href="http://backend-suche-contao.alexandernaumov.de/lizenzvereinbarung.html" rel="cc:morePermissions" target="_blank">http://backend-suche-contao.alexandernaumov.de/lizenzvereinbarung.html</a> erhalten.</p></div>';
+        }
+
         var $template = '' +
             '<div class="menu-overlay" id="id_menu-overlay">' +
                 '<div class="menu-align">' +
@@ -155,9 +163,7 @@
                                 '<div class="view-panel">' +
                                     '<div class="search-results" id="id_search-results"></div>'+
                                 '</div>'+
-                                '<div class="search-settings">' +
-
-                                '</div>'+
+                                    $licenseTpl +
                             '</div>'+
                         '</div>'+
                     '</div>'+
