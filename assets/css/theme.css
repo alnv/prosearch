@@ -244,15 +244,14 @@
 
 .searchMenuActive .menu .license p{
     margin-bottom: 0;
-    line-height: 1.25;
-    font-size: 11px;
+    line-height: 1.35;
+    font-size: 9px;
 }
 
 .searchMenuActive .menu .license{
-    padding: 10px 0 5px 0;
+    padding: 15px 0 10px 0;
 }
 .searchMenuActive .menu .license a{
-    display: inline-block;
     font-size: inherit;
     color: #77ac45;
 }
