@@ -1,10 +1,10 @@
 {
 	"name":"prosearch/prosearch",
 	"description":"ProSearch - Eine Backend-Suche für Contao CMS",
-	"keywords":["backend", "suche", "contao"],
+	"keywords":["Backend", "Suche", "Contao", "Filter", "EasyTheme", "easy_themes", "Sticky", "m17-sticky-backend-footer", "Tags"],
 	"type":"contao-module",
 	"homepage":"http://backend-suche-contao.alexandernaumov.de",
-	"license":"commercial",
+	"license":"CC BY-NC-ND 4.0",
 	"authors":[
 		{
 			"name":"Alexander Naumov",
