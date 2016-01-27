@@ -71,21 +71,26 @@ class ProSearchDataContainer extends DataContainer
             $href = 'act=edit';
             $queryStr = $href.$id.$table;
 
-            $info = strlen($arrRow['docId']) > 45 ? substr($arrRow['docId'],0,45).'…' : $arrRow['docId'];
-            $info = '['.$info.']';
+            $tagsStr = '';
+
+            if($arrRow['dca'] != 'tl_files')
+            {
+                $tagsStr = '['.$arrRow['docId'].']';
+            }
+
             if($arrRow['tags'])
             {
                 $tags = explode(',', $arrRow['tags']);
-                $info = '';
+
                 foreach($tags as $tag)
                 {
-                    $info .= '<span class="ps_tag">'.$tag.'</span>';
+                    $tagsStr .= '<span class="ps_tag">'.$tag.'</span>';
                 }
             }
 
-            $title = strlen($arrRow['title']) > 70 ? substr($arrRow['title'],0,70).'…' : $arrRow['title'];
+            $title = strlen($arrRow['title']) > 100 ? substr($arrRow['title'],0,100).'…' : $arrRow['title'];
             $arrRow['dynTable'] = null; // reset dyntable if not needed
-            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':960,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"><span>'.mb_convert_encoding($title, 'UTF-8').'</span> <span class="info">'.$info.'</span></a></div>';
+            $return .= '<div class="title"><span class="icon">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':960,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"><span>'.mb_convert_encoding($title, 'UTF-8').'</span> <span class="info">'.$tagsStr.'</span></a></div>';
         }
 
         $return .= '<div class="operations">';
