@@ -13,7 +13,8 @@
  */
  
 use Contao\Input;
- 
+use Contao\Config;
+
 class ProSearchPalette extends ProSearch
 {
 
@@ -34,8 +35,8 @@ class ProSearchPalette extends ProSearch
     public function insertProSearchLegend($strName)
     {
 		
-		
-        $coreModulesArr = Helper::pluckModules($this->coreModules);
+		$activeTables = deserialize( Config::get('searchIndexModules') );
+        $coreModulesArr = $activeTables ? $activeTables : array();
 
         if (in_array($strName, $coreModulesArr) && $GLOBALS['TL_DCA'][$strName]) {
 
