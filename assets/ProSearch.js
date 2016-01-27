@@ -270,7 +270,7 @@
     window.addEvent('domready', function() {
 	    
 	    
-	    var tpl = '<span id="openProSearch" class="header_prosearch_container"><a href="#!prosearch" class="header_prosearch" title="">ProSearch</a></span>'
+	    var tpl = '<span id="openProSearch" class="header_prosearch_container"><a href="#!prosearch" class="header_prosearch" title="ProSearch | Backend-Suche für Contao" >ProSearch</a></span>'
 	    
 	    	    
 	    /**
@@ -281,9 +281,9 @@
 
 	    document.addEvent('keydown:keys('+shortcut+')', function(e){
 	
-	        e.preventDefault();
-			
-			var body = $$('body');
+            e.stopPropagation();
+
+            var body = $$('body');
 			body.toggleClass('searchMenuActive');
             var menu;
 
