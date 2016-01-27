@@ -40,18 +40,18 @@ class ProSearch extends ProSearchDataContainer
         'page' => array(
             'shortcut' => 'pa',
             'tables' => array('tl_page'),
-            'searchIn' => array('title', 'pageTitle', 'description'),
+            'searchIn' => array('title', 'pageTitle', 'description', 'id'),
             'title' => array('title'),
             'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
-            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon'))
+            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
         ),
 
         'form' => array(
             'shortcut' => 'fo',
             'icon' => 'form.gif',
             'tables' => array('tl_form', 'tl_form_field'),
-            'searchIn' => array('title', 'name'),
-            'title' => array('title', 'name', 'type'),
+            'searchIn' => array('title', 'name', 'id'),
+            'title' => array('title', 'name', 'id', 'type'),
         ),
 
         'member' => array(
@@ -61,7 +61,7 @@ class ProSearch extends ProSearchDataContainer
             'searchIn' => array('firstname', 'lastname', 'username', 'email', 'company', 'city', 'postal', 'gender', 'dateOfBirth'),
             'title' => array('username', 'email'),
         ),
-        
+
         'mgroup' => array(
             'shortcut' => 'mg',
             'icon' => 'mgroup.gif',
@@ -77,15 +77,15 @@ class ProSearch extends ProSearchDataContainer
             'searchIn' => array('username', 'name', 'email'),
             'title' => array('username'),
         ),
-		
-		 'group' => array(
+
+        'group' => array(
             'shortcut' => 'ug',
             'icon' => 'group.gif',
             'tables' => array('tl_user_group'),
             'searchIn' => array('name'),
             'title' => array('name'),
         ),
-		
+
         'news' => array(
             'shortcut' => 'ne',
             'icon' => 'news.gif',
@@ -109,6 +109,7 @@ class ProSearch extends ProSearchDataContainer
             'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
             'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
             'setCustomShortcut' => array(array('PrepareDataException', 'setCustomShortcut')),
+            'setCustomTitle' => array(array('PrepareDataException', 'setCustomTitle')),
         ),
 
         'comments' => array(
@@ -141,8 +142,9 @@ class ProSearch extends ProSearchDataContainer
             'tables' => array('tl_content'),
             'searchIn' => array('headline', 'id', 'type', 'title', 'alt'),
             'title' => array('headline', 'title', 'alt', 'id'),
-            'useParentAsBE' => true, // if backend module is dyn
+            'useParentAsBE' => true, // tl_content has no backend modul
             'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
+            'setCustomTitle' => array(array('PrepareDataException', 'setCustomTitle')),
         ),
 
         'themes' => array(
@@ -154,27 +156,26 @@ class ProSearch extends ProSearchDataContainer
         )
 
     );
-	
-	
-	
+
+
     /**
      *
      */
     public function __construct()
     {
-		
+
         parent::__construct();
         $this->initProSearch();
 
     }
 
-	/**
-	 * load tables
-	 */		
-	public function initProSearch()
-	{
-		// set Vendor Modules
-        if ( $GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']) && !empty($GLOBALS['PS_SEARCHABLE_MODULES']) ) {
+    /**
+     * load tables
+     */
+    public function initProSearch()
+    {
+        // set Vendor Modules
+        if ($GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']) && !empty($GLOBALS['PS_SEARCHABLE_MODULES'])) {
             foreach ($GLOBALS['PS_SEARCHABLE_MODULES'] as $modname => $module) {
                 if (is_array($module) && !empty($module)) {
                     $this->modules[$modname] = $module;
@@ -186,61 +187,57 @@ class ProSearch extends ProSearchDataContainer
         // set global
         $GLOBALS['PS_SEARCHABLE_MODULES'] = $this->modules;
 
-		// set f modules if fmodule installed
-		$this->setFModules();
-		
-		// set core tables
+        // set f modules if fmodule installed
+        $this->setFModules();
+
+        // set core tables
         $this->setCoreModules();
-	}
-	
-	/**
-	 *
-	 */	
-	public function setFModules()
-	{
-		if( $GLOBALS['PS_SEARCHABLE_MODULES'] && $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']['fmodule']) )
-		{
-			
-			$modulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
-			
-			while($modulesDB->next())
-			{
-				
-				if( !$modulesDB->tablename ) continue;
-				
-				$strTableCount = strlen($modulesDB->tablename);
-				$doTable = substr($modulesDB->tablename, 3, $strTableCount);
-				$wrapperTable = $modulesDB->tablename;
-				$dataTable = $modulesDB->tablename.'_data';
-				
-				$icon =  'files/fmodule/assets/'.$wrapperTable.'_icon.png';
-								
-				if( !file_exists( TL_ROOT . '/' .$icon ) )
-				{
-					$this->notCoreModules[] = $doTable;
-					$icon = 'fmodule.png';
-						
-				}
-				
-				$shortcut = 'fm';
-				
-				if( $modulesDB->ps_shortcut )
-				{
-					$shortcut = $modulesDB->ps_shortcut;
-					$GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut'][$modulesDB->ps_shortcut] = $modulesDB->name;
-				}
-				
-				$this->modules[$doTable] = array(
-					'shortcut' => $shortcut,
-					'icon' => $icon,
-					'tables' => array($wrapperTable, $dataTable),
-					'searchIn' => array('title','info', 'description'),
-					'title' => array('title'),	
-				);
-			}
-		}
-	}
-	
+    }
+
+    /**
+     *
+     */
+    public function setFModules()
+    {
+        if ($GLOBALS['PS_SEARCHABLE_MODULES'] && $GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES']['fmodule'])) {
+
+            $modulesDB = $this->Database->prepare('SELECT * FROM tl_fmodules')->execute();
+
+            while ($modulesDB->next()) {
+
+                if (!$modulesDB->tablename) continue;
+
+                $strTableCount = strlen($modulesDB->tablename);
+                $doTable = substr($modulesDB->tablename, 3, $strTableCount);
+                $wrapperTable = $modulesDB->tablename;
+                $dataTable = $modulesDB->tablename . '_data';
+
+                $icon = 'files/fmodule/assets/' . $wrapperTable . '_icon.png';
+
+                if (!file_exists(TL_ROOT . '/' . $icon)) {
+                    $this->notCoreModules[] = $doTable;
+                    $icon = 'fmodule.png';
+
+                }
+
+                $shortcut = 'fm';
+
+                if ($modulesDB->ps_shortcut) {
+                    $shortcut = $modulesDB->ps_shortcut;
+                    $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut'][$modulesDB->ps_shortcut] = $modulesDB->name;
+                }
+
+                $this->modules[$doTable] = array(
+                    'shortcut' => $shortcut,
+                    'icon' => $icon,
+                    'tables' => array($wrapperTable, $dataTable),
+                    'searchIn' => array('title', 'info', 'description'),
+                    'title' => array('title'),
+                );
+            }
+        }
+    }
+
     /**
      * @return array
      * load all searchable modules
@@ -249,26 +246,26 @@ class ProSearch extends ProSearchDataContainer
     {
 
         $this->initProSearch();
-        
+
         $return = array();
 
         // set core modules
         $coreModules = $this->coreModules;
-		
-		
+
+
         // push dca' into $searchDataContainerArr
         foreach ($coreModules as $tablename => $coreModule) {
 
             // load dca
             $this->loadDataContainer($tablename);
-				
+
             // break up if dca not exist
             if (!$GLOBALS['TL_DCA'][$tablename]) {
                 continue;
             }
-			
+
             $return[$tablename] = $coreModule . ' [' . $tablename . ']';
-			
+
         }
 
         return $return;
@@ -387,22 +384,20 @@ class ProSearch extends ProSearchDataContainer
 
         $path = 'system/modules/prosearch/assets/images/';
 
-        if( (version_compare(VERSION, '4.0', '>=') && !$GLOBALS['PS_NO_COMPOSER'] && $GLOBALS['PS_NO_COMPOSER'] != true ) )
-        {
+        if ((version_compare(VERSION, '4.0', '>=') && !$GLOBALS['PS_NO_COMPOSER'] && $GLOBALS['PS_NO_COMPOSER'] != true)) {
             $path = 'bundles/prosearch/images/';
         }
 
-        if( !in_array($doTable, $this->notCoreModules) )
-        {
+        if (!in_array($doTable, $this->notCoreModules)) {
             $path = '';
         }
 
         if ($this->modules[$doTable] && $this->modules[$doTable]['icon']) {
 
-            $icon = Image::getHtml($path.$this->modules[$doTable]['icon']);
+            $icon = Image::getHtml($path . $this->modules[$doTable]['icon']);
 
         }
-		
+
         return $icon;
     }
 
@@ -420,7 +415,7 @@ class ProSearch extends ProSearchDataContainer
         $doTable = $doStr != '' ? $doStr : '';
 
         //
-        if ( !$db['id'] || !$table || !$doTable ) {
+        if (!$db['id'] || !$table || !$doTable) {
             return false;
         }
 
@@ -485,7 +480,7 @@ class ProSearch extends ProSearchDataContainer
             foreach ($this->modules[$doTable]['prepareDataException'] as $callable) {
 
                 $this->import($callable[0]);
-                $arr = $this->{$callable[0]}->{$callable[1]}( $arr, $db, $table );
+                $arr = $this->{$callable[0]}->{$callable[1]}($arr, $db, $table);
 
             }
 
@@ -499,19 +494,17 @@ class ProSearch extends ProSearchDataContainer
         $sCntent = $this->setSearchContent($db, $arr['doTable']);
         $arr['search_content'] = $sCntent ? $sCntent : '';
 
-        $sTitle = $this->setTitle($db, $arr['doTable']);
+        $sTitle = $this->setTitle($db, $arr['doTable'], $table);
 
         // set title
         $arr['title'] = $sTitle ? $sTitle : 'no title';
 
         // add be module dyn if useParentAsBE is true
-        if( $this->modules[$doTable]['useParentAsBE'] )
-        {
+        if ($this->modules[$doTable]['useParentAsBE']) {
             $do = Helper::getDoParam($arr['ptable']);
             $arr['doTable'] = $do;
 
-            if( !$arr['doTable'] )
-            {
+            if (!$arr['doTable']) {
                 return false;
             }
 
@@ -552,7 +545,7 @@ class ProSearch extends ProSearchDataContainer
     public function setSearchContent($db, $doTable)
     {
 
-        if ( !$doTable ) {
+        if (!$doTable) {
             return '';
         }
 
@@ -563,21 +556,20 @@ class ProSearch extends ProSearchDataContainer
         $strContent = '';
 
         foreach ($colsSearchContent as $content) {
-			
-			$ct = unserialize( $db[$content] );
-			
-            if( is_array( $ct ) && !empty( $ct ) )
-            {
+
+            $ct = unserialize($db[$content]);
+
+            if (is_array($ct) && !empty($ct)) {
                 $meta = Helper::parseStrForMeta($db[$content]);
                 $strContent .= $meta;
                 continue;
-                
+
             }
 
 
-            if (  $db[$content] && ( is_string($db[$content]) || is_numeric($db[$content]) ) ) {
+            if ($db[$content] && (is_string($db[$content]) || is_numeric($db[$content]))) {
 
-                $strContent .= ' '.$db[$content];
+                $strContent .= ' ' . $db[$content];
             }
         }
 
@@ -593,10 +585,10 @@ class ProSearch extends ProSearchDataContainer
     /**
      * @param $db
      */
-    public function setTitle($db, $doTable)
+    public function setTitle($db, $doTable, $table)
     {
         // sorted by priority
-        if ( !$doTable ) {
+        if (!$doTable) {
             return null;
         }
 
@@ -604,24 +596,35 @@ class ProSearch extends ProSearchDataContainer
         array_unshift($colsForTitle, 'ps_title');
         $colsForTitle = $colsForTitle ? $colsForTitle : array();
 
+        // hook for custom title
+        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomTitle'])) {
+
+            foreach ($this->modules[$doTable]['setCustomTitle'] as $callable) {
+
+
+                $this->import($callable[0]);
+                return $this->{$callable[0]}->{$callable[1]}($table, $db, $colsForTitle, $doTable);
+
+            }
+
+        }
+
         foreach ($colsForTitle as $title) {
 
-			$ct = unserialize($db[$title]);
+            $ct = unserialize($db[$title]);
 
             // check if value is serialize
-            if( is_array( $ct ) && !empty( $ct ) )
-            {
+            if (is_array($ct) && !empty($ct)) {
                 $meta = Helper::parseStrForMeta($db[$title]);
                 $db[$title] = $meta;
             }
 
-            if ( $db[$title] && ( is_string($db[$title]) || is_numeric($db[$title]) ) ) {
+            if ($db[$title] && (is_string($db[$title]) || is_numeric($db[$title]))) {
 
                 $return = $db[$title];
                 $return = Controller::replaceInsertTags($return);
                 $return = strip_tags($return);
                 $return = trim($return);
-
                 return $return;
                 break;
 
