@@ -42,6 +42,43 @@ class PrepareDataException
         return $arr;
     }
 
+
+    public function setCustomTitle($table, $db, $titleFields, $doTable)
+    {
+
+        if($table == 'tl_files')
+        {
+            return $db['name'] ? $db['name'] : $db['path'];
+        }
+
+        if($table == 'tl_content')
+        {
+            $title = 'No Title: '.$db['id'];
+
+            foreach ($titleFields as $field)
+            {
+
+                $ct = unserialize($db[$field]);
+
+                // check if value is serialize
+                if (is_array($ct) && !empty($ct)) {
+                    $meta = Helper::parseStrForMeta($db[$field]);
+                    $db[$field] = $meta;
+                }
+
+                if( $db[$field] && $db[$field] != '' && $field != 'type')
+                {
+                    return $db[$field].' ('.$db['type'].')';
+                }
+            }
+
+            return $title;
+
+        }
+
+        return '';
+    }
+
     public function setCustomIcon($table, $db, $dataArr, $dca)
     {
         $iconName = '';
