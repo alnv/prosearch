@@ -160,11 +160,16 @@ class ProSearchPalette extends ProSearch
     /**
      * @param $dc
      */
-    public function getAvailabletags($dc)
+    public function getAvailabletags($dc = null)
     {
 
-        $table = $dc->table;
+        if(!$dc)
+        {
+            return null;
+        }
+
         $options = array();
+        $table = $dc->table;
 
         //DB
         $tagsDB = $this->Database->prepare('SELECT * FROM tl_prosearch_tags ORDER BY tstamp DESC')->execute();
