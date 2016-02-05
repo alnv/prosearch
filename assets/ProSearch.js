@@ -280,8 +280,8 @@
         var shortcut = _userSettings.shortcut ? _userSettings.shortcut : 'alt+m';
 
 	    document.addEvent('keydown:keys('+shortcut+')', function(e){
-	
-            e.stopPropagation();
+
+            e.preventDefault();
 
             var body = $$('body');
 			body.toggleClass('searchMenuActive');
