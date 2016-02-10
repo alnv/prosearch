@@ -235,6 +235,9 @@ class ProSearch extends ProSearchDataContainer
                     'title' => array('title'),
                 );
             }
+
+            $GLOBALS['PS_SEARCHABLE_MODULES'] = $this->modules;
+
         }
     }
 
