@@ -12,7 +12,6 @@
  */
 
 use Contao\Config;
-use Contao\FilesModel;
 use Contao\Image;
 use Contao\Input;
 use Contao\Controller;
@@ -553,8 +552,22 @@ class ProSearch extends ProSearchDataContainer
         }
 
         $colsSearchContent = $this->modules[$doTable]['searchIn'];
+
         array_unshift($colsSearchContent, 'ps_search_content');
         $colsSearchContent = $colsSearchContent ? $colsSearchContent : array();
+
+        // addDescriptionToSearchContent
+        $textCols = array('text', 'description');
+        if (Config::get('addDescriptionToSearchContent'))
+        {
+            foreach($textCols as $col)
+            {
+                if(in_array($col, $db))
+                {
+                    $colsSearchContent[] = $col;
+                }
+            }
+        }
 
         $strContent = '';
 
@@ -795,6 +808,7 @@ class ProSearch extends ProSearchDataContainer
     public function ajaxRequest()
     {
         if (Input::get('ajaxRequestForProSearch') && Input::get('ajaxRequestForProSearch') == 'getSearchIndex') {
+
             // query
             $q = Input::get('searchQuery');
 
