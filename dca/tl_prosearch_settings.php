@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
     // Palettes
     'palettes' => array
     (
-        'default' => '{settings_legend},searchIndexModules,createIndex;{license_legend:hide},prosearchLicense;'
+        'default' => '{settings_legend},searchIndexModules,addDescriptionToSearchContent,createIndex;{license_legend:hide},prosearchLicense;'
     ),
 
     // Fields
@@ -49,6 +49,12 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
             'options_callback' => array('ProSearch', 'loadModules'),
             'eval' => array('multiple' => true),
             'sql' => "blob NULL"
+        ),
+
+        'addDescriptionToSearchContent' => array(
+
+            'label' => &$GLOBALS['TL_LANG']['tl_prosearch_settings']['addDescriptionToSearchContent'],
+            'inputType' => 'checkbox',
         ),
 
         'createIndex' => array(
