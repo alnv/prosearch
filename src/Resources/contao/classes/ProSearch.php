@@ -342,7 +342,7 @@ class ProSearch extends ProSearchDataContainer
     /**
      * @param $dc
      */
-    public function sendDataToIndex($dc, $value)
+    public function sendDataToIndex($dc, $value = '')
     {
         // current table
         $tablename = $dc->table;
@@ -590,6 +590,11 @@ class ProSearch extends ProSearchDataContainer
 
         foreach ($colsSearchContent as $content) {
 
+            if(!$db[$content])
+            {
+                continue;
+            }
+
             $ct = deserialize($db[$content]);
 
             if (is_array($ct) && !empty($ct)) {
@@ -644,6 +649,11 @@ class ProSearch extends ProSearchDataContainer
 
         foreach ($colsForTitle as $title) {
 
+            if(!$db[$title])
+            {
+                continue;
+            }
+            
             $ct = deserialize($db[$title]);
 
             // check if value is serialize
