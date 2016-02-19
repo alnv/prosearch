@@ -342,7 +342,7 @@ class ProSearch extends ProSearchDataContainer
     /**
      * @param $dc
      */
-    public function sendDataToIndex($dc)
+    public function sendDataToIndex($dc, $value)
     {
         // current table
         $tablename = $dc->table;
@@ -350,13 +350,30 @@ class ProSearch extends ProSearchDataContainer
         // current data
         $dcaArr = $dc->activeRecord ? $dc->activeRecord->row() : array();
 
+        // col
+        $colname = 'id';
+
         // get act
         $act = Input::get('act');
 
         // if cut
         if ($act && $act == 'cut') {
+
             $id = Input::get('id');
-            $dcaArr = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE id = ?')->execute($id)->row();
+
+            if(Input::get('do') == 'files')
+            {
+                $tablename = 'tl_files';
+                $id = $value;
+                $colname = 'path';
+            }
+
+            if(!$tablename)
+            {
+                return;
+            }
+
+            $dcaArr = $this->Database->prepare('SELECT * FROM ' . $tablename . ' WHERE '.$colname.' = ?')->execute($id)->row();
 
         }
 
