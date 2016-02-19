@@ -590,7 +590,7 @@ class ProSearch extends ProSearchDataContainer
 
         foreach ($colsSearchContent as $content) {
 
-            $ct = unserialize($db[$content]);
+            $ct = deserialize($db[$content]);
 
             if (is_array($ct) && !empty($ct)) {
                 $meta = Helper::parseStrForMeta($db[$content]);
@@ -644,7 +644,7 @@ class ProSearch extends ProSearchDataContainer
 
         foreach ($colsForTitle as $title) {
 
-            $ct = unserialize($db[$title]);
+            $ct = deserialize($db[$title]);
 
             // check if value is serialize
             if (is_array($ct) && !empty($ct)) {

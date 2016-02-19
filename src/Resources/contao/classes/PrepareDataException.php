@@ -58,7 +58,7 @@ class PrepareDataException
             foreach ($titleFields as $field)
             {
 
-                $ct = unserialize($db[$field]);
+                $ct = deserialize($db[$field]);
 
                 // check if value is serialize
                 if (is_array($ct) && !empty($ct)) {
