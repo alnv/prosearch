@@ -7,7 +7,7 @@
  *
  * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   commercial
+ * @license   CC BY-NC-ND 4.0
  * @copyright 2016 Alexander Naumov
  */
 

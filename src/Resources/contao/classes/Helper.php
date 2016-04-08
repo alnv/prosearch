@@ -3,12 +3,12 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
- * @package   Pro Search
+ * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @license   CC BY-NC-ND 4.0
+ * @copyright 2016 Alexander Naumov
  */
 
 /**
@@ -17,8 +17,10 @@
  */
 class Helper
 {
-	
-	//
+
+    /**
+     * @var array
+     */
 	public static $validSums = array(
 		
 		'5113d4676ccf062850f9915d8142e5a7',
@@ -87,7 +89,7 @@ class Helper
     }
 
     /**
-     * @param $str
+     * @param $serializeStr
      * @return string
      */
     static public function parseStrForMeta($serializeStr)
@@ -119,7 +121,10 @@ class Helper
 
     }
 
-
+    /**
+     * @param $ctable
+     * @return int|string
+     */
     static public function getDoParam($ctable)
     {
 
@@ -157,7 +162,10 @@ class Helper
         return $return;
     }
 
-
+    /**
+     * @param $reqStr
+     * @return string
+     */
     static public function removeRequestTokenFromUri($reqStr)
     {
         $requestUriArr = explode('&', $reqStr);

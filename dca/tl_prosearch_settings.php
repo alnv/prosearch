@@ -3,12 +3,12 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @license   CC BY-NC-ND 4.0
+ * @copyright 2016 Alexander Naumov
  */
 
 use ProSearch\ProSearch;
@@ -77,10 +77,12 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
  */
 class tl_prosearch_settings extends ProSearch
 {
-	
-	/**
-	 *
-	 */	
+
+    /**
+     * @param $varValue
+     * @return mixed
+     * @throws Exception
+     */
 	public function saveKey($varValue)
 	{
 		
@@ -189,6 +191,11 @@ class tl_prosearch_settings extends ProSearch
         }
     }
 
+    /**
+     * @param $dataDB
+     * @param $tablename
+     * @param $pageNum
+     */
     public function saveToIndex($dataDB, $tablename, $pageNum)
     {
         $arr = array();

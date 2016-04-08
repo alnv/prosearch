@@ -3,18 +3,25 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
- * @package   Pro Search
+ * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @license   CC BY-NC-ND 4.0
+ * @copyright 2016 Alexander Naumov
  */
 
+/**
+ * Class PrepareDataException
+ * @package ProSearch
+ */
 class PrepareDataException
 {
     /**
-     *
+     * @param $arr
+     * @param $db
+     * @param $table
+     * @return mixed
      */
     public function prepareDataExceptions($arr, $db, $table)
     {
@@ -42,7 +49,13 @@ class PrepareDataException
         return $arr;
     }
 
-
+    /**
+     * @param $table
+     * @param $db
+     * @param $titleFields
+     * @param $doTable
+     * @return string
+     */
     public function setCustomTitle($table, $db, $titleFields, $doTable)
     {
 
@@ -79,6 +92,13 @@ class PrepareDataException
         return '';
     }
 
+    /**
+     * @param $table
+     * @param $db
+     * @param $dataArr
+     * @param $dca
+     * @return string
+     */
     public function setCustomIcon($table, $db, $dataArr, $dca)
     {
         $iconName = '';
@@ -205,7 +225,13 @@ class PrepareDataException
 
     }
 
-
+    /**
+     * @param $table
+     * @param $db
+     * @param $dataArr
+     * @param $dca
+     * @return string
+     */
     public function setCustomShortcut($table, $db, $dataArr, $dca)
     {
         $shortcut = '';

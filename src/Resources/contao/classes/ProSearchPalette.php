@@ -4,17 +4,21 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @license   CC BY-NC-ND 4.0
+ * @copyright 2016 Alexander Naumov
  */
  
 use Contao\Input;
 use Contao\Config;
 
+/**
+ * Class ProSearchPalette
+ * @package ProSearch
+ */
 class ProSearchPalette extends ProSearch
 {
 
@@ -31,6 +35,7 @@ class ProSearchPalette extends ProSearch
 
     /**
      * @param $strName
+     * @return null
      */
     public function insertProSearchLegend($strName)
     {
@@ -158,7 +163,8 @@ class ProSearchPalette extends ProSearch
 
 
     /**
-     * @param $dc
+     * @param null $dc
+     * @return null
      */
     public function getAvailabletags($dc = null)
     {
