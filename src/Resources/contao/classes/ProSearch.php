@@ -3,12 +3,12 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @package   ProSearch
  * @author    Alexander Naumov http://www.alexandernaumov.de
  * @license   commercial
- * @copyright 2015 Alexander Naumov
+ * @copyright 2016 Alexander Naumov
  */
 
 use Contao\Config;
@@ -423,7 +423,7 @@ class ProSearch extends ProSearchDataContainer
     /**
      * @param $db
      * @param $dca
-     * @param $do
+     * @param $table
      * @return array|bool
      */
     public function prepareIndexData($db, $dca, $table)
@@ -534,7 +534,7 @@ class ProSearch extends ProSearchDataContainer
 
     /**
      * @param $db
-     * @return string|void
+     * @return null|string
      */
     public function setType($db)
     {
@@ -622,6 +622,9 @@ class ProSearch extends ProSearchDataContainer
 
     /**
      * @param $db
+     * @param $doTable
+     * @param $table
+     * @return null|string
      */
     public function setTitle($db, $doTable, $table)
     {
@@ -679,7 +682,9 @@ class ProSearch extends ProSearchDataContainer
 
 
     /**
-     * @param $indexData
+     * @param $data
+     * @param $dca
+     * @param int $page
      */
     public function saveIndexDataIntoDB($data, $dca, $page = 0)
     {
@@ -705,7 +710,10 @@ class ProSearch extends ProSearchDataContainer
         }
     }
 
-
+    /**
+     * @param $dca
+     * @return null
+     */
     public function clearSearchIndexTable($dca)
     {
         if (!$dca) {
