@@ -43,7 +43,7 @@ class PrepareDataException
         if( $table == 'tl_files' )
         {
             $arr['docId'] = $db['path'] ? $db['path'] : '';
-            $arr['pid'] = '';
+            $arr['pid'] = 0;
         }
 
         return $arr;
