@@ -268,11 +268,9 @@
 
     //
     window.addEvent('domready', function() {
-	    
-	    
-	    var tpl = '<li id="openProSearch" class="header_prosearch_container"><a href="#!prosearch" class="header_prosearch" title="ProSearch | Backend-Suche für Contao" ><img src="/bundles/prosearch/prosearch.svg" width="18" height="18" alt="ProSearch | Backend-Suche für Contao" title=""></a></li>'
-	    
-	    	    
+
+	    var tpl = strProSearchHeaderTemplate ? strProSearchHeaderTemplate : '';
+        
 	    /**
 	     * event
 	     */
