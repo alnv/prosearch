@@ -11,8 +11,6 @@
  * @copyright 2016 Alexander Naumov
  */
 
-use Contao\BackendUser;
-
 
 /**
  * Class UserSettings
@@ -24,10 +22,9 @@ class UserSettings{
     /**
      * set user setting on login
      */
-    public function setUserSettingsOnLogin(BackendUser $user)
+    public function setUserSettingsOnLogin($user)
     {
-
-        if ($user instanceof BackendUser) {
+        if ($user instanceof \BackendUser) {
 
             $settings = array(
                 'id' => $user->id,
