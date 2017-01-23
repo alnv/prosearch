@@ -11,94 +11,70 @@
  * @copyright 2016 Alexander Naumov
  */
 
-use Contao\Database;
-use Contao\Environment;
-use Contao\Input;
-use Contao\Widget;
-
-class TagTextField extends Widget
+class TagTextField extends \Widget
 {
 
-    /**
-     * Submit user input
-     * @var boolean
-     */
     protected $blnSubmitInput = true;
 
-    /**
-     * Template
-     * @var string
-     */
+
     protected $strTemplate = 'be_widget';
 
 
-    public function validator($varInput)
-    {
+    public function validator($varInput) {
+
         return parent::validator($varInput);
     }
 
-    /**
-     * Generate the widget and return it as string
-     *
-     * @return string
-     */
-    public function generate()
-    {
+    public function generate() {
 
-        $action = Input::get('actionPSTag');
-        $tags = Input::get('ps_tags');
+        $strTags = \Input::get('ps_tags');
+        $strActionTag = \Input::get('actionPSTag');
+        $strRequestUri = \Environment::get('requestUri');
+        $strRequestUri = $this->removeRequestTokenFromUri($strRequestUri);
 
-        $requestUri = Environment::get('requestUri');
-        $requestUri = Helper::removeRequestTokenFromUri($requestUri);
+        if ( $strActionTag && $strActionTag == 'updateTags' ) {
 
-        if($action && $action == 'updateTags')
-        {
-            $this->updateTags($tags);
+            $this->updateTags($strTags);
         }
 
-        if($action && $action == 'removeTags')
-        {
-            $this->removeTags($tags);
+        if ( $strActionTag && $strActionTag == 'removeTags' ) {
+
+            $this->removeTags($strTags);
         }
 
         $GLOBALS['TL_JAVASCRIPT'][] = $GLOBALS['PS_PUBLIC_PATH'].'vendor/mootagify.js|static';
         $GLOBALS['TL_CSS'][] = $GLOBALS['PS_PUBLIC_PATH'].'css/mootagify-bootstrap.css|static';
         $GLOBALS['TL_CSS'][] = $GLOBALS['PS_PUBLIC_PATH'].'css/mootagify.css|static';
 
-        $options = $this->options ? $this->options : array();
+        $objTags = \Database::getInstance()->prepare('SELECT * FROM tl_prosearch_tags')->execute();
+        $arrOptions = [''];
+
+        while ($objTags->next()) {
+
+            $arrOptions[] = $objTags->tagname;
+        }
 
         $script = sprintf(
             '<script>'
-            .'window.addEvent("domready", function(){
-
+            . 'window.addEvent("domready", function(){
                 var tagify = new mooTagify(document.id("tagWrap_%s"), null ,{
                     autoSuggest: true,
-                    availableOptions: '.json_encode($options).'
+                    availableOptions: '. json_encode($arrOptions) .'
                 });
-
                 tagify.addEvent("tagsUpdate", function(){
-
                     var tags = tagify.getTags();
                     document.id("ctrl_%s").set("value", tags.join());
-
                     new Request({url: "%s&actionPSTag=updateTags"}).get({"ps_tags": tags, "rt": Contao.request_token });
-
                 });
-
                 tagify.addEvent("tagRemove", function(tag){
-
                     var tags = tagify.getTags()
-
                     var deleted = tag;
-
                     document.id("ctrl_%s").set("value", tags.join());
-
                     new Request({url: "%s&actionPSTag=removeTags"}).get({ "ps_tags": deleted, "rt": Contao.request_token });
-
                 });
-            });'.'</script>', $this->strId, $this->strId, $requestUri, $this->strId, $requestUri);
+            });' . '</script>', $this->strId, $this->strId, $strRequestUri, $this->strId, $strRequestUri);
 
-        return sprintf('<input type="hidden" id="ctrl_%s" name="%s" value="%s"><div id="tagWrap_%s" class="hide"> <div class="tag-wrapper"></div> <div class="tag-input"> <input type="text" id="listTags" class="tl_text" name="listTags" value="%s" placeholder="%s"> </div> <div class="clear"></div></div>'.$script.'',
+        return sprintf('<input type="hidden" id="ctrl_%s" name="%s" value="%s"><div id="tagWrap_%s" class="hide"> <div class="tag-wrapper"></div> <div class="tag-input"> <input type="text" id="listTags" class="tl_text" name="listTags" value="%s" placeholder="%s"> </div> <div class="clear"></div></div>' . $script . '',
             $this->strId,
             $this->strName,
             specialchars($this->varValue),
@@ -106,35 +82,47 @@ class TagTextField extends Widget
             specialchars($this->varValue),
             $GLOBALS['TL_LANG']['MSC']['TagTextField']['tag']
         );
-
     }
 
+    private function removeRequestTokenFromUri( $strRequest ) {
 
-    public function updateTags($tags)
-    {
+        $arrRequestUri = explode('&', $strRequest);
+        $arrTemps = [];
 
-        if(!is_array($tags))
-        {
+        foreach( $arrRequestUri as $strUriPart ) {
+
+            if ( substr( $strUriPart, 0, 2 ) == 'rt' ) {
+                continue;
+            }
+
+            $arrTemps[] = $strUriPart;
+        }
+
+        return implode( '&', $arrTemps );
+    }
+
+    public function updateTags( $arrTags ) {
+
+        if ( !is_array( $arrTags ) ) {
+
             $this->sendRes();
         }
 
-        $valueArr = $tags ? $tags : array();
-        $existedTags = array();
+        $arrValues = $arrTags ? $arrTags : [];
+        $arrTagsExist = array();
 
-        $db = Database::getInstance();
+        $tagsDB = \Database::getInstance()->prepare('SELECT * FROM tl_prosearch_tags')->execute();
 
-        $tagsDB = $db->prepare('SELECT * FROM tl_prosearch_tags')->execute();
+        while ( $tagsDB->next() ) {
 
-        while($tagsDB->next())
-        {
-            $existedTags[] = $tagsDB->tagname;
+            $arrTagsExist[] = $tagsDB->tagname;
         }
 
-        foreach($valueArr as $tagname)
-        {
-            if(!in_array($tagname, $existedTags))
-            {
-                $db->prepare('INSERT INTO tl_prosearch_tags (tstamp,tagname) VALUES (?,?)')->execute(time(), $tagname);
+        foreach ( $arrValues as $strTagName ) {
+
+            if ( !in_array( $strTagName, $arrTagsExist ) ) {
+
+                \Database::getInstance()->prepare( 'INSERT INTO tl_prosearch_tags (tstamp,tagname) VALUES (?,?)')->execute( time(), $strTagName );
             }
         }
 
@@ -142,33 +130,32 @@ class TagTextField extends Widget
     }
 
 
-    public function removeTags($tag)
-    {
-        if(!is_string($tag))
-        {
+    public function removeTags( $strTag ) {
+
+        if ( !is_string( $strTag ) ) {
+
             $this->sendRes();
         }
 
-        $tagname = $tag ? $tag : '';
-        $db = Database::getInstance();
+        $strTagName = $strTag ? $strTag : '';
+        $existInSearchDB = \Database::getInstance()->prepare("SELECT * FROM tl_prosearch_data WHERE tags LIKE ? ORDER BY tstamp DESC LIMIT 10")->execute( "%$strTagName%" );
 
-        $existInSearchDB = $db->prepare("SELECT * FROM tl_prosearch_data WHERE tags LIKE ? ORDER BY tstamp DESC LIMIT 10")->execute("%$tagname%");
-
-        if($existInSearchDB->count() > 1)
-        {
+        if ($existInSearchDB->count() > 1) {
             $this->sendRes();
         }
 
-        $db->prepare('DELETE FROM tl_prosearch_tags WHERE tagname = ?')->execute($tagname);
+        \Database::getInstance()->prepare('DELETE FROM tl_prosearch_tags WHERE tagname = ?')->execute( $strTagName );
 
         $this->sendRes();
     }
 
 
-    public function sendRes()
-    {
+    public function sendRes() {
+
         header('Content-type: application/json');
-        echo json_encode(array('state' => '200'));
+
+        echo json_encode( ['state' => '200' ] );
+
         exit;
     }
 
