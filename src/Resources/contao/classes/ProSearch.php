@@ -752,11 +752,7 @@ class ProSearch extends ProSearchDataContainer
 
     }
 
-    /**
-     * @param $dca
-     */
-    public function deleteDataFromIndex($dc)
-    {
+    public function deleteDataFromIndex($dc) {
 
         $tablename = $dc->table;
         $docId = $dc->activeRecord->id;
@@ -789,12 +785,7 @@ class ProSearch extends ProSearchDataContainer
 
     }
 
-    /**
-     * @param $ptable
-     * @param $pid
-     */
-    public function deleteChildrenFromIndex($ptable, $pid)
-    {
+    public function deleteChildrenFromIndex($ptable, $pid) {
 
         $cDataDB = $this->Database->prepare('SELECT * FROM tl_prosearch_data WHERE ptable = ? AND pid = ?')->execute($ptable, $pid);
 
@@ -805,8 +796,7 @@ class ProSearch extends ProSearchDataContainer
                 $id = $cDataDB->docId;
                 $activeModules = deserialize(Config::get('searchIndexModules'));
                 $ctables = deserialize($cDataDB->ctable);
-
-
+                
                 if (in_array($table, $activeModules)) {
                     $this->deleteChildrenFromIndex($table, $id);
                 }
@@ -827,40 +817,32 @@ class ProSearch extends ProSearchDataContainer
         }
     }
 
-    /**
-     *
-     */
-    public function clearIndex()
-    {
+    public function clearIndex() {
+
         foreach ($this->deletedIndexData as $indexData) {
+
             $this->Database->prepare('DELETE FROM tl_prosearch_data WHERE id = ?')->execute($indexData['id']);
         }
     }
 
-    /**
-     *
-     */
-    public function ajaxRequest()
-    {
+    public function ajaxRequest() {
+
         if (Input::get('ajaxRequestForProSearch') && Input::get('ajaxRequestForProSearch') == 'getSearchIndex') {
 
-            // query
             $q = Input::get('searchQuery');
 
-            // header information
             $header = array(
+
                 'q' => $q ? $q : ''
             );
 
             $results = array();
             $results['response'] = $this->getSearchDataFromIndex($header);
 
-            // get shortcut labels
             $results['shortcut_labels'] = array();
             $this->loadLanguageFile('tl_prosearch_data');
             $results['shortcut_labels'] = $GLOBALS['TL_LANG']['tl_prosearch_data']['shortcut'];
 
-            // send response
             header('Content-type: application/json');
             echo json_encode($results, 512);
             exit;
@@ -886,7 +868,7 @@ class ProSearch extends ProSearchDataContainer
         //shortcut query Str
         $shortcutSqlStr = '';
 
-        // Ohne Shortcut
+        // without Shortcut
         if (count($shortcutAndQ) == 1) {
             $q = $shortcutAndQ[0];
             if (strlen($q) > 4) {
