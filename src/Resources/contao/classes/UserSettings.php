@@ -1,4 +1,6 @@
-<?php namespace ProSearch;
+<?php
+
+namespace ProSearch;
 
 /**
  * Contao Open Source CMS
@@ -11,37 +13,32 @@
  * @copyright 2016 Alexander Naumov
  */
 
+class UserSettings {
 
-/**
- * Class UserSettings
- * @package ProSearch
- */
-class UserSettings{
+    public function setUserSettingsOnLogin( $objUser ) {
 
+        if ( $objUser instanceof \BackendUser ) {
 
-    /**
-     * set user setting on login
-     */
-    public function setUserSettingsOnLogin($user)
-    {
-        if ($user instanceof \BackendUser) {
+            $arrSettings = array(
 
-            $settings = array(
-                'id' => $user->id,
-                'shortcut' => $user->keyboard_shortcut ? $user->keyboard_shortcut : 'alt+m',
+                'id' => $objUser->id,
+                'enable' => true,
+                'shortcut' => $objUser->keyboard_shortcut ? $objUser->keyboard_shortcut : 'alt+m',
             );
 
-            $_SESSION['ps_settings'] = $settings;
-        }
+            if ( isset( $objUser->modules ) && !empty( $objUser->modules ) && is_array( $objUser->modules ) ) {
 
+                $arrSettings['enable'] = in_array( 'prosearch' , $objUser->modules );
+            }
+            
+            $_SESSION['ps_settings'] = $arrSettings;
+        }
     }
 
-    /**
-     * set user setting on login
-     */
-    public function setUserSettingsOnSave($dc)
-    {
+    public function setUserSettingsOnSave( $dc ) {
+
         $settings = array(
+
             'id' => $dc->activeRecord->id,
             'shortcut' => $dc->activeRecord->keyboard_shortcut ? $dc->activeRecord->keyboard_shortcut : 'alt+m',
         );
@@ -49,19 +46,13 @@ class UserSettings{
         $_SESSION['ps_settings'] = $settings;
     }
 
-    /**
-     *
-     */
-    public function getUserSettings()
-    {
+    public function getUserSettings() {
 
-        if(TL_MODE == 'BE')
-        {
+        if (TL_MODE == 'BE') {
+
             $settings = $_SESSION['ps_settings'];
             $settings = $settings ? $settings : array( 'shortcut' => 'alt+m' );
             $GLOBALS['TL_MOOTOOLS'][] = '<script>var UserSettings = '.json_encode($settings).';</script>';
-
         }
     }
-
 }
