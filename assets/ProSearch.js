@@ -23,14 +23,14 @@
 
         $(el).addEvent('keyup', function(e){
 
-            //get q
             var value = $(e.target).get('value');
 
-            if(!value || value.length < 2) return;
+            if (!value || value.length < 2) return;
 
             var hasSC = value.split(':');
-            if(hasSC.length >= 2)
-            {
+
+            if (hasSC.length >= 2) {
+
                 if(hasSC[1].length < 2 ) return;
             }
 
@@ -124,7 +124,6 @@
 
         new Request( {'url': url, onSuccess: function(searchData)
         {
-
             var jsonData = JSON.parse(searchData);
             var response = jsonData['response'];
 
@@ -132,7 +131,6 @@
 
             //render view
             SearchResultsView.set('html', ItemsView(response));
-
         }}).get({
                 'rt':Contao.request_token,
                 'ajaxRequestForProSearch': 'getSearchIndex',
@@ -266,75 +264,73 @@
         
     }
 
-    //
     window.addEvent('domready', function() {
 
-	    var tpl = strProSearchHeaderTemplate ? strProSearchHeaderTemplate : '';
-        
-	    /**
-	     * event
-	     */
+	    var strHeaderTemplate = strProSearchHeaderTemplate ? strProSearchHeaderTemplate : '';
         var _userSettings = UserSettings ? UserSettings : {};
         var shortcut = _userSettings.shortcut ? _userSettings.shortcut : 'alt+m';
 
-	    document.addEvent('keydown:keys('+shortcut+')', function(e){
+        if ( typeof _userSettings['enable'] == "boolean" && _userSettings['enable'] == true ) {
 
-            e.preventDefault();
+            document.addEvent('keydown:keys(' + shortcut + ')', function (e) {
 
-            var body = $$('body');
-			body.toggleClass('searchMenuActive');
-            var menu;
+                e.preventDefault();
 
-            // load menu
-	        if(body.hasClass('searchMenuActive')[0])
-	        {
-	            body.appendHTML(menuView());
-	            	            
-	            setTimeout(function(){
-		            
-		        	document.getElementById('id_searchProInputField').focus();    
-	            
-	            }, 10);
-	            	            
-	            listenToInput();
-	        }
-	        
-	        // remove search
-	        if(!body.hasClass('searchMenuActive')[0])
-	        {
+                var body = $$('body');
+                body.toggleClass('searchMenuActive');
+                var menu;
+
+                // load menu
+                if (body.hasClass('searchMenuActive')[0]) {
+                    body.appendHTML(menuView());
+
+                    setTimeout(function () {
+
+                        document.getElementById('id_searchProInputField').focus();
+
+                    }, 10);
+
+                    listenToInput();
+                }
+
+                // remove search
+                if (!body.hasClass('searchMenuActive')[0]) {
+                    menu = $$("#id_menu-overlay");
+
+                    if (menu.length) {
+                        $$(document).removeEvent('keydown:keys(down)');
+                        $$(document).removeEvent('keydown:keys(up)');
+                        tabIndex = -1;
+                        menu.destroy();
+                    }
+                }
+
                 menu = $$("#id_menu-overlay");
 
-                if(menu.length)
-                {
-                    $$(document).removeEvent('keydown:keys(down)');
-                    $$(document).removeEvent('keydown:keys(up)');
-                    tabIndex = -1;
-                    menu.destroy();
-                }
-	        }
-	        
-	        menu = $$("#id_menu-overlay");
+                if (menu.length) {
+                    menu.addEvent('click', function (e) {
 
-	        if(menu.length)
-	        {
-		    	menu.addEvent('click', function(e){
-				
-					e.stopPropagation();
-					
-					var el = $(e.target);
-					
-							
-					if(el.hasClass('menu-wrapper'))
-					{
-						menu.destroy();
-						body.toggleClass('searchMenuActive');
-					}
-				
-				});   
-	        }
-	
-	    });
-	    
+                        e.stopPropagation();
+
+                        var el = $(e.target);
+
+
+                        if (el.hasClass('menu-wrapper')) {
+                            menu.destroy();
+                            body.toggleClass('searchMenuActive');
+                        }
+
+                    });
+                }
+
+            });
+        }
+
+        else {
+
+            strHeaderTemplate = '';
+        }
+
 	    // remove menu by escape key
 	    document.addEvent('keydown:keys(esc)', function(e){
 	
@@ -360,7 +356,7 @@
 	    
 	    //add header btn
 	    var header = $$('#tmenu');
-        header.appendHTML(tpl, 'top');
+        header.appendHTML( strHeaderTemplate, 'top' );
         
         $$('#openProSearch').addEvent('click', function(e){
 	    	e.preventDefault();
