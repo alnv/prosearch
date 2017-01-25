@@ -41,12 +41,17 @@ $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('UserSettings', 'getUserSetti
 
 // assets
 if (TL_MODE == 'BE') {
+    
     $GLOBALS['TL_CSS'][] = $GLOBALS['PS_PUBLIC_PATH'] . 'css/theme.css|static';
     $GLOBALS['TL_JAVASCRIPT'][] = $GLOBALS['PS_PUBLIC_PATH'] . 'vendor/underscore-min.js|static';
+    
     $strProSearchHeader = '<span id="openProSearch" class="header_prosearch_container"><a href="#!prosearch" class="header_prosearch prosearch_backend_icon" title="ProSearch | Backend-Suche für Contao" >ProSearch</a></span>';
-    if (version_compare(VERSION, '4.2', '>=')) {
+    
+    if ( version_compare( VERSION, '4.2', '>=' ) ) {
+    
         $strProSearchHeader = '<li id="openProSearch" class="header_prosearch_container"><a href="#!prosearch" class="header_prosearch" title="ProSearch | Backend-Suche für Contao" ><img src="' . $GLOBALS['PS_PUBLIC_PATH'] . 'prosearch.svg" width="18" height="18" alt="ProSearch | Backend-Suche für Contao" title=""></a></li>';
     }
+    
     $GLOBALS['TL_MOOTOOLS'][] = "<script>var strProSearchHeaderTemplate = '$strProSearchHeader';</script>";
     $GLOBALS['TL_JAVASCRIPT'][] = $GLOBALS['PS_PUBLIC_PATH'] . 'ProSearch.js|static';
 }
