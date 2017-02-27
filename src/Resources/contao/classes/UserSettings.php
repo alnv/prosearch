@@ -15,44 +15,33 @@ namespace ProSearch;
 
 class UserSettings {
 
-    public function setUserSettingsOnLogin( $objUser ) {
 
-        if ( $objUser instanceof \BackendUser ) {
+    private $blnInitialized = false;
+    private $strPlaceholder = '<!-- ### %PROSEARCH_SCRIPT_TAG% ### ->';
 
-            $arrSettings = array(
 
-                'id' => $objUser->id,
+    public function initializeSettings( $strContent, $strTemplate ) {
+
+        if ( $strTemplate == 'be_main' && !$this->blnInitialized ) {
+
+            $objUser = \BackendUser::getInstance();
+
+            $arrSettings = [
+
                 'enable' => true,
+                'id' => $objUser->id,
                 'shortcut' => $objUser->keyboard_shortcut ? $objUser->keyboard_shortcut : 'alt+m',
-            );
+            ];
 
             if ( isset( $objUser->modules ) && !empty( $objUser->modules ) && is_array( $objUser->modules ) ) {
 
-                $arrSettings['enable'] = in_array( 'prosearch' , $objUser->modules );
+                $arrSettings['enable'] = in_array( 'prosearch_settings' , $objUser->modules );
             }
-            
-            $_SESSION['ps_settings'] = $arrSettings;
+
+            $strContent = str_replace( $this->strPlaceholder, '<script>var UserSettings = ' . json_encode( $arrSettings ) . ';</script>',  $strContent );
+            $this->blnInitialized = true;
         }
-    }
 
-    public function setUserSettingsOnSave( $dc ) {
-
-        $settings = array(
-
-            'id' => $dc->activeRecord->id,
-            'shortcut' => $dc->activeRecord->keyboard_shortcut ? $dc->activeRecord->keyboard_shortcut : 'alt+m',
-        );
-
-        $_SESSION['ps_settings'] = $settings;
-    }
-
-    public function getUserSettings() {
-
-        if (TL_MODE == 'BE') {
-
-            $settings = $_SESSION['ps_settings'];
-            $settings = $settings ? $settings : array( 'shortcut' => 'alt+m' );
-            $GLOBALS['TL_MOOTOOLS'][] = '<script>var UserSettings = '.json_encode($settings).';</script>';
-        }
+        return $strContent;
     }
 }
