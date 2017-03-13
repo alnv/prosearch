@@ -5,7 +5,7 @@ namespace ProSearch;
 class InitializeProSearch {
 
 
-    private $strPlaceholder = '<!-- ### %PROSEARCH_SCRIPT_TAG% ### ->';
+    private $strPlaceholder = '<!-- ### %PROSEARCH_SCRIPT_TAG% ### -->';
 
 
     public function setScriptPlaceholder() {
