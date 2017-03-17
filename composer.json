@@ -1,35 +1,39 @@
 {
-	"name":"prosearch/prosearch",
-	"description":"ProSearch - Eine Backend-Suche für Contao CMS",
-	"keywords":["Backend", "Suche", "Contao", "Filter", "EasyTheme", "easy_themes", "Sticky", "m17-sticky-backend-footer", "Tags"],
-	"type":"contao-module",
-	"homepage":"http://backend-suche-contao.alexandernaumov.de",
-	"license":"CC BY-NC-ND 4.0",
-	"authors":[
+	"name": "alnv/prosearch",
+	"description": "ProSearch - Backend search for Contao CMS",
+	"keywords": [ "contao", "backend", "search", "filter", "tags" ],
+	"type": "contao-module",
+	"homepage": "http://backend-suche-contao.alexandernaumov.de",
+	"license": "CC BY-NC-ND 4.0",
+	"authors": [
 		{
-			"name":"Alexander Naumov",
-		  	"homepage":"http://www.alexandernaumov.de",
-			"role":"Developer"
+			"name": "Alexander Naumov",
+			"homepage": "https://www.alexandernaumov.de",
+			"role": "Developer"
 		}
 	],
-	"support":{
-	  "email":"me@alexandernaumov.de",
-	  "issues":"https://github.com/alnv/prosearch/issues",
-	  "wiki":"http://backend-suche-contao.alexandernaumov.de/fuer-redakteure.html"
+	"support": {
+		"email": "me@alexandernaumov.de",
+		"issues": "https://github.com/alnv/prosearch/issues",
+		"wiki": "https://backend-suche-contao.alexandernaumov.de/fuer-redakteure.html"
 	},
-	"require":{
-	  "php":">=5.4"
+	"require": {
+		"php": ">=5.4",
+		"contao/core-bundle": "~3.5 || ~4.1",
+		"contao-community-alliance/composer-plugin": "~2.4 || ~3.0"
 	},
-	"autoload":{
-		"classmap":["src/"]
+	"autoload": {
+		"classmap": [
+			"src/"
+		]
 	},
-	"replace":{
-	  "contao-legacy/prosearch":"*"
+	"replace": {
+		"contao-legacy/prosearch": "self.version"
 	},
-	"extra":{
-		"contao":{
-			"sources":{
-				"":"system/modules/prosearch"
+	"extra": {
+		"contao": {
+			"sources": {
+				"": "system/modules/prosearch"
 			}
 		}
 	}
