@@ -17,7 +17,7 @@ class UserSettings {
 
 
     private $blnInitialized = false;
-    private $strPlaceholder = '<!-- ### %PROSEARCH_SCRIPT_TAG% ### ->';
+    private $strPlaceholder = '<!-- ### %PROSEARCH_SCRIPT_TAG% ### -->';
 
 
     public function initializeSettings( $strContent, $strTemplate ) {
