@@ -1,17 +1,6 @@
 <?php namespace ProSearch;
 
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (c) 2005-2016 Leo Feyer
- *
- * @package   ProSearch
- * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   CC BY-NC-ND 4.0
- * @copyright 2016 Alexander Naumov
- */
-
 use Contao\DataContainer;
 use Contao\Image;
 
@@ -172,7 +161,7 @@ class ProSearchDataContainer extends DataContainer
             {
                 $feQueryStr = 'page='.$pageID;
                 $arrRow['dynTable'] = 'feRedirect';
-                $icon = 'preview.gif';
+                $icon = 'redirect_2.gif';
                 $return .= '<a href="'.$this->addToSearchUrl($arrRow, $feQueryStr).'" target="_blank" tabindex="1">'.Image::getHtml($icon, $arrRow['title']).'</a>';
             }
 
