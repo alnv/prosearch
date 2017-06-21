@@ -1,18 +1,6 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (c) 2005-2016 Leo Feyer
- *
- * @package   ProSearch
- * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   CC BY-NC-ND 4.0
- * @copyright 2016 Alexander Naumov
- */
-
 use ProSearch\ProSearch;
-use ProSearch\Helper;
 
 /**
  * Pro Search configuration
@@ -36,7 +24,7 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
     // Palettes
     'palettes' => array
     (
-        'default' => '{settings_legend},searchIndexModules,addDescriptionToSearchContent,createIndex;{license_legend:hide},prosearchLicense;'
+        'default' => '{settings_legend},searchIndexModules,addDescriptionToSearchContent,createIndex'
     ),
 
     // Fields
@@ -60,14 +48,6 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
         'createIndex' => array(
             'label' => &$GLOBALS['TL_LANG']['tl_prosearch_settings']['createIndex'],
             'inputType' => 'ajaxSearchIndex'
-        ),
-        
-        'prosearchLicense' => array(
-
-            'label' => &$GLOBALS['TL_LANG']['tl_prosearch_settings']['prosearchLicense'],
-            'inputType' => 'text',
-            'eval' => array('tl_class' => 'w50'),
-            'save_callback' => array(array('tl_prosearch_settings', 'saveKey'))
         )
     )
 );
@@ -78,44 +58,6 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
 class tl_prosearch_settings extends ProSearch
 {
 
-    /**
-     * @param $varValue
-     * @return mixed
-     * @throws Exception
-     */
-	public function saveKey($varValue)
-	{
-		
-		if ($varValue != '' && !$this->checkKey($varValue)) {
-
-            throw new \Exception($GLOBALS['TL_LANG']['tl_prosearch_settings']['invalidKey']);
-
-        }
-
-        return $varValue;
-	}
-	
-	/**
-     * @param $key
-     * @return bool
-     */
-    public function checkKey($key)
-    {
-
-        if (!$key) {
-            return false;
-        }
-
-        if (in_array(md5($key), Helper::$validSums, true)) {
-
-            return true;
-
-        }
-				
-        return false;
-
-    }
-	
     /**
      * ajax call
      */

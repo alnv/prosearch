@@ -1,16 +1,5 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (c) 2005-2016 Leo Feyer
- *
- * @package   Pro Search
- * @author    Alexander Naumov http://www.alexandernaumov.de
- * @license   CC BY-NC-ND 4.0
- * @copyright 2016 Alexander Naumov
- */
-
 $GLOBALS['TL_DCA']['tl_user']['palettes']['login'] = str_replace('backendTheme;', 'backendTheme;{prosearch_user_legend:hide},keyboard_shortcut;', $GLOBALS['TL_DCA']['tl_user']['palettes']['login']);
 $GLOBALS['TL_DCA']['tl_user']['palettes']['admin'] = str_replace('backendTheme;', 'backendTheme;{prosearch_user_legend:hide},keyboard_shortcut;', $GLOBALS['TL_DCA']['tl_user']['palettes']['admin']);
 $GLOBALS['TL_DCA']['tl_user']['palettes']['default'] = str_replace('backendTheme;', 'backendTheme;{prosearch_user_legend:hide},keyboard_shortcut;', $GLOBALS['TL_DCA']['tl_user']['palettes']['default']);
