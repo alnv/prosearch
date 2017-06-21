@@ -21,5 +21,10 @@ Dokumentation
 -------------------
 Hier findest du die [Dokumentation][2]
 
-[1]: http://backend-suche-contao.alexandernaumov.de
-[2]: http://backend-suche-contao.alexandernaumov.de/fuer-redakteure.html
+License
+-------------------
+ProSearch is open-sourced software licensed under the [MIT license][3].
+
+[1]: https://backend-suche-contao.alexandernaumov.de
+[2]: https://backend-suche-contao.alexandernaumov.de/fuer-redakteure.html
+[3]: https://opensource.org/licenses/MIT
