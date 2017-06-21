@@ -21,11 +21,5 @@ Dokumentation
 -------------------
 Hier findest du die [Dokumentation][2]
 
-Lizenz
--------------------
-
-Hier findest du die [Lizenzbedingungen][3].
-
 [1]: http://backend-suche-contao.alexandernaumov.de
 [2]: http://backend-suche-contao.alexandernaumov.de/fuer-redakteure.html
-[3]: http://backend-suche-contao.alexandernaumov.de/lizenzvereinbarung.html
