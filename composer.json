@@ -4,7 +4,7 @@
 	"keywords": [ "contao", "backend", "search", "filter", "tags" ],
 	"type": "contao-module",
 	"homepage": "http://backend-suche-contao.alexandernaumov.de",
-	"license": "CC BY-NC-ND 4.0",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Alexander Naumov",
