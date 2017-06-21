@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>Artboard Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard-Copy">
+            <g id="Group" transform="translate(16.108124, 15.051251) rotate(-16.000000) translate(-16.108124, -15.051251) translate(1.608124, 3.551251)">
+                <path d="M1.25233154,19.7344184 L10.2159289,12.4758404 C10.8597377,11.9544944 11.8042823,12.05377 12.3256284,12.6975788 C12.8469745,13.3413876 12.7476988,14.2859322 12.1038901,14.8072783 L3.14029272,22.0658563 C2.49648392,22.5872024 1.55193927,22.4879268 1.03059319,21.844118 C0.509247107,21.2003092 0.608522751,20.2557645 1.25233154,19.7344184 Z" id="Rectangle" fill="#FFFFFF" transform="translate(6.678111, 17.270848) rotate(6.000000) translate(-6.678111, -17.270848) "></path>
+                <circle id="Oval" stroke="#FFFFFF" stroke-width="2.5" cx="19.5" cy="8.5" r="8.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>
