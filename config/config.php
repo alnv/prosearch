@@ -29,8 +29,8 @@ if (TL_MODE == 'BE') {
     $strContainerCssClass =  'header_prosearch_container';
     $strTitle = $GLOBALS['TL_LANG']['MSC']['prosearchTitle'];
 
-    if ( version_compare( VERSION, '4.2', '>=' ) ) {
-
+    if ( version_compare( VERSION, '4.2', '>=' ) )
+    {
         $strIcon = 'prosearch_v4icon';
     }
     

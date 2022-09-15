@@ -1,4 +1,6 @@
-<?php namespace ProSearch;
+<?php
+
+namespace ProSearch;
  
 use Contao\Input;
 use Contao\Config;

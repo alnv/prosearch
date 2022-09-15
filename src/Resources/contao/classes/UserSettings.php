@@ -4,7 +4,6 @@ namespace ProSearch;
 
 class UserSettings {
 
-
     private $blnInitialized = false;
     private $strPlaceholder = '<!-- ### %PROSEARCH_SCRIPT_TAG% ### -->';
 

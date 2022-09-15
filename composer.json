@@ -12,15 +12,28 @@
 			"role": "Developer"
 		}
 	],
+	"require": {
+		"php": ">=5.4",
+		"contao/core-bundle": "~3.5 || ~4.1",
+		"contao-community-alliance/composer-plugin": "~2.4 || ~3.0"
+	},
+	"require-dev": {
+		"contao/easy-coding-standard": "^3.0",
+		"phpunit/phpunit": "^8.5 || ^9.5",
+		"symfony/phpunit-bridge": "^5.3 || ^6.0"
+	},
 	"support": {
 		"email": "me@alexandernaumov.de",
 		"issues": "https://github.com/alnv/prosearch/issues",
 		"wiki": "https://backend-suche-contao.alexandernaumov.de/fuer-redakteure.html"
 	},
-	"require": {
-		"php": ">=5.4",
-		"contao/core-bundle": "~3.5 || ~4.1",
-		"contao-community-alliance/composer-plugin": "~2.4 || ~3.0"
+	"scripts": {
+		"all": [
+			"@cs-fixer",
+			"@phpunit"
+		],
+		"cs-fixer": "@php vendor/bin/ecs check src/ --fix --ansi",
+		"phpunit": "@php vendor\\bin\\phpunit --configuration phpunit.xml --coverage-text --log-junit report.xml"
 	},
 	"autoload": {
 		"classmap": [
@@ -35,6 +48,13 @@
 			"sources": {
 				"": "system/modules/prosearch"
 			}
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"contao-components/installer": true,
+			"contao-community-alliance/composer-plugin": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	}
 }

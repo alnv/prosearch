@@ -1,15 +1,12 @@
-<?php namespace ProSearch;
+<?php
 
+namespace ProSearch;
 
 use Contao\Config;
 use Contao\Image;
 use Contao\Input;
 use Contao\Controller;
 
-
-/**
- * Class ProSearch
- */
 class ProSearch extends ProSearchDataContainer
 {
 
@@ -932,7 +929,7 @@ class ProSearch extends ProSearchDataContainer
 
             $searchItem['buttonsStr'] = $this->addButtonStr($searchItem);
 
-            if (count($searchResultsContainerGroup[$searchItem['shortcut']]) < $limit) {
+            if (count($searchResultsContainerGroup[$searchItem['shortcut']] ?? []) < $limit) {
 
                 $searchResultsContainerGroup[$searchItem['shortcut']][] = $searchItem;
 
