@@ -9,7 +9,6 @@ use Contao\Controller;
 
 class ProSearch extends ProSearchDataContainer
 {
-
     public $coreModules = array();
     public $notCoreModules = array('faq', 'newsletter', 'comments', 'calendar', 'news');
     public $deletedIndexData = array();
@@ -394,14 +393,14 @@ class ProSearch extends ProSearchDataContainer
             $path = 'bundles/prosearch/images/';
         }
 
-        if (!in_array($doTable, $this->notCoreModules)) {
+        if (!in_array($doTable, $this->notCoreModules))
+        {
             $path = '';
         }
 
-        if ($this->modules[$doTable] && $this->modules[$doTable]['icon']) {
-
+        if ($this->modules[$doTable] && $this->modules[$doTable]['icon'])
+        {
             $icon = Image::getHtml($path . $this->modules[$doTable]['icon']);
-
         }
 
         return $icon;
@@ -463,11 +462,10 @@ class ProSearch extends ProSearchDataContainer
         /**
          * set custom icon callbacks
          */
-        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomIcon'])) {
-
-            foreach ($this->modules[$doTable]['setCustomIcon'] as $callable) {
-
-
+        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomIcon']))
+        {
+            foreach ($this->modules[$doTable]['setCustomIcon'] as $callable)
+            {
                 $this->import($callable[0]);
                 $this->modules[$doTable]['icon'] = $this->{$callable[0]}->{$callable[1]}($table, $db, $arr, $dca);
 
@@ -477,7 +475,6 @@ class ProSearch extends ProSearchDataContainer
 
         //add icon
         $arr['icon'] = $this->getIcon($doTable);
-
         /**
          * exception callbacks
          */
@@ -515,7 +512,6 @@ class ProSearch extends ProSearchDataContainer
             }
 
         }
-
         return $arr;
     }
 

@@ -12,6 +12,7 @@ $GLOBALS['ecsHeader'] = <<<EOF
 Prosearch bundle for Contao Open Source CMS
 
 @package    prosearch
+@license    ProSearch is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 @author     Alexander Naumov 
 
 For the full copyright and license information, please view the LICENSE

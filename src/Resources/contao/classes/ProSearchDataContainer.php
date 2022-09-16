@@ -80,6 +80,7 @@ class ProSearchDataContainer extends DataContainer
 
             $title = strlen($arrRow['title']) > 100 ? substr($arrRow['title'],0,100).'…' : $arrRow['title'];
             $arrRow['dynTable'] = null; // reset dyntable if not needed
+
             $return .= '<div class="title"><span class="icon" title="'.strtoupper($arrRow['shortcut']).'">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'&popup=1" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':960,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"><span>'.mb_convert_encoding($title, 'UTF-8').'</span> <span class="info">'.$tagsStr.'</span></a></div>';
         }
 
