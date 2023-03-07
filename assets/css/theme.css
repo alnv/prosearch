@@ -1,6 +1,7 @@
 .header_prosearch{
-    padding: 2px 0 3px 20px;
+    padding-left: 19px !important;
     margin-left: 15px;
+    width: 64px;
 }
 .header_prosearch.prosearch_v3icon {
 
@@ -9,14 +10,15 @@
 
 .header_prosearch.prosearch_v4icon {
     background: url('../iconv4.svg') left 17px no-repeat;
-    background-size: 16px 16px;
+    background-size: 13px 13px;
 }
 
 @media only screen and (min-width: 768px) {
 
-    .header_prosearch.prosearch_v4icon {
-
-        background-size: 13px 13px;
+    .header_prosearch.prosearch_v4icon
+    {
+        background-size: 17% 50%;
+        background-position: 0 11px;
     }
 }
 
