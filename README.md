@@ -6,12 +6,6 @@ Und nicht irgendeine Suche, sondern eine die Du nicht mehr missen möchtest.
 
 [Mehr erfahren…][1]
 
-Systemvoraussetzung
--------------------
-
- * Contao CMS 3.5 (LTS)
- * Contao CMS 4
-
 
 ProSearch
 -------------------
@@ -25,6 +19,6 @@ License
 -------------------
 ProSearch is open-sourced software licensed under the [MIT license][3].
 
-[1]: https://backend-suche-contao.alexandernaumov.de
-[2]: https://backend-suche-contao.alexandernaumov.de/fuer-redakteure.html
+[1]: https://alexandernaumov.de
+[2]: https://alexandernaumov.de
 [3]: https://opensource.org/licenses/MIT
