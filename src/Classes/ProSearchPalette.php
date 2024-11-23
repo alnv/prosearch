@@ -1,9 +1,9 @@
 <?php
 
-namespace ProSearch;
+namespace Alnv\ProSearchBundle\Classes;
  
-use Contao\Input;
 use Contao\Config;
+use Contao\Input;
 
 /**
  * Class ProSearchPalette

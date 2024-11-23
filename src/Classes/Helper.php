@@ -1,42 +1,35 @@
 <?php
 
-namespace ProSearch;
+namespace Alnv\ProSearchBundle\Classes;
 
-/**
- * Class Helper
- * @package ProSearch
- */
+use Contao\StringUtil;
+
+
 class Helper
 {
 
-    /**
-     * @return string
-     */
-    static public function getBEMode()
+    static public function getBEMode(): string
     {
         return TL_MODE;
     }
 
-    /**
-     * @param $serializeStr
-     * @return string
-     */
     static public function parseStrForMeta($serializeStr)
     {
-        $arr = deserialize($serializeStr);
-        $filterContent = array('h1','h2','h3','h4','h5','h6','h7');
+
+        $arr = StringUtil::deserialize($serializeStr, true);
+        $filterContent = ['h1','h2','h3','h4','h5','h6','h7'];
         $strContent = '';
 
-        if(is_array($arr))
+        if(\is_array($arr))
         {
             foreach($arr as $val)
             {
-                if(is_array($val))
+                if(\is_array($val))
                 {
                     $val = self::parseStrForMeta(deserialize($val));
                 }
 
-                if(in_array($val, $filterContent))
+                if(\in_array($val, $filterContent))
                 {
                     continue;
                 }
@@ -50,21 +43,13 @@ class Helper
 
     }
 
-    /**
-     * @param $ctable
-     * @return int|string
-     */
-    static public function getDoParam($ctable)
+    static public function getDoParam($ctable): string
     {
 
         if ( $ctable && $GLOBALS['PS_SEARCHABLE_MODULES'] && is_array($GLOBALS['PS_SEARCHABLE_MODULES'])) {
-
             foreach ($GLOBALS['PS_SEARCHABLE_MODULES'] as $do => $module) {
-
                 foreach ($module['tables'] as $table) {
-
                     if ($table == $ctable) {
-
                         return $do;
 
                     }
@@ -74,14 +59,11 @@ class Helper
             }
 
         }
+
         return '';
     }
 
-    /**
-     * @param $modules
-     * @return array
-     */
-    static public function pluckModules($modules)
+    static public function pluckModules($modules): array
     {
         $return = array();
         foreach($modules as $key => $coreModule)
@@ -91,11 +73,7 @@ class Helper
         return $return;
     }
 
-    /**
-     * @param $reqStr
-     * @return string
-     */
-    static public function removeRequestTokenFromUri($reqStr)
+    static public function removeRequestTokenFromUri($reqStr): string
     {
         $requestUriArr = explode('&', $reqStr);
         $temp = [];

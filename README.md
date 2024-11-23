@@ -1,6 +1,3 @@
-**This extension is unmaintained!**
-
-
 ProSearch - Eine Backend-Suche für Contao CMS
 ======================
 

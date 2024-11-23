@@ -1,11 +1,7 @@
 <?php
 
-namespace ProSearch;
+namespace Alnv\ProSearchBundle\Classes;
 
-/**
- * Class PrepareDataException
- * @package ProSearch
- */
 class PrepareDataException
 {
     /**
@@ -17,22 +13,19 @@ class PrepareDataException
     public function prepareDataExceptions($arr, $db, $table)
     {
         // exception for content
-        if( $table == 'tl_content')
-        {
+        if ($table == 'tl_content') {
             $ptable = $db['ptable'];
             $arr['ptable'] = $ptable ? $ptable : '';
 
         }
 
         // exception for page
-        if( $table == 'tl_page')
-        {
+        if ($table == 'tl_page') {
             $arr['ptable'] = 'tl_page';
         }
 
         // exception for files
-        if( $table == 'tl_files' )
-        {
+        if ($table == 'tl_files') {
             $arr['docId'] = $db['path'] ? $db['path'] : '';
             $arr['pid'] = 0;
         }
@@ -50,17 +43,14 @@ class PrepareDataException
     public function setCustomTitle($table, $db, $titleFields, $doTable)
     {
 
-        if($table == 'tl_files')
-        {
+        if ($table == 'tl_files') {
             return $db['name'] ? $db['name'] : $db['path'];
         }
 
-        if($table == 'tl_content')
-        {
-            $title = 'No Title: '.$db['id'];
+        if ($table == 'tl_content') {
+            $title = 'No Title: ' . $db['id'];
 
-            foreach ($titleFields as $field)
-            {
+            foreach ($titleFields as $field) {
 
                 $ct = deserialize($db[$field]);
 
@@ -70,9 +60,8 @@ class PrepareDataException
                     $db[$field] = $meta;
                 }
 
-                if( $db[$field] && $db[$field] != '' && $field != 'type')
-                {
-                    return $db[$field].' ('.$db['type'].')';
+                if ($db[$field] && $db[$field] != '' && $field != 'type') {
+                    return $db[$field] . ' (' . $db['type'] . ')';
                 }
             }
 
@@ -94,119 +83,96 @@ class PrepareDataException
     {
         $iconName = '';
 
-        if($table == 'tl_module')
-        {
+        if ($table == 'tl_module') {
             $iconName = 'modules.gif';
         }
 
-        if($table == 'tl_layout')
-        {
+        if ($table == 'tl_layout') {
             $iconName = 'layout.gif';
         }
 
-        if($table == 'tl_style_sheet' || $table == 'tl_style')
-        {
+        if ($table == 'tl_style_sheet' || $table == 'tl_style') {
             $iconName = 'css.gif';
         }
 
-        if($table == 'tl_image_size')
-        {
+        if ($table == 'tl_image_size') {
             $iconName = 'sizes.gif';
         }
 
-        if($table == 'tl_newsletter')
-        {
+        if ($table == 'tl_newsletter') {
             $iconName = 'newsletter.gif';
         }
 
-        if($table == 'tl_newsletter_recipients')
-        {
+        if ($table == 'tl_newsletter_recipients') {
             $iconName = 'member.gif';
         }
 
-        if($table == 'tl_files' && $db['type'] == 'file')
-        {
+        if ($table == 'tl_files' && $db['type'] == 'file') {
 
             $iconName = 'files.gif';
 
-            if($db['extension'] == 'pdf')
-            {
+            if ($db['extension'] == 'pdf') {
                 $iconName = 'iconPDF.gif';
             }
 
-            if($db['extension'] == 'jpg' || $db['extension'] == 'png' || $db['extension'] == 'tif' || $db['extension'] == 'bmp' || $db['extension'] == 'svg')
-            {
+            if ($db['extension'] == 'jpg' || $db['extension'] == 'png' || $db['extension'] == 'tif' || $db['extension'] == 'bmp' || $db['extension'] == 'svg') {
                 $iconName = 'iconJPG.gif';
             }
 
-            if($db['extension'] == 'gif')
-            {
+            if ($db['extension'] == 'gif') {
                 $iconName = 'iconGIF.gif';
             }
 
-            if($db['extension'] == 'zip' || $db['extension'] == 'rar' )
-            {
+            if ($db['extension'] == 'zip' || $db['extension'] == 'rar') {
                 $iconName = 'iconRAR.gif';
             }
 
-            if($db['extension'] == 'css' )
-            {
+            if ($db['extension'] == 'css') {
                 $iconName = 'iconCSS.gif';
             }
 
-            if($db['extension'] == 'js' )
-            {
+            if ($db['extension'] == 'js') {
                 $iconName = 'iconJS.gif';
             }
 
-            if($db['extension'] == 'php' )
-            {
+            if ($db['extension'] == 'php') {
                 $iconName = 'iconPHP.gif';
             }
 
         }
 
-        if($table == 'tl_files' && $db['type'] == 'folder')
-        {
+        if ($table == 'tl_files' && $db['type'] == 'folder') {
             $iconName = 'folderC.gif';
         }
 
-        if($table == 'tl_page')
-        {
+        if ($table == 'tl_page') {
             $iconName = 'regular.gif';
 
-            if( $db['type'] == 'root')
-            {
+            if ($db['type'] == 'root') {
                 $iconName = 'pagemounts.gif';
             }
 
-            if( $db['type'] == 'forward')
-            {
+            if ($db['type'] == 'forward') {
                 $iconName = 'forward.gif';
             }
 
-            if( $db['type'] == 'redirect')
-            {
+            if ($db['type'] == 'redirect') {
                 $iconName = 'redirect.gif';
             }
 
-            if( $db['type'] == 'error_403')
-            {
+            if ($db['type'] == 'error_403') {
                 $iconName = 'error_403.gif';
             }
 
-            if( $db['type'] == 'error_404')
-            {
+            if ($db['type'] == 'error_404') {
                 $iconName = 'error_404.gif';
             }
 
-            if( $db['type'] == 'error_404')
-            {
+            if ($db['type'] == 'error_404') {
                 $iconName = 'error_404.gif';
             }
 
-            if( $db['type'] == 'regular' && $db['hide'] == '1' )
-            {
+            if ($db['type'] == 'regular' && $db['hide'] == '1') {
                 $iconName = 'regular_2.gif';
             }
 
@@ -227,53 +193,43 @@ class PrepareDataException
     {
         $shortcut = '';
 
-        if($table == 'tl_module')
-        {
+        if ($table == 'tl_module') {
             $shortcut = 'fe';
         }
 
-        if($table == 'tl_layout')
-        {
+        if ($table == 'tl_layout') {
             $shortcut = 'la';
         }
 
-        if($table == 'tl_style_sheet' || $table == 'tl_style')
-        {
+        if ($table == 'tl_style_sheet' || $table == 'tl_style') {
             $shortcut = 'css';
         }
 
-        if($table == 'tl_image_size')
-        {
+        if ($table == 'tl_image_size') {
             $shortcut = 'si';
         }
 
-        if($table == 'tl_newsletter')
-        {
+        if ($table == 'tl_newsletter') {
             $shortcut = 'nl';
         }
 
-        if($table == 'tl_newsletter_recipients')
-        {
+        if ($table == 'tl_newsletter_recipients') {
             $shortcut = 'abo';
         }
 
-        if($table == 'tl_files')
-        {
+        if ($table == 'tl_files') {
             $shortcut = 'fi';
         }
 
-        if($table == 'tl_files' && $db['extension'] == 'pdf')
-        {
+        if ($table == 'tl_files' && $db['extension'] == 'pdf') {
             $shortcut = 'pdf';
         }
 
-        if( $table == 'tl_files' && ( $db['extension'] == 'png' || $db['extension'] == 'jpg' || $db['extension'] == 'gif' || $db['extension'] == 'svg' || $db['extension'] == 'tif' ) )
-        {
+        if ($table == 'tl_files' && ($db['extension'] == 'png' || $db['extension'] == 'jpg' || $db['extension'] == 'gif' || $db['extension'] == 'svg' || $db['extension'] == 'tif')) {
             $shortcut = 'img';
         }
 
-        if( $table == 'tl_files' && ( $db['extension'] == 'zip' || $db['extension'] == 'rar' ) )
-        {
+        if ($table == 'tl_files' && ($db['extension'] == 'zip' || $db['extension'] == 'rar')) {
             $shortcut = 'zip';
         }
 

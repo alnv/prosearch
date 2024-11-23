@@ -1,6 +1,10 @@
-<?php namespace ProSearch;
+<?php
 
-class TagTextField extends \Widget
+namespace Alnv\ProSearchBundle\Widgets;
+
+use Contao\Widget;
+
+class TagTextField extends Widget
 {
 
     protected $blnSubmitInput = true;
@@ -9,24 +13,26 @@ class TagTextField extends \Widget
     protected $strTemplate = 'be_widget';
 
 
-    public function validator($varInput) {
+    public function validator($varInput)
+    {
 
         return parent::validator($varInput);
     }
 
-    public function generate() {
+    public function generate()
+    {
 
         $strTags = \Input::get('ps_tags');
         $strActionTag = \Input::get('actionPSTag');
         $strRequestUri = \Environment::get('requestUri');
         $strRequestUri = $this->removeRequestTokenFromUri($strRequestUri);
 
-        if ( $strActionTag && $strActionTag == 'updateTags' ) {
+        if ($strActionTag && $strActionTag == 'updateTags') {
 
             $this->updateTags($strTags);
         }
 
-        if ( $strActionTag && $strActionTag == 'removeTags' ) {
+        if ($strActionTag && $strActionTag == 'removeTags') {
 
             $this->removeTags($strTags);
         }
@@ -48,7 +54,7 @@ class TagTextField extends \Widget
             . 'window.addEvent("domready", function(){
                 var tagify = new mooTagify(document.id("tagWrap_%s"), null ,{
                     autoSuggest: true,
-                    availableOptions: '. json_encode($arrOptions) .'
+                    availableOptions: ' . json_encode($arrOptions) . '
                 });
                 tagify.addEvent("tagsUpdate", function(){
                     var tags = tagify.getTags();
@@ -73,26 +79,28 @@ class TagTextField extends \Widget
         );
     }
 
-    private function removeRequestTokenFromUri( $strRequest ) {
+    private function removeRequestTokenFromUri($strRequest)
+    {
 
         $arrRequestUri = explode('&', $strRequest);
         $arrTemps = [];
 
-        foreach( $arrRequestUri as $strUriPart ) {
+        foreach ($arrRequestUri as $strUriPart) {
 
-            if ( substr( $strUriPart, 0, 2 ) == 'rt' ) {
+            if (substr($strUriPart, 0, 2) == 'rt') {
                 continue;
             }
 
             $arrTemps[] = $strUriPart;
         }
 
-        return implode( '&', $arrTemps );
+        return implode('&', $arrTemps);
     }
 
-    public function updateTags( $arrTags ) {
+    public function updateTags($arrTags)
+    {
 
-        if ( !is_array( $arrTags ) ) {
+        if (!is_array($arrTags)) {
 
             $this->sendRes();
         }
@@ -102,16 +110,16 @@ class TagTextField extends \Widget
 
         $tagsDB = \Database::getInstance()->prepare('SELECT * FROM tl_prosearch_tags')->execute();
 
-        while ( $tagsDB->next() ) {
+        while ($tagsDB->next()) {
 
             $arrTagsExist[] = $tagsDB->tagname;
         }
 
-        foreach ( $arrValues as $strTagName ) {
+        foreach ($arrValues as $strTagName) {
 
-            if ( !in_array( $strTagName, $arrTagsExist ) ) {
+            if (!in_array($strTagName, $arrTagsExist)) {
 
-                \Database::getInstance()->prepare( 'INSERT INTO tl_prosearch_tags (tstamp,tagname) VALUES (?,?)')->execute( time(), $strTagName );
+                \Database::getInstance()->prepare('INSERT INTO tl_prosearch_tags (tstamp,tagname) VALUES (?,?)')->execute(time(), $strTagName);
             }
         }
 
@@ -119,31 +127,33 @@ class TagTextField extends \Widget
     }
 
 
-    public function removeTags( $strTag ) {
+    public function removeTags($strTag)
+    {
 
-        if ( !is_string( $strTag ) ) {
+        if (!is_string($strTag)) {
 
             $this->sendRes();
         }
 
         $strTagName = $strTag ? $strTag : '';
-        $existInSearchDB = \Database::getInstance()->prepare("SELECT * FROM tl_prosearch_data WHERE tags LIKE ? ORDER BY tstamp DESC LIMIT 10")->execute( "%$strTagName%" );
+        $existInSearchDB = \Database::getInstance()->prepare("SELECT * FROM tl_prosearch_data WHERE tags LIKE ? ORDER BY tstamp DESC LIMIT 10")->execute("%$strTagName%");
 
         if ($existInSearchDB->count() > 1) {
             $this->sendRes();
         }
 
-        \Database::getInstance()->prepare('DELETE FROM tl_prosearch_tags WHERE tagname = ?')->execute( $strTagName );
+        \Database::getInstance()->prepare('DELETE FROM tl_prosearch_tags WHERE tagname = ?')->execute($strTagName);
 
         $this->sendRes();
     }
 
 
-    public function sendRes() {
+    public function sendRes()
+    {
 
         header('Content-type: application/json');
 
-        echo json_encode( ['state' => '200' ] );
+        echo json_encode(['state' => '200']);
 
         exit;
     }

@@ -1,6 +1,6 @@
 <?php
 
-use ProSearch\ProSearch;
+use Alnv\ProSearchBundle\Classes\ProSearch;
 
 /**
  * Pro Search configuration
@@ -14,10 +14,10 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
         'onload_callback' => array
         (
             array('tl_prosearch_settings', 'ajaxSearchIndex'),
-            array('ProSearch', 'ajaxRequest')
+            array(ProSearch::class, 'ajaxRequest')
         ),
         'onsubmit_callback' => array(
-            array('ProSearch', 'deleteModulesFromIndex')
+            array(ProSearch::class, 'deleteModulesFromIndex')
         ),
     ),
 
@@ -34,13 +34,11 @@ $GLOBALS['TL_DCA']['tl_prosearch_settings'] = array(
         (
             'label' => &$GLOBALS['TL_LANG']['tl_prosearch_settings']['searchIndexModules'],
             'inputType' => 'checkbox',
-            'options_callback' => array('ProSearch', 'loadModules'),
+            'options_callback' => array(ProSearch::class, 'loadModules'),
             'eval' => array('multiple' => true),
             'sql' => "blob NULL"
         ),
-
         'addDescriptionToSearchContent' => array(
-
             'label' => &$GLOBALS['TL_LANG']['tl_prosearch_settings']['addDescriptionToSearchContent'],
             'inputType' => 'checkbox',
         ),
@@ -144,7 +142,7 @@ class tl_prosearch_settings extends ProSearch
 
         while($dataDB->next())
         {
-            $data = $this->prepareIndexData($dataDB->row(), $GLOBALS['TL_DCA'][$tablename], $tablename);
+            $data = $this->prepareIndexData($dataDB->row(), ($GLOBALS['TL_DCA'][$tablename] ?? []), $tablename);
 
             if($data == false)
             {

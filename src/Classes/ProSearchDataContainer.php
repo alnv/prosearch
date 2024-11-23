@@ -1,44 +1,29 @@
 <?php
 
-namespace ProSearch;
+namespace Alnv\ProSearchBundle\Classes;
 
 use Contao\DataContainer;
 use Contao\Image;
+use Contao\StringUtil;
 
-/**
- * Class ProSearchDataContainer
- * @package ProSearch
- */
 class ProSearchDataContainer extends DataContainer
 {
-    /**
-     * @return string
-     */
+
     public function getPalette()
     {
         return '';
     }
 
-    /**
-     * @param mixed $varValue
-     */
     public function save($varValue)
     {
         //
     }
 
-    /**
-     * @param $arrRow
-     * @param $admin
-     * @param $permArr
-     * @return string
-     */
-    public function createButtons($arrRow)
+    public function createButtons($arrRow): string
     {
 
         $strTable = $arrRow['dca'];
 		$this->loadDataContainer($strTable);
-
 
         if (empty($GLOBALS['TL_DCA'][$strTable]['list']['operations']))
         {
@@ -50,7 +35,7 @@ class ProSearchDataContainer extends DataContainer
         $operations = $GLOBALS['TL_DCA'][$strTable]['list']['operations'];
 		$mode = $GLOBALS['TL_DCA'][$strTable]['list']['sorting']['mode'];
 
-        $id = specialchars(rawurldecode($arrRow['docId']));
+        $id = StringUtil::specialchars(rawurldecode($arrRow['docId']));
         $id = $id ? '&amp;id='.$id : '';
         $fmTable = substr($arrRow['dca'],0,2);
         //$pid = $arrRow['pid'] ? '&amp;pid='.$arrRow['pid'] : '';
@@ -70,7 +55,7 @@ class ProSearchDataContainer extends DataContainer
 
             if($arrRow['tags'])
             {
-                $tags = explode(',', $arrRow['tags']);
+                $tags = \explode(',', $arrRow['tags']);
 
                 foreach($tags as $tag)
                 {
@@ -79,16 +64,15 @@ class ProSearchDataContainer extends DataContainer
             }
 
             $title = strlen($arrRow['title']) > 100 ? substr($arrRow['title'],0,100).'…' : $arrRow['title'];
-            $arrRow['dynTable'] = null; // reset dyntable if not needed
+            $arrRow['dynTable'] = null;
 
             $return .= '<div class="title"><span class="icon" title="'.strtoupper($arrRow['shortcut']).'">'.$arrRow['icon'].'</span><a href="'.$this->addToSearchUrl($arrRow, $queryStr).'&popup=1" class="search-result" tabindex="1" onclick="Backend.openModalIframe({\'width\':960,\'title\':\''.$arrRow['title'].'\',\'url\':this.href});return false"><span>'.mb_convert_encoding($title, 'UTF-8').'</span> <span class="info">'.$tagsStr.'</span></a></div>';
         }
 
         $return .= '<div class="operations">';
-        
-        // if has childs go to overview
-        $ctableArr = deserialize($arrRow['ctable']);        
-        $mode = $mode ? $mode : 5;
+
+        $ctableArr = StringUtil::deserialize($arrRow['ctable'], true);
+        $mode = $mode ?: 5;
         
         if( is_array($ctableArr) && !empty($ctableArr) && $mode != 5 && $fmTable != 'fm')
         {
@@ -114,7 +98,6 @@ class ProSearchDataContainer extends DataContainer
 		// go to ietm
         if( $operations['editheader'] || $operations['edit'] )
         {
-
             $href = 'act=edit';
             $icon = 'header.gif';
 			$ptable = $table;
@@ -201,14 +184,6 @@ class ProSearchDataContainer extends DataContainer
         return trim($return);
     }
 
-
-    /**
-     * @param $dca
-     * @param $queryStr
-     * @param bool|true $blnAddRef
-     * @param array $arrUnset
-     * @return string
-     */
     public function addToSearchUrl($dca, $queryStr, $blnAddRef=true, $arrUnset=array())
     {
 
