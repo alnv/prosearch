@@ -3,14 +3,15 @@
 namespace Alnv\ProSearchBundle\Classes;
 
 use Contao\StringUtil;
-
+use Contao\System;
+use Symfony\Component\HttpFoundation\Request;
 
 class Helper
 {
 
-    static public function getBEMode(): string
+    static public function getBEMode(): bool
     {
-        return TL_MODE;
+        return System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest(System::getContainer()->get('request_stack')->getCurrentRequest() ?? Request::create(''));
     }
 
     static public function parseStrForMeta($serializeStr)
@@ -26,7 +27,7 @@ class Helper
             {
                 if(\is_array($val))
                 {
-                    $val = self::parseStrForMeta(deserialize($val));
+                    $val = self::parseStrForMeta(StringUtil::deserialize($val));
                 }
 
                 if(\in_array($val, $filterContent))
@@ -75,20 +76,18 @@ class Helper
 
     static public function removeRequestTokenFromUri($reqStr): string
     {
-        $requestUriArr = explode('&', $reqStr);
+        $requestUriArr = \explode('&', $reqStr);
         $temp = [];
 
         foreach($requestUriArr as $part)
         {
-            if(substr($part, 0, 2) == 'rt')
+            if(\substr($part, 0, 2) == 'rt')
             {
                 continue;
             }
             $temp[] = $part;
         }
 
-        return implode('&', $temp);
-
+        return \implode('&', $temp);
     }
-
 }

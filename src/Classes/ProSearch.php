@@ -2,12 +2,14 @@
 
 namespace Alnv\ProSearchBundle\Classes;
 
+use Contao\BackendUser;
 use Contao\Config;
-use Contao\Controller;
 use Contao\Database;
 use Contao\Image;
 use Contao\Input;
 use Contao\StringUtil;
+use Contao\System;
+use Contao\DataContainer;
 
 class ProSearch extends ProSearchDataContainer
 {
@@ -28,8 +30,8 @@ class ProSearch extends ProSearchDataContainer
             'tables' => array('tl_page'),
             'searchIn' => array('title', 'pageTitle', 'description', 'id'),
             'title' => array('title'),
-            'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
-            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
+            'prepareDataException' => array(array(PrepareDataException::class, 'prepareDataExceptions')),
+            'setCustomIcon' => array(array(PrepareDataException::class, 'setCustomIcon')),
         ),
         'form' => array(
             'shortcut' => 'fo',
@@ -84,10 +86,10 @@ class ProSearch extends ProSearchDataContainer
             'tables' => array('tl_files'),
             'searchIn' => array('name', 'meta'),
             'title' => array('name'),
-            'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
-            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
-            'setCustomShortcut' => array(array('PrepareDataException', 'setCustomShortcut')),
-            'setCustomTitle' => array(array('PrepareDataException', 'setCustomTitle')),
+            'prepareDataException' => array(array(PrepareDataException::class, 'prepareDataExceptions')),
+            'setCustomIcon' => array(array(PrepareDataException::class, 'setCustomIcon')),
+            'setCustomShortcut' => array(array(PrepareDataException::class, 'setCustomShortcut')),
+            'setCustomTitle' => array(array(PrepareDataException::class, 'setCustomTitle')),
         ),
         'comments' => array(
             'shortcut' => 'co',
@@ -100,8 +102,8 @@ class ProSearch extends ProSearchDataContainer
             'tables' => array('tl_newsletter', 'tl_newsletter_recipients'),
             'searchIn' => array('subject', 'email'),
             'title' => array('subject', 'email'),
-            'setCustomShortcut' => array(array('PrepareDataException', 'setCustomShortcut')),
-            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
+            'setCustomShortcut' => array(array(PrepareDataException::class, 'setCustomShortcut')),
+            'setCustomIcon' => array(array(PrepareDataException::class, 'setCustomIcon')),
         ),
         'faq' => array(
             'shortcut' => 'fq',
@@ -117,15 +119,15 @@ class ProSearch extends ProSearchDataContainer
             'searchIn' => array('headline', 'id', 'type', 'title', 'alt'),
             'title' => array('headline', 'title', 'alt', 'id'),
             'useParentAsBE' => true, // tl_content has no backend modul
-            'prepareDataException' => array(array('PrepareDataException', 'prepareDataExceptions')),
-            'setCustomTitle' => array(array('PrepareDataException', 'setCustomTitle')),
+            'prepareDataException' => array(array(PrepareDataException::class, 'prepareDataExceptions')),
+            'setCustomTitle' => array(array(PrepareDataException::class, 'setCustomTitle')),
         ),
         'themes' => array(
             'tables' => array('tl_module', 'tl_layout', 'tl_style_sheet', 'tl_style', 'tl_image_size'),
             'searchIn' => array('name', 'type', 'selector'),
             'title' => array('name', 'selector'),
-            'setCustomShortcut' => array(array('PrepareDataException', 'setCustomShortcut')),
-            'setCustomIcon' => array(array('PrepareDataException', 'setCustomIcon')),
+            'setCustomShortcut' => array(array(PrepareDataException::class, 'setCustomShortcut')),
+            'setCustomIcon' => array(array(PrepareDataException::class, 'setCustomIcon')),
         )
     );
 
@@ -227,43 +229,31 @@ class ProSearch extends ProSearchDataContainer
         Database::getInstance()->prepare('DELETE FROM tl_prosearch_data ' . $whereStr)->execute();
     }
 
-    /**
-     * @param $strName
-     */
     public function createOnSubmitCallback($strName): void
     {
 
         $coreModulesArr = Helper::pluckModules($this->coreModules);
 
-        if (in_array($strName, $coreModulesArr) && $GLOBALS['TL_DCA'][$strName]) {
+        if (\in_array($strName, $coreModulesArr) && ($GLOBALS['TL_DCA'][$strName] ?? [])) {
             $GLOBALS['TL_DCA'][$strName]['config']['onsubmit_callback'][] = array(ProSearch::class, 'sendDataToIndex');
             $GLOBALS['TL_DCA'][$strName]['config']['oncut_callback'][] = array(ProSearch::class, 'sendDataToIndex');
             $GLOBALS['TL_DCA'][$strName]['config']['ondelete_callback'][] = array(ProSearch::class, 'deleteDataFromIndex');
         }
     }
 
-    /**
-     * @param $dc
-     */
-    public function sendDataToIndex($dc, $value = '')
+    public function sendDataToIndex(DataContainer $dc, $value = ''): void
     {
-        // current table
+
         $tablename = $dc->table;
+        $dcaArr =!method_exists($dc->activeRecord, 'row') ? (array)$dc->activeRecord : $dc->activeRecord->row();
 
-        // current data
-        $dcaArr = $dc->activeRecord ? $dc->activeRecord->row() : array();
-
-        // col
         $colname = 'id';
 
-        // get act
         $act = Input::get('act') ?: '';
 
-        // if cut
         if ($act == 'cut') {
 
             $id = Input::get('id');
-
             if (Input::get('do') == 'files') {
                 $tablename = 'tl_files';
                 $id = $value;
@@ -285,16 +275,11 @@ class ProSearch extends ProSearchDataContainer
         }
 
         $arr[] = $data;
-
         $newIndexData = $arr;
         $this->saveSingleIndexIntoDB($newIndexData, $tablename);
 
     }
 
-    /**
-     * @param $doTable
-     * @return string
-     */
     public function getIcon($doTable): string
     {
 
@@ -302,7 +287,7 @@ class ProSearch extends ProSearchDataContainer
         $path = 'bundles/alnvprosearch/images/';
 
 
-        if (!in_array($doTable, $this->notCoreModules)) {
+        if (!\in_array($doTable, $this->notCoreModules)) {
             $path = '';
         }
 
@@ -313,13 +298,7 @@ class ProSearch extends ProSearchDataContainer
         return $icon;
     }
 
-    /**
-     * @param $db
-     * @param $dca
-     * @param $table
-     * @return array|bool
-     */
-    public function prepareIndexData($db, $dca, $table)
+    public function prepareIndexData($db, $dca, $table): bool|array
     {
 
         // create do string
@@ -336,28 +315,24 @@ class ProSearch extends ProSearchDataContainer
             'dca' => $table,
             'tstamp' => time(),
             'doTable' => $doTable,
-            'ptable' => $dca['config']['ptable'] ?: '',
-            'ctable' => $dca['config']['ctable'] ? serialize($dca['config']['ctable']) : '',
+            'ptable' => $dca['config']['ptable'] ?? '',
+            'ctable' => !empty(($dca['config']['ctable'] ?? [])) ? \serialize($dca['config']['ctable']) : '',
             'docId' => $db['id'],
             'pid' => $db['pid'] ?? 0,
-            'extension' => $db['extension'] ?: '',
-            'tags' => $db['ps_tags'] ?: '',
-            'blocked' => $db['ps_block_item'] ?: '',
-            'blocked_ug' => $db['ps_block_usergroup'] ?: ''
+            'extension' => $db['extension'] ?? '',
+            'tags' => $db['ps_tags'] ?? '',
+            'blocked' => $db['ps_block_item'] ?? '',
+            'blocked_ug' => $db['ps_block_usergroup'] ?? ''
         );
 
-
-        /**
-         * set shortcut
-         */
         $shortcut = '';
         if ($this->modules[$doTable]) {
-            $shortcut = $this->modules[$doTable]['shortcut'] ?: '';
+            $shortcut = $this->modules[$doTable]['shortcut'] ?? '';
         }
         $arr['shortcut'] = $shortcut;
-        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomShortcut'])) {
+        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomShortcut'] ?? [])) {
 
-            foreach ($this->modules[$doTable]['setCustomShortcut'] as $callable) {
+            foreach (($this->modules[$doTable]['setCustomShortcut'] ?? []) as $callable) {
 
                 $this->import($callable[0]);
                 $arr['shortcut'] = $this->{$callable[0]}->{$callable[1]}($table, $db, $arr, $dca);
@@ -366,11 +341,8 @@ class ProSearch extends ProSearchDataContainer
 
         }
 
-        /**
-         * set custom icon callbacks
-         */
-        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomIcon'])) {
-            foreach ($this->modules[$doTable]['setCustomIcon'] as $callable) {
+        if ($this->modules[$doTable] && is_array(($this->modules[$doTable]['setCustomIcon'] ?? []))) {
+            foreach (($this->modules[$doTable]['setCustomIcon'] ?? []) as $callable) {
                 $this->import($callable[0]);
                 $this->modules[$doTable]['icon'] = $this->{$callable[0]}->{$callable[1]}($table, $db, $arr, $dca);
 
@@ -378,15 +350,9 @@ class ProSearch extends ProSearchDataContainer
 
         }
 
-        //add icon
         $arr['icon'] = $this->getIcon($doTable);
-        /**
-         * exception callbacks
-         */
-        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['prepareDataException'])) {
-
-            foreach ($this->modules[$doTable]['prepareDataException'] as $callable) {
-
+        if ($this->modules[$doTable] && is_array(($this->modules[$doTable]['prepareDataException'] ?? []))) {
+            foreach (($this->modules[$doTable]['prepareDataException'] ?? []) as $callable) {
                 $this->import($callable[0]);
                 $arr = $this->{$callable[0]}->{$callable[1]}($arr, $db, $table);
 
@@ -394,22 +360,18 @@ class ProSearch extends ProSearchDataContainer
 
         }
 
-        // set type
         $sType = $this->setType($db);
-        $arr['type'] = $sType ? $sType : '';
+        $arr['type'] = $sType ?: '';
 
-        // set search content
         $sCntent = $this->setSearchContent($db, $arr['doTable']);
-        $arr['search_content'] = $sCntent ? $sCntent : '';
+        $arr['search_content'] = $sCntent ?: '';
 
         $sTitle = $this->setTitle($db, $arr['doTable'], $table);
 
-        // set title
-        $arr['title'] = $sTitle ? $sTitle : 'no title';
+        $arr['title'] = $sTitle ?: 'no title';
 
-        // add be module dyn if useParentAsBE is true
-        if ($this->modules[$doTable]['useParentAsBE']) {
-            $do = Helper::getDoParam($arr['ptable']);
+        if (($this->modules[$doTable]['useParentAsBE'] ?? '')) {
+            $do = Helper::getDoParam(($arr['ptable'] ?? ''));
             $arr['doTable'] = $do;
 
             if (!$arr['doTable']) {
@@ -420,36 +382,28 @@ class ProSearch extends ProSearchDataContainer
         return $arr;
     }
 
-    /**
-     * @param $db
-     * @return null|string
-     */
-    public function setType($db)
+    public function setType($db): string
     {
+
+        $parser = System::getContainer()->get('contao.insert_tag.parser');
         $colsForTypes = array('type');
 
         foreach ($colsForTypes as $type) {
-            if ($db[$type] && is_string($db[$type]) && $db[$type] != '') {
+            if (($db[$type] ?? '') && is_string(($db[$type] ?? '')) && ($db[$type] ?? '') != '') {
                 $meta = Helper::parseStrForMeta($db[$type]);
                 $return = $meta != '' ? ' ' . $meta : ' ' . $db[$type];
-                $return = Controller::replaceInsertTags($return);
+                $return = $parser->replaceInline($return);
                 $return = strip_tags($return);
-                $return = trim($return);
-                return $return;
-                break;
+                return trim($return);
 
             }
         }
 
-        return null;
+        return '';
 
     }
 
-    /**
-     * @param $db
-     * @return string|void
-     */
-    public function setSearchContent($db, $doTable)
+    public function setSearchContent($db, $doTable): string
     {
 
         if (!$doTable) {
@@ -459,7 +413,7 @@ class ProSearch extends ProSearchDataContainer
         $colsSearchContent = $this->modules[$doTable]['searchIn'];
 
         \array_unshift($colsSearchContent, 'ps_search_content');
-        $colsSearchContent = $colsSearchContent ? $colsSearchContent : array();
+        $colsSearchContent = $colsSearchContent ?: [];
 
         // addDescriptionToSearchContent
         $textCols = array('text', 'description');
@@ -472,10 +426,11 @@ class ProSearch extends ProSearchDataContainer
         }
 
         $strContent = '';
+        $parser = System::getContainer()->get('contao.insert_tag.parser');
 
         foreach ($colsSearchContent as $content) {
 
-            if (!$db[$content]) {
+            if (!($db[$content] ?? '')) {
                 continue;
             }
 
@@ -488,12 +443,12 @@ class ProSearch extends ProSearchDataContainer
 
             }
 
-            if ($db[$content] && (is_string($db[$content]) || is_numeric($db[$content]))) {
+            if ((is_string($db[$content]) || is_numeric($db[$content]))) {
                 $strContent .= ' ' . $db[$content];
             }
         }
 
-        $strContent = Controller::replaceInsertTags($strContent);
+        $strContent = $parser->replaceInline($strContent);
         $strContent = strip_tags($strContent);
         $strContent = trim($strContent);
 
@@ -503,37 +458,31 @@ class ProSearch extends ProSearchDataContainer
 
     public function setTitle($db, $doTable, $table)
     {
-        // sorted by priority
+
         if (!$doTable) {
             return null;
         }
 
+        $parser = System::getContainer()->get('contao.insert_tag.parser');
         $colsForTitle = $this->modules[$doTable]['title'];
         array_unshift($colsForTitle, 'ps_title');
         $colsForTitle = $colsForTitle ?: array();
 
-        // hook for custom title
-        if ($this->modules[$doTable] && is_array($this->modules[$doTable]['setCustomTitle'])) {
-
-            foreach ($this->modules[$doTable]['setCustomTitle'] as $callable) {
-
-
+        if ($this->modules[$doTable] && is_array(($this->modules[$doTable]['setCustomTitle'] ?? []))) {
+            foreach (($this->modules[$doTable]['setCustomTitle'] ?? []) as $callable) {
                 $this->import($callable[0]);
                 return $this->{$callable[0]}->{$callable[1]}($table, $db, $colsForTitle, $doTable);
-
             }
-
         }
 
         foreach ($colsForTitle as $title) {
 
-            if (!$db[$title]) {
+            if (!($db[$title] ?? '')) {
                 continue;
             }
 
             $ct = StringUtil::deserialize($db[$title]);
 
-            // check if value is serialize
             if (is_array($ct) && !empty($ct)) {
                 $meta = Helper::parseStrForMeta($db[$title]);
                 $db[$title] = $meta;
@@ -542,11 +491,9 @@ class ProSearch extends ProSearchDataContainer
             if ($db[$title] && (is_string($db[$title]) || is_numeric($db[$title]))) {
 
                 $return = $db[$title];
-                $return = Controller::replaceInsertTags($return);
+                $return = $parser->replaceInline($return);
                 $return = strip_tags($return);
-                $return = trim($return);
-                return $return;
-                break;
+                return trim($return);
 
             }
         }
@@ -554,32 +501,22 @@ class ProSearch extends ProSearchDataContainer
         return null;
     }
 
-
-    /**
-     * @param $data
-     * @param $dca
-     * @param int $page
-     */
     public function saveIndexDataIntoDB($data, $dca, $page = 0)
     {
-        //reset table
+
         if ($page == 0) {
             $this->clearSearchIndexTable($dca);
         }
 
-        // insert new cols
         foreach ($data as $arr) {
 
-            // values
-            $values = array_values($arr);
-            $placeholder = implode(',', array_fill(0, count($values), '?'));
+            $values = \array_values($arr);
+            $placeholder = \implode(',', array_fill(0, count($values), '?'));
 
-            // cols
-            $cols = array_keys($arr);
+            $cols = \array_keys($arr);
             $cols = implode(',', $cols);
 
-            // db operations
-            $this->Database->prepare('INSERT INTO tl_prosearch_data(' . $cols . ') VALUES (' . $placeholder . ')')->execute($values);
+            $this->Database->prepare('INSERT INTO tl_prosearch_data(' . $cols . ') VALUES (' . $placeholder . ')')->execute(...$values);
 
         }
     }
@@ -605,14 +542,14 @@ class ProSearch extends ProSearchDataContainer
             $this->Database->prepare('DELETE FROM tl_prosearch_data WHERE dca = ? AND docId = ?')->execute($dca, $arr['docId']);
 
             // values
-            $values = array_values($arr);
-            $placeholder = implode(',', array_fill(0, count($values), '?'));
+            $values = \array_values($arr);
+            $placeholder = \implode(',', \array_fill(0, count($values), '?'));
 
             // cols
-            $cols = array_keys($arr);
-            $cols = implode(',', $cols);
+            $cols = \array_keys($arr);
+            $cols = \implode(',', $cols);
 
-            $this->Database->prepare('INSERT INTO tl_prosearch_data(' . $cols . ') VALUES (' . $placeholder . ')')->execute($values);
+            $this->Database->prepare('INSERT INTO tl_prosearch_data(' . $cols . ') VALUES (' . $placeholder . ')')->execute(...$values);
 
         }
     }
@@ -623,7 +560,6 @@ class ProSearch extends ProSearchDataContainer
         $tablename = $dc->table;
         $docId = $dc->activeRecord->id;
 
-        // files exception
         if (Input::get('do') == 'files') {
             $tablename = 'tl_files';
             $docId = $dc;
@@ -644,7 +580,6 @@ class ProSearch extends ProSearchDataContainer
             $this->deletedIndexData[] = $pDataDB->row();
         }
 
-        //delete all childs
         $this->deleteChildrenFromIndex($tablename, $docId);
         $this->clearIndex();
 
@@ -660,13 +595,12 @@ class ProSearch extends ProSearchDataContainer
 
                 $table = $cDataDB->dca;
                 $id = $cDataDB->docId;
-                $activeModules = deserialize(Config::get('searchIndexModules'));
-                $ctables = deserialize($cDataDB->ctable);
+                $activeModules = StringUtil::deserialize(Config::get('searchIndexModules'), true);
+                $ctables = StringUtil::deserialize($cDataDB->ctable, true);
 
                 if (in_array($table, $activeModules)) {
                     $this->deleteChildrenFromIndex($table, $id);
                 }
-
 
                 if (is_array($ctables)) {
                     foreach ($ctables as $ctable) {
@@ -683,7 +617,6 @@ class ProSearch extends ProSearchDataContainer
 
     public function clearIndex()
     {
-
         foreach ($this->deletedIndexData as $indexData) {
             $this->Database->prepare('DELETE FROM tl_prosearch_data WHERE id = ?')->execute($indexData['id']);
         }
@@ -725,22 +658,19 @@ class ProSearch extends ProSearchDataContainer
         $docLimit = 500;
         $limit = 10;
 
-        // import
-        $this->import('BackendUser', 'User');
-
         //shortcut query Str
         $shortcutSqlStr = '';
 
         // without Shortcut
-        if (count($shortcutAndQ) == 1) {
+        if (\count($shortcutAndQ) == 1) {
             $q = $shortcutAndQ[0];
-            if (strlen($q) > 4) {
+            if (\strlen($q) > 4) {
                 $docLimit = 1000;
             }
         }
 
         // Mit Shortcut
-        if (count($shortcutAndQ) > 1) {
+        if (\count($shortcutAndQ) > 1) {
             $shortcut = $shortcutAndQ[0];
             $q = $shortcutAndQ[1];
             $docLimit = 1000;
@@ -754,7 +684,7 @@ class ProSearch extends ProSearchDataContainer
         }
 
         if (!$q) {
-            return array();
+            return [];
         }
 
         // put all results
@@ -816,15 +746,11 @@ class ProSearch extends ProSearchDataContainer
 
     }
 
-    /**
-     * @param $q
-     * @return array
-     */
-    public function getSerachDataByTag($q)
+    public function getSerachDataByTag($q): array
     {
 
         if (!$q) {
-            return array();
+            return [];
         }
 
         $tagDB = $this->Database->prepare("SELECT * FROM tl_prosearch_data WHERE blocked != '1' AND tags LIKE ? ORDER BY tstamp DESC LIMIT 500")->execute("%$q%");
@@ -849,32 +775,21 @@ class ProSearch extends ProSearchDataContainer
 
     }
 
-    /**
-     * @param $searchItem
-     * @param $admin
-     * @param $permArr
-     * @return string
-     */
-    public function addButtonStr($searchItem)
+    public function addButtonStr($searchItem): string
     {
         return $this->createButtons($searchItem);
     }
 
-    /**
-     * @param $searchItem
-     * @return bool
-     */
-    private function checkPermission($searchItem)
+    private function checkPermission($searchItem): bool
     {
 
-
-        $group = $this->User->groups ?? [];
+        $group = BackendUser::getInstance()->groups ?? [];
 
         if (empty($group)) {
             return true;
         }
 
-        if (!$this->User->isAdmin) {
+        if (!BackendUser::getInstance()->isAdmin) {
             $blocked_ug = $searchItem['blocked_ug'] ?? [];
             $blocked_ug = StringUtil::deserialize($blocked_ug, true);
 
@@ -890,5 +805,4 @@ class ProSearch extends ProSearchDataContainer
 
         return true;
     }
-
 }

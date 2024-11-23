@@ -2,46 +2,45 @@
 
 namespace Alnv\ProSearchBundle\Widgets;
 
+use Contao\StringUtil;
 use Contao\Widget;
+use Contao\Environment;
+use Contao\Input;
+use Contao\Database;
 
 class TagTextField extends Widget
 {
 
     protected $blnSubmitInput = true;
 
-
     protected $strTemplate = 'be_widget';
-
 
     public function validator($varInput)
     {
-
         return parent::validator($varInput);
     }
 
     public function generate()
     {
 
-        $strTags = \Input::get('ps_tags');
-        $strActionTag = \Input::get('actionPSTag');
-        $strRequestUri = \Environment::get('requestUri');
+        $strTags = Input::get('ps_tags');
+        $strActionTag = Input::get('actionPSTag');
+        $strRequestUri = Environment::get('requestUri');
         $strRequestUri = $this->removeRequestTokenFromUri($strRequestUri);
 
-        if ($strActionTag && $strActionTag == 'updateTags') {
-
+        if ($strActionTag == 'updateTags') {
             $this->updateTags($strTags);
         }
 
-        if ($strActionTag && $strActionTag == 'removeTags') {
-
+        if ($strActionTag == 'removeTags') {
             $this->removeTags($strTags);
         }
 
-        $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/prosearch/assets/vendor/mootagify.js|static';
-        $GLOBALS['TL_CSS'][] = 'system/modules/prosearch/assets/css/mootagify-bootstrap.css|static';
-        $GLOBALS['TL_CSS'][] = 'system/modules/prosearch/assets/css/mootagify.css|static';
+        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alnvprosearch/vendor/mootagify.js|static';
+        $GLOBALS['TL_CSS'][] = 'bundles/alnvprosearch/css/mootagify-bootstrap.css|static';
+        $GLOBALS['TL_CSS'][] = 'bundles/alnvprosearch/css/mootagify.css|static';
 
-        $objTags = \Database::getInstance()->prepare('SELECT * FROM tl_prosearch_tags')->execute();
+        $objTags = Database::getInstance()->prepare('SELECT * FROM tl_prosearch_tags')->execute();
         $arrOptions = [''];
 
         while ($objTags->next()) {
@@ -72,9 +71,9 @@ class TagTextField extends Widget
         return sprintf('<input type="hidden" id="ctrl_%s" name="%s" value="%s"><div id="tagWrap_%s" class="hide"> <div class="tag-wrapper"></div> <div class="tag-input"> <input type="text" id="listTags" class="tl_text" name="listTags" value="%s" placeholder="%s"> </div> <div class="clear"></div></div>' . $script . '',
             $this->strId,
             $this->strName,
-            specialchars($this->varValue),
+            StringUtil::specialchars($this->varValue),
             $this->strId,
-            specialchars($this->varValue),
+            StringUtil::specialchars($this->varValue),
             $GLOBALS['TL_LANG']['MSC']['TagTextField']['tag']
         );
     }
@@ -105,21 +104,17 @@ class TagTextField extends Widget
             $this->sendRes();
         }
 
-        $arrValues = $arrTags ? $arrTags : [];
-        $arrTagsExist = array();
+        $arrValues = $arrTags ?: [];
+        $arrTagsExist = [];
 
-        $tagsDB = \Database::getInstance()->prepare('SELECT * FROM tl_prosearch_tags')->execute();
-
+        $tagsDB = Database::getInstance()->prepare('SELECT * FROM tl_prosearch_tags')->execute();
         while ($tagsDB->next()) {
-
             $arrTagsExist[] = $tagsDB->tagname;
         }
 
         foreach ($arrValues as $strTagName) {
-
             if (!in_array($strTagName, $arrTagsExist)) {
-
-                \Database::getInstance()->prepare('INSERT INTO tl_prosearch_tags (tstamp,tagname) VALUES (?,?)')->execute(time(), $strTagName);
+                Database::getInstance()->prepare('INSERT INTO tl_prosearch_tags (tstamp,tagname) VALUES (?,?)')->execute(time(), $strTagName);
             }
         }
 
@@ -135,14 +130,14 @@ class TagTextField extends Widget
             $this->sendRes();
         }
 
-        $strTagName = $strTag ? $strTag : '';
-        $existInSearchDB = \Database::getInstance()->prepare("SELECT * FROM tl_prosearch_data WHERE tags LIKE ? ORDER BY tstamp DESC LIMIT 10")->execute("%$strTagName%");
+        $strTagName = $strTag ? : '';
+        $existInSearchDB = Database::getInstance()->prepare("SELECT * FROM tl_prosearch_data WHERE tags LIKE ? ORDER BY tstamp DESC LIMIT 10")->execute("%$strTagName%");
 
         if ($existInSearchDB->count() > 1) {
             $this->sendRes();
         }
 
-        \Database::getInstance()->prepare('DELETE FROM tl_prosearch_tags WHERE tagname = ?')->execute($strTagName);
+        Database::getInstance()->prepare('DELETE FROM tl_prosearch_tags WHERE tagname = ?')->execute($strTagName);
 
         $this->sendRes();
     }
@@ -152,10 +147,7 @@ class TagTextField extends Widget
     {
 
         header('Content-type: application/json');
-
         echo json_encode(['state' => '200']);
-
         exit;
     }
-
 }
